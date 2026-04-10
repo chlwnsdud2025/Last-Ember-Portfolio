@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51da54e293698b64b85722d2a1a9e8ed, type: 3}
+  m_Name: Weapon_1
+  m_EditorClassIdentifier: Assembly-CSharp::weapon_1_ob
+  weaponName: basic_sword
+  comboClips:
+  - {fileID: 7400000, guid: 597d5a0b38b5a44478f6f6cce779c653, type: 2}
+  - {fileID: 7400000, guid: 1cf4959d4991e91428b98e9f6fb5b720, type: 2}
+  - {fileID: 7400000, guid: fb0d266e647081246adf00940ed13dc1, type: 2}
+  - {fileID: 7400000, guid: 04eb6f5edd983ac4a9bac8d402b607e2, type: 2}
+  baseDamage: 10

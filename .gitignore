@@ -1,0 +1,11 @@
+﻿obj
+Library
+.vs
+Logs
+UserSettings
+Temp
+Assembly-CSharp-Editor.csproj
+.editorconfig
+.vsconfig
+Assembly-CSharp.csproj
+Test_Project.sln
