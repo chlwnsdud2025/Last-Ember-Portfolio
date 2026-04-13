@@ -238,6 +238,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ba114763598a75419fb3c59d19b486c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackBehaviour
+  comboWindowStart: 0.2
+  comboWindowEnd: 0.7
+  comboTransitionPoint: 0.6
+  cancelWindowStart: 0.7
 --- !u!1107 &-1720296110955549814
 AnimatorStateMachine:
   serializedVersion: 6
@@ -280,9 +284,6 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 6476307175785998978}
     m_Position: {x: 540, y: 430, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 7181795152451938666}
-    m_Position: {x: 510, y: 510, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -423,6 +424,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ba114763598a75419fb3c59d19b486c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackBehaviour
+  comboWindowStart: 0.2
+  comboWindowEnd: 0.7
+  comboTransitionPoint: 0.6
+  cancelWindowStart: 0.7
 --- !u!1102 &1724916582419509844
 AnimatorState:
   serializedVersion: 6
@@ -431,7 +436,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Roll
-  m_Speed: 1
+  m_Speed: 1.3
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -527,93 +532,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!206 &5631315612267939100
-BlendTree:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Blend Tree
-  m_Childs:
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: ee416a958189056478de97318a7ad2ae, type: 2}
-    m_Threshold: 0
-    m_Position: {x: 0, y: 0}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: InputX
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 9269db7f884d9e44b848679797fc6357, type: 2}
-    m_Threshold: 0.125
-    m_Position: {x: 0, y: 1}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: InputX
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: f0799aaf908dea7409777a9f617a9a31, type: 2}
-    m_Threshold: 0.25
-    m_Position: {x: 0, y: -1}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: InputX
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 0beada1bf02583c4096eab65bec87910, type: 2}
-    m_Threshold: 0.375
-    m_Position: {x: 1, y: 0}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: InputX
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 59e8e66a41e90a242b6a831c5c323511, type: 2}
-    m_Threshold: 0.5
-    m_Position: {x: -1, y: 0}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: InputX
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 304eb58c10cfe5f45a29edca39fa427f, type: 2}
-    m_Threshold: 0.625
-    m_Position: {x: 0.5, y: 0.5}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: InputX
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: fb137e416fc59164580a6cce3c08e3fe, type: 2}
-    m_Threshold: 0.75
-    m_Position: {x: 0.5, y: -0.5}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: InputX
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: f216c92d26711af42aefc034a51c1929, type: 2}
-    m_Threshold: 0.875
-    m_Position: {x: -0.5, y: 0.5}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: InputX
-    m_Mirror: 0
-  - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: b6679c995a69d2d4383e5a2c2ab11ee7, type: 2}
-    m_Threshold: 1
-    m_Position: {x: -0.5, y: -0.5}
-    m_TimeScale: 1
-    m_CycleOffset: 0
-    m_DirectBlendParameter: InputX
-    m_Mirror: 0
-  m_BlendParameter: InputX
-  m_BlendParameterY: InputY
-  m_MinThreshold: 0
-  m_MaxThreshold: 1
-  m_UseAutomaticThresholds: 1
-  m_NormalizedBlendValues: 0
-  m_BlendType: 3
 --- !u!114 &6038509796403461989
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -626,6 +544,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ba114763598a75419fb3c59d19b486c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackBehaviour
+  comboWindowStart: 0.2
+  comboWindowEnd: 0.7
+  comboTransitionPoint: 0.6
+  cancelWindowStart: 0.7
 --- !u!1102 &6476307175785998978
 AnimatorState:
   serializedVersion: 6
@@ -652,32 +574,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &7181795152451938666
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: LockOnSprint
-  m_Speed: 0.75
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 5631315612267939100}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
 --- !u!114 &7537556898386052158
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -690,6 +586,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ba114763598a75419fb3c59d19b486c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackBehaviour
+  comboWindowStart: 0.2
+  comboWindowEnd: 0.7
+  comboTransitionPoint: 0.6
+  cancelWindowStart: 0.7
 --- !u!1102 &8213274084484220045
 AnimatorState:
   serializedVersion: 6
