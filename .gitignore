@@ -5,7 +5,5 @@ Logs
 UserSettings
 Temp
 Assembly-CSharp-Editor.csproj
-.editorconfig
-.vsconfig
+3D_RPG_Project.sln
 Assembly-CSharp.csproj
-Test_Project.sln
