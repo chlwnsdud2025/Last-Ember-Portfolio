@@ -16,22 +16,26 @@ public abstract class PlayerBaseState
     public virtual void Update() { }
     public virtual void Exit() { }
 
-    public virtual void OnAttackInput()
-    {
-        stateMachine.ChangeState(player.attackState);
-    }
+    public virtual void OnAttackInput() { stateMachine.ChangeState(player.attackState); }
+    public virtual void OnDashInput() { stateMachine.ChangeState(player.dashState); }
 
-    public virtual void OnDashInput()
-    {
-        stateMachine.ChangeState(player.dashState);
-    }
-
-
-
-    //  부모의 회전 함수를 3D 액션(카메라 기준)에 맞게 덮어씁니다.
+    // 기본 이동 회전 (Root 기준)
     protected virtual void HandleRotation()
     {
-        if (player.moveInput != Vector2.zero)
+        if (player.isLockedOn && player.currentTarget != null)
+        {
+            Vector3 dirToTarget = player.currentTarget.position - player.transform.position;
+            dirToTarget.y = 0f;
+
+            if (dirToTarget != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(dirToTarget);
+                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, 15f * Time.deltaTime);
+                // 어긋난 모델 껍데기를 서서히 정면으로 동기화
+                player.model.transform.localRotation = Quaternion.Slerp(player.model.transform.localRotation, Quaternion.identity, 15f * Time.deltaTime);
+            }
+        }
+        else if (player.moveInput != Vector2.zero)
         {
             Vector3 camForward = player.cameraTransform.forward;
             Vector3 camRight = player.cameraTransform.right;
@@ -45,9 +49,9 @@ public abstract class PlayerBaseState
             if (moveDir != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-                // [수정] 이동할 때도 모델이 아닌 루트 자체를 회전시킵니다.
                 player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, 15f * Time.deltaTime);
-                player.model.transform.localRotation = Quaternion.identity;
+                // 어긋난 모델 껍데기를 서서히 정면으로 동기화
+                player.model.transform.localRotation = Quaternion.Slerp(player.model.transform.localRotation, Quaternion.identity, 15f * Time.deltaTime);
             }
         }
     }

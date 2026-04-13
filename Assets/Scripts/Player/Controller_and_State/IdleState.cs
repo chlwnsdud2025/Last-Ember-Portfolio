@@ -15,6 +15,18 @@ public class IdleState : PlayerBaseState
         // 이동 입력이 있으면 Move 상태로 전환
         if (player.moveInput != Vector2.zero)
         {
+            
+            if (player.isSprintButtonHeld /* && player.stats.currentStamina > 0 */)
+            {
+                stateMachine.ChangeState(player.sprintState);
+                return; 
+            }
+            if (player.isWalkButtonHeld)
+            {
+                stateMachine.ChangeState(player.walkState);
+                return;
+            }
+
             stateMachine.ChangeState(player.moveState);
         }
     }
