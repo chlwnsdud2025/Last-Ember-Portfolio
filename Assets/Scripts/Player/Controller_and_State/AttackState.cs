@@ -50,7 +50,16 @@ public class AttackState : PlayerBaseState
         //공격 초반 방향 보정
         if (player.animator.IsInTransition(0) || (isPlayingAttack && progress <= trackingWindow))
         {
-            if (player.moveInput != Vector2.zero)
+            Vector3 attackDir = Vector3.zero;
+
+            // 락온 상태일 시 (방향키 무시하고 무조건 적을 향함)
+            if (player.isLockedOn && player.currentTarget != null)
+            {
+                attackDir = (player.currentTarget.position - player.transform.position).normalized;
+                attackDir.y = 0f; // 하늘이나 땅을 보지 않게 방지
+            }
+            // 락온 상태가 아닐 시 (기존처럼 입력한 방향을 향함)
+            else if (player.moveInput != Vector2.zero)
             {
                 Vector3 camForward = player.cameraTransform.forward;
                 Vector3 camRight = player.cameraTransform.right;
@@ -59,17 +68,15 @@ public class AttackState : PlayerBaseState
                 camForward.Normalize();
                 camRight.Normalize();
 
-                Vector3 attackDir = (camRight * player.moveInput.x + camForward * player.moveInput.y).normalized;
+                attackDir = (camRight * player.moveInput.x + camForward * player.moveInput.y).normalized;
+            }
 
-                if (attackDir != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(attackDir);
-
-                    
-                    player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, 15f * Time.deltaTime);
-
-                    player.model.transform.localRotation = Quaternion.Slerp(player.model.transform.localRotation, Quaternion.identity, 15f * Time.deltaTime);
-                }
+            // 최종적으로 결정된 방향(attackDir)으로 몸을 부드럽게 돌립니다.
+            if (attackDir != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(attackDir);
+                player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, 15f * Time.deltaTime);
+                player.model.transform.localRotation = Quaternion.Slerp(player.model.transform.localRotation, Quaternion.identity, 15f * Time.deltaTime);
             }
         }
 

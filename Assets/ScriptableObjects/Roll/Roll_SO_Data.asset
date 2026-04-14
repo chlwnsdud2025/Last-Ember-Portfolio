@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Roll_SO_Data
   clip: {fileID: 7400000, guid: 8fb95b87aed731549ac072b607e9352b, type: 2}
   iframeStart: 0.1
-  iframeEnd: 0.4
+  iframeEnd: 0.7
   preInputWindowStart: 0.5
   cancelWindow: 0.7
   animationEnd: 0.9

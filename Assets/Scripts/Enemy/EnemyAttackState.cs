@@ -10,7 +10,6 @@ public class EnemyAttackState : EnemyBaseState
 
     public override void Enter()
     {
-        //Debug.Log("Enemy »óÅÂ: Attack");
         randomAttackInt = Random.Range(1, 4);
         enemy.lastAttackTime = Time.time;
 
@@ -46,17 +45,17 @@ public class EnemyAttackState : EnemyBaseState
             }
         }
 
-        // ÀÚ¿¬ Á¾·á: °ø°Ý ¸ð¼ÇÀÌ 95% ÀÌ»ó ÁøÇàµÇ¸é °ø°Ý ³¡!
+        // ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ 95% ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½!
         if (isPlayingAttack && !enemy.animator.IsInTransition(0) && stateInfo.normalizedTime >= 0.95f)
         {
-            // °ø°ÝÀÌ ³¡³ª¸é ¹«Á¶°Ç °£º¸±â(Strafe)·Î ³Ñ¾î°¡¼­ ÄðÅ¸ÀÓÀ» ±â´Ù¸³´Ï´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(Strafe)ï¿½ï¿½ ï¿½Ñ¾î°¡ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½Ï´ï¿½.
             enemyStateMachine.ChangeState(enemy.strafeState);
         }
     }
 
     public override void Exit()
     {
-        // °ø°ÝÀÌ ³¡³ª¸é ·çÆ® ¸ð¼ÇÀ» ²¨¼­ ¾û¶×ÇÏ°Ô ¹Ì²ô·¯Áö´Â °ÍÀ» ¹æÁö
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ì²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         enemy.animator.applyRootMotion = false;
         enemy.currentWeaponScript.DisableHitbox();
     }

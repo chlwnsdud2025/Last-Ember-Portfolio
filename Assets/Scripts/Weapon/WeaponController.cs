@@ -8,7 +8,7 @@ public class WeaponController : MonoBehaviour
 
     public string targetTag = "Enemy";
 
-    // ÀÌ¹ø ÇÑ ¹øÀÇ ÈÖµÎ¸£±â(½ºÀ®)¿¡¼­ ÀÌ¹Ì µ¥¹ÌÁö¸¦ ÁØ ÀûµéÀ» ±â¾ïÇÏ´Â ¸®½ºÆ®
+    // ï¿½Ì¹ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ÖµÎ¸ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
     //private List<Collider> alreadyHitEnemies = new List<Collider>();
 
     private void Start()
@@ -16,14 +16,14 @@ public class WeaponController : MonoBehaviour
         if (weaponCollider != null) weaponCollider.enabled = false;
     }
 
-    // °ø°Ý ½ÃÀÛ ½Ã (FSM¿¡¼­ È£ÃâÇÒ ÇÔ¼ö)
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ (FSMï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½)
     public void EnableHitbox()
     {
         weaponCollider.enabled = true;
-        //alreadyHitEnemies.Clear(); // »õ °ø°ÝÀÌ ½ÃÀÛµÆÀ¸´Ï ±â¾ïÀ» Áö¿öÁÝ´Ï´Ù.
+        //alreadyHitEnemies.Clear(); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ý´Ï´ï¿½.
     }
 
-    // °ø°Ý Á¾·á ½Ã (FSM¿¡¼­ È£ÃâÇÒ ÇÔ¼ö)
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ (FSMï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½)
     public void DisableHitbox()
     {
         weaponCollider.enabled = false;
@@ -34,10 +34,10 @@ public class WeaponController : MonoBehaviour
        
         if (other.CompareTag(targetTag) /*&& !alreadyHitEnemies.Contains(other)*/)
         {
-            // ¸í´Ü¿¡ Ãß°¡ÇØ¼­ ÀÌ¹ø ½ºÀ®¿¡¼­´Â ´Ù½Ã ¾È ¸Â°Ô ÇÔ
+            // ï¿½ï¿½Ü¿ï¿½ ï¿½ß°ï¿½ï¿½Ø¼ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ ï¿½Â°ï¿½ ï¿½ï¿½
             //alreadyHitEnemies.Add(other);
 
-            Debug.Log($"<color=red><b>{other.name}¿¡°Ô {currentDamage}ÀÇ µ¥¹ÌÁö¸¦ ÀÔÇû½À´Ï´Ù!</b></color>");
+            Debug.Log($"<color=red><b>{other.name}ï¿½ï¿½ï¿½ï¿½ {currentDamage}ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!</b></color>");
             if(targetTag == "Enemy")
             {
                 EnemyController hitEnemy = other.GetComponent<EnemyController>();

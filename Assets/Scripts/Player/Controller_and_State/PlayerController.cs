@@ -202,24 +202,49 @@ public class PlayerController : MonoBehaviour
     {
         if (animator.applyRootMotion && characterController != null)
         {
-            // 1. 락온 중 구르기 상태일 때
+            // 1. 락온 중 구르기 상태일 때 (기존 유지)
             if (stateMachine.CurrentState == dashState && currentRollDir != Vector3.zero)
             {
                 Vector3 delta = animator.deltaPosition;
                 float moveDistance = new Vector3(delta.x, 0f, delta.z).magnitude;
 
                 Vector3 finalMove = currentRollDir * moveDistance;
-                // finalMove.y = delta.y; <-- 기존의 수직 이동 보존 코드 삭제 (이제 중력이 전담함)
-
-                MoveCharacter(finalMove); // [수정] 통합 함수 호출
+                MoveCharacter(finalMove);
             }
             else
             {
                 // 2. 평소(공격, 걷기 등)
                 Vector3 rootMotion = animator.deltaPosition;
-                rootMotion.y = 0f; // [수정] 애니메이션 자체의 Y축 덜덜거림 무시
+                rootMotion.y = 0f;
 
-                MoveCharacter(rootMotion); // [수정] 통합 함수 호출
+                
+                if (isLockedOn && currentTarget != null && stateMachine.CurrentState == attackState)
+                {
+                    // 1. 적과의 거리를 잽니다.
+                    float dist = Vector3.Distance(transform.position, currentTarget.position);
+
+                    // 2. 두 캐릭터의 캡슐 반지름의 합 (보통 0.5 + 0.5 = 1.0)에 약간의 여유를 둔 거리
+                    float minDistance = 1f;
+
+                    if (dist < minDistance)
+                    {
+                        // 3. 적을 향해(앞으로) 나아가려는 힘이 얼마나 되는지 추출합니다.
+                        float forwardMagnitude = Vector3.Dot(rootMotion, transform.forward);
+
+                        // 뒤로 물러나는 애니메이션이 아니라 앞으로 돌진하는 애니메이션이라면?
+                        if (forwardMagnitude > 0)
+                        {
+                            // 거리가 가까울수록 전진하는 힘을 부드럽게 깎아냅니다 (0에 가까워짐).
+                            float damping = dist / minDistance;
+                            Vector3 forwardVector = transform.forward * forwardMagnitude;
+
+                            // 원래의 루트 모션에서 앞쪽으로 미는 힘만 빼버립니다. (좌우 이동은 보존)
+                            rootMotion -= forwardVector * (1f - damping);
+                        }
+                    }
+                }
+
+                MoveCharacter(rootMotion);
             }
         }
     }

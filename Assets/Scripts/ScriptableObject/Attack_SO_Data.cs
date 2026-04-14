@@ -1,5 +1,4 @@
 using UnityEngine;
-[CreateAssetMenu(fileName = "New Weapon", menuName = "Weapon/Data")]
 
 [System.Serializable]
 public class AttackData
