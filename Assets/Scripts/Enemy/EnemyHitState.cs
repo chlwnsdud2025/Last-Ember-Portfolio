@@ -8,7 +8,7 @@ public class EnemyHitState : EnemyBaseState
 
     public override void Enter()
     {
-        Debug.Log("Enemy 상태: Hit (경직!)");
+        //Debug.Log("Enemy 상태: Hit (경직!)");
 
         // 1. 피격 모션 재생 (이전 애니메이션 무시하고 강제로 0초부터 시작)
         enemy.animator.CrossFadeInFixedTime(hitAnimHash, 0.1f, 0, 0f);

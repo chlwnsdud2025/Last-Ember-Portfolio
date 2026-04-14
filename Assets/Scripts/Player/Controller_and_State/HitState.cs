@@ -37,4 +37,7 @@ public class HitState : PlayerBaseState
     {
         player.animator.applyRootMotion = false;
     }
+
+    public override void OnAttackInput() {/*무시*/}
+    public override void OnDashInput() {/*무시*/}
 }

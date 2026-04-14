@@ -131,19 +131,44 @@ public class PlayerController : MonoBehaviour
         // 락온 카메라 처리
         if (isLockedOn && currentTarget != null)
         {
-            // 실제 카메라(cameraTransform)가 아니라 뼈대(cameraTarget)가 적을 바라보게 회전시킵니다.
             Vector3 dirToTarget = currentTarget.position - cameraTarget.position;
+            float distanceToTarget = dirToTarget.magnitude;
+
+            // 1. 수직(Y축) 흔들림 억제 (기존 유지)
+            if (distanceToTarget < 10.0f)
+            {
+                dirToTarget.y *= (distanceToTarget / 10.0f);
+            }
+
             Quaternion targetRot = Quaternion.LookRotation(dirToTarget);
+            float angleToTarget = Vector3.Angle(cameraTarget.forward, dirToTarget);
 
-            cameraTarget.rotation = Quaternion.Slerp(cameraTarget.rotation, targetRot, 15f * Time.deltaTime);
+            // 2. 거리 비례 기본 감속 (초근접 시 휙휙 도는 것 방지)
+            float currentRotationSpeed = 15f;
+            if (distanceToTarget < 1.0f)
+            {
+                currentRotationSpeed = Mathf.Lerp(2f, 15f, distanceToTarget / 2.0f);
+            }
 
-            // 락온이 풀렸을 때 마우스 회전값이 확 튀지 않도록 내부 변수(Yaw, Pitch)를 현재 각도에 강제로 맞춰둡니다.
+            // 3. [핵심 수정] 소프트 데드존 (Soft Deadzone)
+            // 하드하게 멈추지 않고, 10도 이내로 들어오면 각도에 비례해서 속도를 부드럽게 줄입니다.
+            if (angleToTarget < 10.0f)
+            {
+                // 각도가 5도면 속도 100%, 2.5도면 50%, 0도면 0%로 스무스하게 브레이크가 걸립니다.
+                currentRotationSpeed *= (angleToTarget / 5.0f);
+            }
+
+            //  if문으로 회전을 막지 않고, 매 프레임 Slerp를 실행하여 부드러움을 유지합니다.
+            cameraTarget.rotation = Quaternion.Slerp(cameraTarget.rotation, targetRot, currentRotationSpeed * Time.deltaTime);
+
+            // 락온이 풀렸을 때 마우스 튀는 현상 방지
             Vector3 euler = cameraTarget.rotation.eulerAngles;
             cameraYaw = euler.y;
-            cameraPitch = euler.x > 180 ? euler.x - 360 : euler.x; // 유니티의 360도 체계를 음수/양수 체계로 변환
+            cameraPitch = euler.x > 180 ? euler.x - 360 : euler.x;
         }
-        else // 자유 카메라 처리 (락온을 안 했을 때)
+        else
         {
+            // 자유 카메라 처리 (기존 코드 유지)
             float lookX = mouseMoveInput.x * mouseSensitivity * 0.1f;
             float lookY = mouseMoveInput.y * mouseSensitivity * 0.1f;
 
@@ -151,7 +176,6 @@ public class PlayerController : MonoBehaviour
             cameraPitch -= lookY;
             cameraPitch = Mathf.Clamp(cameraPitch, bottomClamp, topClamp);
 
-            // 마우스 움직임에 따라 뼈대(cameraTarget)를 회전시킵니다.
             cameraTarget.rotation = Quaternion.Euler(cameraPitch, cameraYaw, 0f);
         }
     }
@@ -207,11 +231,11 @@ public class PlayerController : MonoBehaviour
         {
             isLockedOn = false;
             currentTarget = null;
-            animator.SetBool("isLockedOn", false); // [추가] 애니메이터에도 해제되었음을 알림
+            animator.SetBool("isLockedOn", false);
             return;
         }
 
-        // 주변의 적 탐색 (내 위치를 중심으로 lockOnRadius 반경 내의 투망을 던짐)
+        
         Collider[] colliders = Physics.OverlapSphere(transform.position, lockOnRadius, enemyLayer);
         float closestDistance = Mathf.Infinity;
         Transform bestTarget = null;

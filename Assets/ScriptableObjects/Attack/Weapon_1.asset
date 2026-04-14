@@ -39,12 +39,4 @@ MonoBehaviour:
     hitboxStartTime: 0.01
     hitboxEndTime: 0.5
     damageMultiplier: 0
-  - clip: {fileID: 7400000, guid: 04eb6f5edd983ac4a9bac8d402b607e2, type: 2}
-    comboWindowStart: 0.2
-    comboWindowEnd: 0.7
-    comboTransitionPoint: 0.6
-    cancelWindowStart: 0.7
-    hitboxStartTime: 0.25
-    hitboxEndTime: 0.5
-    damageMultiplier: 0
   baseDamage: 10

@@ -2,19 +2,24 @@ using UnityEngine;
 
 public class EnemyAttackState : EnemyBaseState
 {
-    private readonly int attackAnimHash = Animator.StringToHash("Attack");
 
+    private int randomAttackInt = 1;
+
+    int attackAnimHash;
     public EnemyAttackState(EnemyController enemy, EnemyStateMachine enemyStateMachine) : base(enemy, enemyStateMachine) { }
 
     public override void Enter()
     {
         //Debug.Log("Enemy ป๓ลย: Attack");
-
+        randomAttackInt = Random.Range(1, 4);
         enemy.lastAttackTime = Time.time;
 
         enemy.animator.applyRootMotion = true;
 
-        enemy.animator.CrossFadeInFixedTime(attackAnimHash, 0.1f, 0, 0f);
+        attackAnimHash = Animator.StringToHash($"Attack{randomAttackInt}");
+
+       
+        enemy.animator.CrossFadeInFixedTime(attackAnimHash, 0.2f, 0, 0f);
 
         enemy.currentWeaponScript.EnableHitbox();
 
