@@ -8,12 +8,13 @@ public class SprintState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("상태: Sprint");
+        //Debug.Log("상태: Sprint");
         player.animator.CrossFadeInFixedTime(sprintAnimHash, 0.1f);
     }
 
     public override void Update()
     {
+        //move 전환
         if (player.moveInput == Vector2.zero || !player.isSprintButtonHeld)
         {
             stateMachine.ChangeState(player.moveState);
@@ -30,7 +31,9 @@ public class SprintState : PlayerBaseState
         camRight.Normalize();
 
         Vector3 moveDir = camRight * player.moveInput.x + camForward * player.moveInput.y;
-        player.characterController.Move(moveDir * player.moveSpeed * 1.5f * Time.deltaTime);
+        player.MoveCharacter(moveDir * player.moveSpeed * 1.5f * Time.deltaTime);
+
+       // player.characterController.Move(moveDir * player.moveSpeed * 1.5f * Time.deltaTime);
     }
 
     public override void OnAttackInput() { stateMachine.ChangeState(player.attackState); }
@@ -45,7 +48,7 @@ public class SprintState : PlayerBaseState
         }
     }
 
-    // 전력질주 전용 회전 (Root 고정, Model만 회전)
+    // 회전 메서드 덮어쓰기 (Player 고정, Model만 회전)
     protected override void HandleRotation()
     {
         if (player.moveInput != Vector2.zero)

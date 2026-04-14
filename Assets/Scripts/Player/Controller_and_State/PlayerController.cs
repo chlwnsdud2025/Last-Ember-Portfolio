@@ -2,6 +2,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static Attack_SO_Data;
+using static UnityEditorInternal.VersionControl.ListControl;
 
 public class PlayerController : MonoBehaviour
 {
@@ -18,29 +19,27 @@ public class PlayerController : MonoBehaviour
     [Header("Look Settings")]
     public float mouseSensitivity = 10f; // 마우스 감도
 
-    // [중요] 카메라 아키텍처 분리
-    // cameraTarget: 플레이어의 '위치'만 따라다니며 회전의 중심축 역할을 하는 빈 오브젝트
-    // cameraTransform: 실제 화면을 비추는 Main Camera (cameraTarget의 하위에 배치됨)
     public Transform cameraTarget;
     public Transform cameraTransform;
 
-    private float cameraPitch = 0f; // 상하 회전 각도 (X축)
-    private float cameraYaw = 0f;   // 좌우 회전 각도 (Y축)
+    private float cameraPitch = 0f; // 상하 회전 각도
+    private float cameraYaw = 0f;   // 좌우 회전 각도
     public float topClamp = 70f;    // 위로 쳐다볼 수 있는 최대 각도
     public float bottomClamp = -30f;// 아래로 내려다볼 수 있는 최대 각도
 
-    [Header("Lock-On Settings")]
+    [Header("Lock_On Settings")]
     public float lockOnRadius = 15f;     // 적을 찾는 반경
     public LayerMask enemyLayer;         // 적을 판별할 레이어
     [HideInInspector] public Transform currentTarget;
     [HideInInspector] public bool isLockedOn = false;
 
-    [Header("Components")]
+    [Header("Anim_Components")]
     public Animator animator;
     public CharacterController characterController;
     private AnimatorOverrideController overrideController;
 
     [Header("Combat & Dodge")]
+    public WeaponController currentWeaponScript;
     public Attack_SO_Data currentWeapon;
     public Roll_SO_Data currentDodgeData;
 
@@ -48,8 +47,13 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool canNextAttack; // 실제 다음 애니메이션으로 전환 가능한 시점
     [HideInInspector] public bool canCancel;     // 이동/회피로 현재 모션을 캔슬할 수 있는 여부
     [HideInInspector] public bool isInvincible = false; // 현재 구르기 무적 상태인지 확인하는 플래그
+    
+    //중력
+    [Header("Gravity Settings")]
+    public float gravity = -9.81f;
+    public float gravityMultiplier = 2f;
+    [HideInInspector] public float verticalVelocity;
 
-    // [중요] 루트 모션(애니메이션 이동)의 방향을 코드로 강제 오버라이드 하기 위한 변수
     [HideInInspector] public Vector3 currentRollDir = Vector3.zero;
 
     [Header("Input States")]
@@ -64,24 +68,27 @@ public class PlayerController : MonoBehaviour
     public DodgeState dashState { get; private set; }
     public SprintState sprintState { get; private set; }
     public WalkState walkState { get; private set; }
+    public HitState hitState { get; private set; }
 
     private void Awake()
     {
         controls = new InputSystem_Actions();
         stateMachine = new StateMachine();
 
-        // 상태 인스턴스화 (자신과 상태머신을 넘겨줌)
         idleState = new IdleState(this, stateMachine);
         moveState = new MoveState(this, stateMachine);
         attackState = new AttackState(this, stateMachine);
         dashState = new DodgeState(this, stateMachine);
         sprintState = new SprintState(this, stateMachine);
         walkState = new WalkState(this, stateMachine);
+        hitState = new HitState(this, stateMachine);
 
-        // 단발성 액션 이벤트 연결 (버튼을 누른 순간 1회만 실행됨)
+
+        // 단발성 액션 이벤트
         controls.PlayerMovement.Attack.performed += ctx => stateMachine.CurrentState.OnAttackInput();
         controls.PlayerMovement.Dodge.performed += ctx => stateMachine.CurrentState.OnDashInput();
         controls.PlayerMovement.LockOn.performed += ctx => ToggleLockOn();
+
 
         // 런타임에 애니메이션 클립을 동적으로 갈아끼우기 위한 오버라이드 컨트롤러 세팅
         overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
@@ -102,16 +109,12 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // 1. 매 프레임 스틱/마우스 입력 값 읽기
         moveInput = controls.PlayerMovement.Move.ReadValue<Vector2>();
         mouseMoveInput = controls.PlayerMovement.Look.ReadValue<Vector2>();
 
-        // 2. 지속형 액션(Hold) 상태 읽기 
-        // -> 이벤트가 씹히는 버그를 막기 위해 매 프레임 직접 눌려있는지(IsPressed) 검사합니다.
         isSprintButtonHeld = controls.PlayerMovement.Sprint.IsPressed();
         isWalkButtonHeld = controls.PlayerMovement.Walk.IsPressed();
 
-        // 3. 현재 활성화된 State의 Update 로직 실행
         stateMachine.Update();
     }
 
@@ -125,7 +128,7 @@ public class PlayerController : MonoBehaviour
         // 캐릭터 발밑이 아니라 가슴이나 머리 높이를 중심점으로 삼도록 Y값을 1.5f 정도 올려줍니다.
         cameraTarget.position = transform.position + Vector3.up * 1.5f;
 
-        // [카메라 핵심 2] 락온 카메라 처리
+        // 락온 카메라 처리
         if (isLockedOn && currentTarget != null)
         {
             // 실제 카메라(cameraTransform)가 아니라 뼈대(cameraTarget)가 적을 바라보게 회전시킵니다.
@@ -139,7 +142,7 @@ public class PlayerController : MonoBehaviour
             cameraYaw = euler.y;
             cameraPitch = euler.x > 180 ? euler.x - 360 : euler.x; // 유니티의 360도 체계를 음수/양수 체계로 변환
         }
-        else // [카메라 핵심 3] 자유 카메라 처리 (락온을 안 했을 때)
+        else // 자유 카메라 처리 (락온을 안 했을 때)
         {
             float lookX = mouseMoveInput.x * mouseSensitivity * 0.1f;
             float lookY = mouseMoveInput.y * mouseSensitivity * 0.1f;
@@ -175,26 +178,24 @@ public class PlayerController : MonoBehaviour
     {
         if (animator.applyRootMotion && characterController != null)
         {
-            // 1. 락온 중 구르기 상태일 때는 루트 모션 '방향'을 코드로 강제 보정합니다!
-            // 이유: 락온 중에는 캐릭터의 뿌리(Root)가 적을 쳐다보게 고정되므로,
-            // 그대로 구르면 '옆구르기' 애니메이션이 나오면서 물리적으로는 '앞(적 방향)'으로 전진해버리는 모순이 생깁니다.
+            // 1. 락온 중 구르기 상태일 때
             if (stateMachine.CurrentState == dashState && currentRollDir != Vector3.zero)
             {
                 Vector3 delta = animator.deltaPosition;
-
-                // 애니메이션이 원래 이동하려던 '수평 이동 거리(magnitude)'만 훔쳐옵니다.
                 float moveDistance = new Vector3(delta.x, 0f, delta.z).magnitude;
 
-                // 유저가 조작한 방향(currentRollDir)에 훔쳐온 거리(moveDistance)를 곱해서 새로운 이동 벡터를 만듭니다.
                 Vector3 finalMove = currentRollDir * moveDistance;
-                finalMove.y = delta.y; // 점프나 중력 등 수직 이동값은 원래 애니메이션 값을 보존
+                // finalMove.y = delta.y; <-- 기존의 수직 이동 보존 코드 삭제 (이제 중력이 전담함)
 
-                characterController.Move(finalMove);
+                MoveCharacter(finalMove); // [수정] 통합 함수 호출
             }
             else
             {
-                // 2. 평소(공격, 걷기 등)에는 꼬일 일이 없으므로 기존 애니메이션 루트 모션을 그대로 사용합니다.
-                characterController.Move(animator.deltaPosition);
+                // 2. 평소(공격, 걷기 등)
+                Vector3 rootMotion = animator.deltaPosition;
+                rootMotion.y = 0f; // [수정] 애니메이션 자체의 Y축 덜덜거림 무시
+
+                MoveCharacter(rootMotion); // [수정] 통합 함수 호출
             }
         }
     }
@@ -250,6 +251,40 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isLockedOn", isLockedOn);
     }
 
+    //중력 적용 후 움직이기
+    public void MoveCharacter(Vector3 horizontalMotion)
+    {
+        // 1. 중력 계산
+        if (characterController.isGrounded)
+        {
+            if (verticalVelocity < 0.0f) verticalVelocity = -2f; // 땅에 딱 붙어있도록 작은 음수 유지
+        }
+        else
+        {
+            verticalVelocity += gravity * gravityMultiplier * Time.deltaTime; // 공중이면 낙하
+        }
+
+        // 2. 수평 이동(걷기/루트모션) + 수직 이동(중력) 합치기
+        horizontalMotion.y += verticalVelocity * Time.deltaTime;
+
+        // 3. 최종 이동 실행 (모든 프레임에서 딱 한 번만 호출됨!)
+        characterController.Move(horizontalMotion);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        //currentHealth -= damage;
+
+        if (/*currentHealth <= 0*/ false)
+        {
+            // 체력이 0 이하면 죽음 상태로 (구현 예정)
+            // stateMachine.ChangeState(deadState);
+        }
+        else
+        {
+            stateMachine.ChangeState(hitState);
+        }
+    }
     private void OnEnable() { controls.Enable(); }
     private void OnDisable() { controls.Disable(); }
 }

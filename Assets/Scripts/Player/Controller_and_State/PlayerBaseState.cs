@@ -31,7 +31,6 @@ public abstract class PlayerBaseState
             {
                 Quaternion targetRotation = Quaternion.LookRotation(dirToTarget);
                 player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, 15f * Time.deltaTime);
-                // 어긋난 모델 껍데기를 서서히 정면으로 동기화
                 player.model.transform.localRotation = Quaternion.Slerp(player.model.transform.localRotation, Quaternion.identity, 15f * Time.deltaTime);
             }
         }
@@ -50,7 +49,6 @@ public abstract class PlayerBaseState
             {
                 Quaternion targetRotation = Quaternion.LookRotation(moveDir);
                 player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, 15f * Time.deltaTime);
-                // 어긋난 모델 껍데기를 서서히 정면으로 동기화
                 player.model.transform.localRotation = Quaternion.Slerp(player.model.transform.localRotation, Quaternion.identity, 15f * Time.deltaTime);
             }
         }

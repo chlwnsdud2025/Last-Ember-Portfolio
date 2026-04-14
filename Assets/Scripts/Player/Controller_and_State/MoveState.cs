@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class MoveState : PlayerBaseState
 {
-    // 애니메이션 해시를 미리 선언하여 성능을 최적화하고 값 변조를 방지합니다.
     private readonly int runAnimHash = Animator.StringToHash("Run");
     private readonly int lockOnRunAnimHash = Animator.StringToHash("LockOnRun");
 
@@ -10,26 +9,24 @@ public class MoveState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("상태: Move");
+        //Debug.Log("상태: Move");
 
-        // 진입 시점에 현재 락온 상태에 맞는 애니메이션을 재생합니다.
         int initialAnim = player.isLockedOn ? lockOnRunAnimHash : runAnimHash;
         player.animator.CrossFadeInFixedTime(initialAnim, 0.1f);
     }
 
     public override void Update()
     {
-        // 1. 이동 입력이 없으면 Idle로 전환
+        // Idle 전환
         if (player.moveInput == Vector2.zero)
         {
-            // 발 미끄러짐 방지를 위해 파라미터 값을 0으로 부드럽게 초기화합니다.
             player.animator.SetFloat("InputX", 0f, 0.1f, Time.deltaTime);
             player.animator.SetFloat("InputY", 0f, 0.1f, Time.deltaTime);
             stateMachine.ChangeState(player.idleState);
             return;
         }
 
-        // 2. 전력질주(Sprint) 및 걷기(Walk) 전환
+        // Sprint 및 Walk 전환
         if (player.isSprintButtonHeld)
         {
             stateMachine.ChangeState(player.sprintState);
@@ -78,6 +75,7 @@ public class MoveState : PlayerBaseState
         camRight.Normalize();
 
         Vector3 moveDir = camRight * player.moveInput.x + camForward * player.moveInput.y;
-        player.characterController.Move(moveDir * player.moveSpeed * Time.deltaTime);
+        player.MoveCharacter(moveDir * player.moveSpeed * Time.deltaTime); // [변경]
+        //player.characterController.Move(moveDir * player.moveSpeed * Time.deltaTime);
     }
 }

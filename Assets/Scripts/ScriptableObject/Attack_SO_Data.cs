@@ -17,6 +17,11 @@ public class AttackData
     [Tooltip("이동/회피로 캔슬 가능한 시점")]
     public float cancelWindowStart = 0.7f;
 
+    [Tooltip("공격 판정 시작 (예: 0.3)")]
+    public float hitboxStartTime = 0.3f;
+    [Tooltip("공격 판정 종료 (예: 0.5)")]
+    public float hitboxEndTime = 0.5f;
+
     [Header("Stats")]
     [Tooltip("이 공격의 데미지 배율 (기본 데미지 * 배율)")]
     public float damageMultiplier = 1.0f;
@@ -27,6 +32,9 @@ public class AttackData
 public class Attack_SO_Data : ScriptableObject
 {
     public string weaponName;
+
+    [Header("Visuals")]
+    public GameObject weaponPrefab;
 
     [Header("Combo Attacks")]
     // 위에서 만든 AttackData 클래스를 배열로 가집니다.

@@ -10,12 +10,11 @@ public class DodgeState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("상태: Roll");
+        //Debug.Log("상태: Roll");
         player.isInvincible = false;
         attackBuffered = false;
         dodgeBuffered = false;
 
-        // 구를 방향 설정 및 껍데기(Model) 회전
         if (player.moveInput != Vector2.zero)
         {
             Vector3 camForward = player.cameraTransform.forward;

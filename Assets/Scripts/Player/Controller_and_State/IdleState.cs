@@ -6,7 +6,7 @@ public class IdleState : PlayerBaseState
     public IdleState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter() { 
-        Debug.Log("상태: Idle");
+        //Debug.Log("상태: Idle");
         player.animator.CrossFade(idleAnimHash, 0.05f);
     }
 
@@ -28,6 +28,9 @@ public class IdleState : PlayerBaseState
             }
 
             stateMachine.ChangeState(player.moveState);
+            return;
         }
+
+        player.MoveCharacter(Vector3.zero);
     }
 }
