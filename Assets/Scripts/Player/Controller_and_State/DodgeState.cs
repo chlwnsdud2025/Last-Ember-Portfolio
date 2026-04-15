@@ -10,6 +10,8 @@ public class DodgeState : PlayerBaseState
 
     public override void Enter()
     {
+        player.stats.UseStamina(player.currentDodgeData.staminaCost);
+
         //Debug.Log("상태: Roll");
         player.isInvincible = false;
         attackBuffered = false;
@@ -37,17 +39,21 @@ public class DodgeState : PlayerBaseState
         }
 
         player.animator.applyRootMotion = true;
-        player.animator.CrossFadeInFixedTime(dodgeAnimHash, 0.1f, 0, 0f);
+        player.animator.CrossFadeInFixedTime(dodgeAnimHash, 0.05f, 0, 0f);
     }
 
     public override void Update()
     {
+        player.stats.DelayRegen();
+
         AnimatorStateInfo stateInfo = player.animator.GetCurrentAnimatorStateInfo(0);
         float progress = stateInfo.normalizedTime;
+
         Roll_SO_Data dodgeData = player.currentDodgeData;
 
         if (stateInfo.shortNameHash == dodgeAnimHash && !player.animator.IsInTransition(0))
         {
+            //구르기 무적
             player.isInvincible = (progress >= dodgeData.iframeStart && progress <= dodgeData.iframeEnd);
 
             if (progress >= dodgeData.cancelWindow)
@@ -86,6 +92,11 @@ public class DodgeState : PlayerBaseState
     public override void OnDashInput()
     {
         if (player.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= player.currentDodgeData.preInputWindowStart)
-            dodgeBuffered = true;
+        {
+            if (player.stats.CurrentStamina > 0)
+            {
+                dodgeBuffered = true;
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ public class AttackState : PlayerBaseState
     private bool comboInputReceived = false;
     private bool isContinuingCombo = false;
     private float trackingWindow = 0.3f;
-
+    private bool dodgeInputReceived = false;
     public AttackState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
@@ -17,8 +17,11 @@ public class AttackState : PlayerBaseState
         player.canCombo = false;
         player.canNextAttack = false;
         player.canCancel = false;
-
+        dodgeInputReceived = false;
         player.animator.applyRootMotion = true;
+
+        AttackData currentAttackData = player.currentWeapon.comboAttacks[comboIndex];
+        player.stats.UseStamina(currentAttackData.steminareduce);
 
         string stateName = $"Attack{comboIndex + 1}";
         player.animator.CrossFadeInFixedTime(stateName, 0.1f, 0, 0f);
@@ -26,6 +29,8 @@ public class AttackState : PlayerBaseState
 
     public override void Update()
     {
+        player.stats.DelayRegen();
+
         AnimatorStateInfo stateInfo = player.animator.GetCurrentAnimatorStateInfo(0);
         float progress = stateInfo.normalizedTime;
 
@@ -52,13 +57,13 @@ public class AttackState : PlayerBaseState
         {
             Vector3 attackDir = Vector3.zero;
 
-            // 락온 상태일 시 (방향키 무시하고 무조건 적을 향함)
+            // 락온 상태일 시 (무조건 적 방향)
             if (player.isLockedOn && player.currentTarget != null)
             {
                 attackDir = (player.currentTarget.position - player.transform.position).normalized;
-                attackDir.y = 0f; // 하늘이나 땅을 보지 않게 방지
+                attackDir.y = 0f; 
             }
-            // 락온 상태가 아닐 시 (기존처럼 입력한 방향을 향함)
+            // 락온 상태가 아닐 시 (입력한 방향)
             else if (player.moveInput != Vector2.zero)
             {
                 Vector3 camForward = player.cameraTransform.forward;
@@ -83,18 +88,18 @@ public class AttackState : PlayerBaseState
         //무기의 colider 켰다 끄기
         if (isPlayingAttack && !player.animator.IsInTransition(0))
         {
-            // 현재 진행도가 판정 시작점과 종료점 사이라면?
+            
             bool shouldHitboxBeActive = (progress >= currentAttackData.hitboxStartTime && progress <= currentAttackData.hitboxEndTime);
 
             if (shouldHitboxBeActive)
             {
-                // 콜라이더 켜기 + 데미지 계산해서 넘겨주기
-                player.currentWeaponScript.currentDamage = player.currentWeapon.baseDamage * currentAttackData.damageMultiplier;
+                // 콜라이더 켜기
+                //player.currentWeaponScript.currentDamage = player.currentWeapon.baseDamage * currentAttackData.damageMultiplier;
                 player.currentWeaponScript.EnableHitbox();
             }
             else
             {
-                // 범위 밖이면 콜라이더 끄기
+                // 콜라이더 끄기
                 player.currentWeaponScript.DisableHitbox();
             }
         }
@@ -109,25 +114,53 @@ public class AttackState : PlayerBaseState
         {
             if (comboIndex + 1 < player.currentWeapon.comboAttacks.Length)
             {
-                comboIndex++;
-                isContinuingCombo = true;
-                stateMachine.ChangeState(this);
-                return;
+                // 2. 다음 콤보로 넘어가기 전, 스테미나가 남아있는지 확인!
+                
+                if (player.stats.CurrentStamina > 0)
+                {
+                    comboIndex++;
+                    isContinuingCombo = true;
+                    stateMachine.ChangeState(this);
+                    return;
+                }
+                else
+                {
+                    // 스테미나가 없으면 콤보 선입력을 무시 (공격이 안 나감)
+                    comboInputReceived = false;
+                }
             }
         }
 
         // 이동/회피 캔슬 로직
-        if (player.canCancel && player.moveInput != Vector2.zero)
+        if (player.canCancel)
         {
-            stateMachine.ChangeState(player.moveState);
-            return;
+            // 구르기 선입력이 들어와 있다면 최우선으로 회피 발동!
+            if (dodgeInputReceived)
+            {
+                // 회피 캔슬 시에도 스테미나 체크
+                if (player.stats.CurrentStamina > 0)
+                {
+                    stateMachine.ChangeState(player.dashState);
+                    return;
+                }
+                else
+                {
+                    dodgeInputReceived = false;
+                }
+            }
+
+            if (player.moveInput != Vector2.zero)
+            {
+                stateMachine.ChangeState(player.moveState);
+                return;
+            }
         }
 
-        // 자연 종료, 지금 재생 중인 모션이 '진짜 공격 애니메이션'일 때만 종료되도록 수정
-        if (isPlayingAttack && !player.animator.IsInTransition(0) && progress >= 0.95f)
+        if (player.moveInput == Vector2.zero && progress >= 0.95f)
         {
             stateMachine.ChangeState(player.idleState);
         }
+
     }
 
     public override void OnAttackInput()
@@ -150,5 +183,8 @@ public class AttackState : PlayerBaseState
         }
     }
 
-    public override void OnDashInput() { /* 무시 */ }
+    public override void OnDashInput()
+    {
+        dodgeInputReceived = true;
+    }
 }

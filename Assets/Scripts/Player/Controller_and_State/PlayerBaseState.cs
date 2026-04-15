@@ -16,8 +16,26 @@ public abstract class PlayerBaseState
     public virtual void Update() { }
     public virtual void Exit() { }
 
-    public virtual void OnAttackInput() { stateMachine.ChangeState(player.attackState); }
-    public virtual void OnDashInput() { stateMachine.ChangeState(player.dashState); }
+    public virtual void OnAttackInput()
+    {
+        // 첫 공격을 시작할 때 스테미나가 있는지 확인
+        if (player.stats.CurrentStamina > 0)
+        {
+            stateMachine.ChangeState(player.attackState);
+        }
+    }
+    public virtual void OnDashInput()
+    {
+        // 현재 스테미나가 0보다 클 때만 구르기(DashState)로 상태 전환
+        if (player.stats.CurrentStamina > 0)
+        {
+            stateMachine.ChangeState(player.dashState);
+        }
+        else
+        {
+            
+        }
+    }
 
     // 기본 이동 회전 (Root 기준)
     protected virtual void HandleRotation()

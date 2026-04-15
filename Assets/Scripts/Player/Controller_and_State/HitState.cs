@@ -8,7 +8,7 @@ public class HitState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("Enemy 상태: Hit (경직!)");
+        //Debug.Log("Enemy 상태: Hit (경직!)");
 
         player.animator.CrossFadeInFixedTime(hitAnimHash, 0.1f, 0, 0f);
 

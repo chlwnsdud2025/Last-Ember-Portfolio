@@ -24,6 +24,8 @@ public class AttackData
     [Header("Stats")]
     [Tooltip("이 공격의 데미지 배율 (기본 데미지 * 배율)")]
     public float damageMultiplier = 1.0f;
+    [Tooltip("스테미나 소모량")]
+    public float steminareduce = 1.0f;
 }
 
 // 2. 실제 무기 데이터 에셋 (이 클래스가 ScriptableObject를 상속받습니다)

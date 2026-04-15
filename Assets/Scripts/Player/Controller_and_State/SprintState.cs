@@ -3,7 +3,7 @@ using UnityEngine;
 public class SprintState : PlayerBaseState
 {
     private readonly int sprintAnimHash = Animator.StringToHash("Sprint");
-
+    private float sprintCostPerSecond = 5f;
     public SprintState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
@@ -15,6 +15,12 @@ public class SprintState : PlayerBaseState
     public override void Update()
     {
         //move 전환
+        if (!player.stats.UseStamina(sprintCostPerSecond * Time.deltaTime))
+        {
+            stateMachine.ChangeState(player.moveState);
+            return;
+        }
+
         if (player.moveInput == Vector2.zero || !player.isSprintButtonHeld)
         {
             stateMachine.ChangeState(player.moveState);
@@ -40,6 +46,7 @@ public class SprintState : PlayerBaseState
 
     public override void Exit()
     {
+
         // 락온이 아닐 때만 달리기 방향으로 루트를 동기화하여 덜덜거림 방지
         if (!player.isLockedOn)
         {

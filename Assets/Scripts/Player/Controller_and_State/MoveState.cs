@@ -27,7 +27,7 @@ public class MoveState : PlayerBaseState
         }
 
         // Sprint 및 Walk 전환
-        if (player.isSprintButtonHeld)
+        if (player.isSprintButtonHeld && player.stats.CurrentStamina > 0)
         {
             stateMachine.ChangeState(player.sprintState);
             return;
@@ -39,8 +39,7 @@ public class MoveState : PlayerBaseState
             return;
         }
 
-        // 3. [핵심] 락온 여부에 따른 애니메이션 실시간 전환 로직 (CrossFade)
-        // 현재 애니메이터의 상태 정보를 가져와 애니메이션을 강제 교체합니다.
+        
         AnimatorStateInfo stateInfo = player.animator.GetCurrentAnimatorStateInfo(0);
 
         if (player.isLockedOn)
@@ -64,7 +63,7 @@ public class MoveState : PlayerBaseState
             }
         }
 
-        // 4. 이동 및 회전 처리 (기존 구조 유지)
+        // 이동 및 회전 처리 (기존 구조 유지)
         HandleRotation();
 
         Vector3 camForward = player.cameraTransform.forward;
@@ -75,7 +74,7 @@ public class MoveState : PlayerBaseState
         camRight.Normalize();
 
         Vector3 moveDir = camRight * player.moveInput.x + camForward * player.moveInput.y;
-        player.MoveCharacter(moveDir * player.moveSpeed * Time.deltaTime); // [변경]
+        player.MoveCharacter(moveDir * player.moveSpeed * Time.deltaTime);
         //player.characterController.Move(moveDir * player.moveSpeed * Time.deltaTime);
     }
 }

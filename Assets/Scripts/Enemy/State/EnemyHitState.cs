@@ -10,10 +10,10 @@ public class EnemyHitState : EnemyBaseState
     {
         //Debug.Log("Enemy 상태: Hit (경직!)");
 
-        // 1. 피격 모션 재생 (이전 애니메이션 무시하고 강제로 0초부터 시작)
+        // 피격 모션 재생 (이전 애니메이션 무시하고 강제로 0초부터 시작)
         enemy.animator.CrossFadeInFixedTime(hitAnimHash, 0.1f, 0, 0f);
 
-        // 2. 만약 맞는 애니메이션에 뒤로 밀려나는 루트 모션이 있다면 켭니다.
+        // 만약 맞는 애니메이션에 뒤로 밀려나는 루트 모션이 있다면 켭니다.
         enemy.animator.applyRootMotion = true;
     }
 

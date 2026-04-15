@@ -36,7 +36,6 @@ public class EnemyController : MonoBehaviour
     [HideInInspector] public float verticalVelocity;
 
 
-    public float currentHealth = 10f;
     [Header("Weapon data")]
     public EnemyWeaponController currentWeaponScript;
 
@@ -49,6 +48,7 @@ public class EnemyController : MonoBehaviour
     public EnemyStrafeState strafeState { get; private set; }
     public EnemyAttackState attackState { get; private set; }
     public EnemyHitState hitsState { get; private set; }
+    public EnemyDeadState deadState { get; private set; }
 
 
     private void Awake()
@@ -59,6 +59,7 @@ public class EnemyController : MonoBehaviour
         strafeState = new EnemyStrafeState(this, stateMachine);
         attackState = new EnemyAttackState(this, stateMachine);
         hitsState = new EnemyHitState(this, stateMachine);
+        deadState = new EnemyDeadState(this, stateMachine);
 
     }
 
@@ -118,19 +119,5 @@ public class EnemyController : MonoBehaviour
         characterController.Move(horizontal);
     }
 
-    public void TakeDamage(float damage)
-    {
-        //currentHealth -= damage;
-
-        if (currentHealth <= 0)
-        {
-            // 체력이 0 이하면 죽음 상태로 (구현 예정)
-            // stateMachine.ChangeState(deadState);
-        }
-        else
-        {
-            // 체력이 남아있다면, 현재 무슨 행동을 하고 있었든 간에 피격 상태로 강제 전환!
-            stateMachine.ChangeState(hitsState);
-        }
-    }
+   
 }

@@ -16,7 +16,7 @@ public class IdleState : PlayerBaseState
         if (player.moveInput != Vector2.zero)
         {
             
-            if (player.isSprintButtonHeld /* && player.stats.currentStamina > 0 */)
+            if (player.isSprintButtonHeld && player.stats.CurrentStamina > 0)
             {
                 stateMachine.ChangeState(player.sprintState);
                 return; 

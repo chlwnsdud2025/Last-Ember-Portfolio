@@ -8,7 +8,7 @@ public class WeaponController : MonoBehaviour
 
     public string targetTag = "Enemy";
 
-    // �̹� �� ���� �ֵθ���(����)���� �̹� �������� �� ������ ����ϴ� ����Ʈ
+    // 이번 공격에 맞았던 적 저장
     //private List<Collider> alreadyHitEnemies = new List<Collider>();
 
     private void Start()
@@ -16,14 +16,12 @@ public class WeaponController : MonoBehaviour
         if (weaponCollider != null) weaponCollider.enabled = false;
     }
 
-    // ���� ���� �� (FSM���� ȣ���� �Լ�)
     public void EnableHitbox()
     {
         weaponCollider.enabled = true;
-        //alreadyHitEnemies.Clear(); // �� ������ ���۵����� ����� �����ݴϴ�.
+        //alreadyHitEnemies.Clear(); // 매 공격 시 초기화
     }
 
-    // ���� ���� �� (FSM���� ȣ���� �Լ�)
     public void DisableHitbox()
     {
         weaponCollider.enabled = false;
@@ -34,13 +32,13 @@ public class WeaponController : MonoBehaviour
        
         if (other.CompareTag(targetTag) /*&& !alreadyHitEnemies.Contains(other)*/)
         {
-            // ��ܿ� �߰��ؼ� �̹� ���������� �ٽ� �� �°� ��
+            //맞았던 적 제외
             //alreadyHitEnemies.Add(other);
 
-            Debug.Log($"<color=red><b>{other.name}���� {currentDamage}�� �������� �������ϴ�!</b></color>");
+            
             if(targetTag == "Enemy")
             {
-                EnemyController hitEnemy = other.GetComponent<EnemyController>();
+                EnemyStats hitEnemy = other.GetComponent<EnemyStats>();
                 if (hitEnemy != null)
                 {
                     hitEnemy.TakeDamage(currentDamage);
