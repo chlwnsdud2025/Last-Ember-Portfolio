@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isSprintButtonHeld = false;
     [HideInInspector] public bool isWalkButtonHeld = false;
 
-    bool isDead = false;
+    public bool isDead = false;
 
     public PlayerStats stats { get; private set; }
 
@@ -214,7 +214,7 @@ public class PlayerController : MonoBehaviour
     {
         if (animator.applyRootMotion && characterController != null)
         {
-            // 락온 중 구르기 상태일 때
+            // 1. 락온 중 구르기 상태일 때 (기존 유지)
             if (stateMachine.CurrentState == dashState && currentRollDir != Vector3.zero)
             {
                 Vector3 delta = animator.deltaPosition;
@@ -225,34 +225,47 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                // 평소(공격, 걷기 등)
+                // 2. 평소 (공격, 걷기 등)
                 Vector3 rootMotion = animator.deltaPosition;
                 rootMotion.y = 0f;
 
-                //거리 확인 후 너무가까우면 이동  루트모션 이동X
-                //if (isLockedOn && currentTarget != null && stateMachine.CurrentState == attackState)
-                //{
-                //    
-                //    float dist = Vector3.Distance(transform.position, currentTarget.position);
-                //    float minDistance = 1f;
+                // --- [프롬소프트웨어식: 하이브리드 감쇄 & 부스트 루트 모션] ---
+                if (isLockedOn && currentTarget != null && stateMachine.CurrentState == attackState)
+                {
+                    float dist = Vector3.Distance(transform.position, currentTarget.position);
 
-                //    if (dist < minDistance)
-                //    {
-                //        // 적을 향해(앞으로) 나아가려는 힘이 얼마나 되는지 추출합니다.
-                //        float forwardMagnitude = Vector3.Dot(rootMotion, transform.forward);
+                    // 수치 튜닝 포인트 (무기 리치에 따라 조절하세요)
+                    float stopDistance = 1.0f;        // 1. 감쇄: 이 거리보다 가까우면 덜덜거림 방지를 위해 전진 정지
+                    float perfectHitDistance = 2.0f;  // 2. 워핑: 이 거리보다 멀면 적에게 빠르게 훅! 다가감
 
-                //        // 뒤로 물러나는 애니메이션이 아니라 앞으로 돌진하는 애니메이션이라면?
-                //        if (forwardMagnitude > 0)
-                //        {
-                //            // 거리가 가까울수록 전진하는 힘을 부드럽게 깎아냅니다 (0에 가까워짐).
-                //            float damping = dist / minDistance;
-                //            Vector3 forwardVector = transform.forward * forwardMagnitude;
+                    // 애니메이션이 '앞으로' 가려는 순수 전진력 추출
+                    float forwardMagnitude = Vector3.Dot(rootMotion, transform.forward);
 
-                //            // 원래의 루트 모션에서 앞쪽으로 미는 힘만 빼버립니다. (좌우 이동은 보존)
-                //            rootMotion -= forwardVector * (1f - damping);
-                //        }
-                //    }
-                //}
+                    // 뒤로 물러나는 모션이 아니라 전진하는 모션일 때만 발동
+                    if (forwardMagnitude > 0)
+                    {
+                        Vector3 forwardVector = transform.forward * forwardMagnitude;
+
+                        if (dist < stopDistance)
+                        {
+                            // [하이브리드 루트 모션] 적과 너무 겹치면 전진력을 깎아내어 충돌 지터링 완전 방지
+                            // 거리가 0에 가까워질수록 damping이 0이 되어 전진력이 완전히 사라짐
+                            float damping = dist / stopDistance;
+                            rootMotion -= forwardVector * (1f - damping);
+                        }
+                        else if (dist > perfectHitDistance)
+                        {
+                            // [타겟 워핑 / 부스트] 멀리 있으면 루트 모션을 강제로 증폭시켜 거리를 좁힘
+                            // 최대 2.5배까지만 증폭하도록 제한 (순간이동처럼 보이는 것 방지)
+                            float boostMultiplier = Mathf.Clamp(dist / perfectHitDistance, 1f, 1.2f);
+
+                            // 원래의 전진력을 빼고, 증폭된 전진력으로 덮어씌움
+                            rootMotion -= forwardVector;
+                            rootMotion += forwardVector * boostMultiplier;
+                        }
+                    }
+                }
+                // -------------------------------------------------------------
 
                 MoveCharacter(rootMotion);
             }
@@ -343,11 +356,6 @@ public class PlayerController : MonoBehaviour
             Debug.Log("회피 성공! (무적 프레임)");
             return;
         }
-
-        
-        
-        
-
         if (isDead)
         {
             return;
@@ -357,9 +365,6 @@ public class PlayerController : MonoBehaviour
         {
             isDead = stats.TakeDamage(damage);
         }
-
-       
-
         // 3. 상태 전환
         if (isDead)
         {

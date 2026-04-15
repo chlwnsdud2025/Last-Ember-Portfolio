@@ -3,11 +3,14 @@ using UnityEngine;
 public class DeadState : PlayerBaseState
 {
     private readonly int deadAnimHash = Animator.StringToHash("Die"); // 사망 애니메이션 이름 확인 필요
-
+    bool isdeadreal = false;
     public DeadState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
     {
+        if (isdeadreal) { return; }
+
+        isdeadreal = true;
         Debug.Log("플레이어 사망!");
 
         // 사망 애니메이션 재생

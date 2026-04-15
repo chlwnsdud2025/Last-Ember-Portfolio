@@ -7,11 +7,11 @@ public class EnemyController : MonoBehaviour
     public CharacterController characterController;
 
     [Header("Aggro Settings")]
-    public float detectionRadius = 10f; // °¨Áö ¹İ°æ
+    public float detectionRadius = 10f; // ï¿½ï¿½ï¿½ï¿½ ï¿½İ°ï¿½
     [Range(0, 360)]
-    public float viewAngle = 120f;      // ½Ã¾ß°¢
-    public LayerMask playerLayer;       // ÇÃ·¹ÀÌ¾î ·¹ÀÌ¾î
-    public LayerMask obstacleLayer;     // °¨Áö ¹æÇØ¿ë Àå¾Ö¹° ·¹ÀÌ¾î
+    public float viewAngle = 120f;      // ï¿½Ã¾ß°ï¿½
+    public LayerMask playerLayer;       // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½Ì¾ï¿½
+    public LayerMask obstacleLayer;     // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¿ï¿½ ï¿½ï¿½Ö¹ï¿½ ï¿½ï¿½ï¿½Ì¾ï¿½
 
 
     [Header("Attack Settings")]
@@ -23,13 +23,13 @@ public class EnemyController : MonoBehaviour
     public float moveSpeed = 1f;
 
     [Header("Combat Settings")]
-    public float attackRange = 0.1f;     // °ø°İ »ç°Å¸®
+    public float attackRange = 0.1f;     // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½
     public float strafeRange = 2f;
     public float strafeSpeed = 0.3f;     
-    public float attackCooldown = 3f;    // °ø°İ ÄğÅ¸ÀÓ 
-    [HideInInspector] public float lastAttackTime = -999f; // ¸¶Áö¸·À¸·Î °ø°İÇÑ ½Ã°£
+    public float attackCooldown = 3f;    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ 
+    [HideInInspector] public float lastAttackTime = -999f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
 
-    //Áß·Â
+    //ï¿½ß·ï¿½
     [Header("Gravity Settings")]
     public float gravity = -9.81f;
     public float gravityMultiplier = 2f;
@@ -41,7 +41,7 @@ public class EnemyController : MonoBehaviour
 
 
 
-    // »óÅÂ ¸Ó½Å
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½
     public EnemyStateMachine stateMachine { get; private set; }
     public EnemyIdleState idleState { get; private set; }
     public EnemyChaseState chaseState { get; private set; }
@@ -74,20 +74,16 @@ public class EnemyController : MonoBehaviour
     }
 
    
-    private void OnDrawGizmosSelected()//±âÁî¸ğ Àß ¸ğ¸£°ÚÀ½
+    private void OnDrawGizmosSelected()
     {
-        // 1. °¨Áö ¹İ°æ ¿ø ±×¸®±â (Èò»ö)
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
 
-        // 2. ½Ã¾ß°¢ ºÎÃ¤²Ã ¼± ±×¸®±â (»¡°£»ö)
         Gizmos.color = Color.red;
 
-        // ¿ŞÂÊ ½Ã¾ß ÇÑ°è¼±
         Vector3 leftBoundary = DirFromAngle(transform.eulerAngles.y, -viewAngle / 2);
         Gizmos.DrawLine(transform.position, transform.position + leftBoundary * detectionRadius);
 
-        // ¿À¸¥ÂÊ ½Ã¾ß ÇÑ°è¼±
         Vector3 rightBoundary = DirFromAngle(transform.eulerAngles.y, viewAngle / 2);
         Gizmos.DrawLine(transform.position, transform.position + rightBoundary * detectionRadius);
 
@@ -96,7 +92,6 @@ public class EnemyController : MonoBehaviour
     }
 
 
-    // °¢µµ¸¦ ¹æÇâ º¤ÅÍ·Î º¯È¯ÇØÁÖ´Â ÇïÆÛ ÇÔ¼ö (±âÁî¸ğ ¿ëµµ)
     private Vector3 DirFromAngle(float eulerY, float angleInDegrees)
     {
         angleInDegrees += eulerY;
@@ -119,5 +114,65 @@ public class EnemyController : MonoBehaviour
         characterController.Move(horizontal);
     }
 
-   
+    private void OnAnimatorMove()
+    {
+        // ë£¨íŠ¸ ëª¨ì…˜ì´ ì¼œì ¸ ìˆì„ ë•Œë§Œ ì• ë‹ˆë©”ì´ì…˜ì˜ ì´ë™ ê°’ì„ CharacterControllerì— ì ìš©
+        if (animator.applyRootMotion && characterController != null)
+        {
+            Vector3 rootMotion = animator.deltaPosition;
+            rootMotion.y = 0f; // ìˆ˜í‰ ì´ë™ë§Œ ë¶„ë¦¬
+
+            // --- [í”„ë¡¬ì†Œí”„íŠ¸ì›¨ì–´ì‹: ì (Enemy) íƒ€ê²Ÿ ì›Œí•‘ & ê°ì‡„ ë¡œì§] ---
+            if (target != null && stateMachine.enemyCurrentState == attackState)
+            {
+                float dist = Vector3.Distance(transform.position, target.position);
+
+                // ë¬´ê¸° ë¦¬ì¹˜ë‚˜ ëª¬ìŠ¤í„° í¬ê¸°ì— ë”°ë¼ ì¡°ì ˆí•˜ì„¸ìš”
+                float stopDistance = 2.0f;       // 1. í”Œë ˆì´ì–´ì™€ ê²¹ì¹˜ë©´ ì „ì§„ ì°¨ë‹¨ (ì§€í„°ë§ ë°©ì§€)
+                float perfectHitDistance = 2.0f; // 2. ì´ ê±°ë¦¬ë³´ë‹¤ ë©€ë©´ í”Œë ˆì´ì–´ë¥¼ í–¥í•´ ë¯¸ë„ëŸ¬ì§€ë“¯ ëŒì§„
+
+                float forwardMagnitude = Vector3.Dot(rootMotion, transform.forward);
+
+                // ë’¤ë¡œ ë¹ ì§€ëŠ” ëª¨ì…˜ì´ ì•„ë‹Œ, ì•ìœ¼ë¡œ ì „ì§„í•˜ëŠ” ëª¨ì…˜ì¼ ë•Œë§Œ ë°œë™
+                if (forwardMagnitude > 0)
+                {
+                    Vector3 forwardVector = transform.forward * forwardMagnitude;
+
+                    if (dist < stopDistance)
+                    {
+                        // [ê°ì‡„] í”Œë ˆì´ì–´ì™€ ë„ˆë¬´ ê°€ê¹ë‹¤ë©´ ë£¨íŠ¸ ëª¨ì…˜ì˜ ì „ì§„ë ¥ì„ ê¹ì•„ëƒ„
+                        float damping = dist / stopDistance;
+                        rootMotion -= forwardVector * (1f - damping);
+                    }
+                    //else if (dist > perfectHitDistance)
+                    //{
+                    //    // [ëª¬ìŠ¤í„° ì „ìš© ë¶€ìŠ¤íŠ¸] ê±°ë¦¬ê°€ ë©€ë©´ ë£¨íŠ¸ ëª¨ì…˜ ì¦í­
+                    //    float boostMultiplier = Mathf.Clamp(dist / perfectHitDistance, 1f, 1.2f);
+
+                    //    rootMotion -= forwardVector;
+                    //    rootMotion += forwardVector * boostMultiplier;
+                    //}
+                }
+            }
+            // -------------------------------------------------------------
+
+            // ì¤‘ë ¥ ì ìš© (ê¸°ì¡´ ë¡œì§ ìœ ì§€)
+            if (!characterController.isGrounded)
+            {
+                verticalVelocity += gravity * gravityMultiplier * Time.deltaTime;
+            }
+            else if (verticalVelocity < 0)
+            {
+                verticalVelocity = -2f;
+            }
+
+            // ìˆ˜í‰ ì´ë™(ì›Œí•‘ ì ìš©ë¨) + ìˆ˜ì§ ì´ë™(ì¤‘ë ¥) í•©ì¹˜ê¸°
+            rootMotion.y = verticalVelocity * Time.deltaTime;
+
+            // ìµœì¢… ì´ë™ ì‹¤í–‰
+            characterController.Move(rootMotion);
+        }
+    }
+
+
 }

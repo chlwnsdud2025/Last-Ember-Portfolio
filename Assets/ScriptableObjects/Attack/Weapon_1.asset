@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponName: basic_sword
   weaponPrefab: {fileID: 0}
   comboAttacks:
-  - clip: {fileID: 7400000, guid: 597d5a0b38b5a44478f6f6cce779c653, type: 2}
+  - clip: {fileID: 7400000, guid: 609e5409eb25238408da19043c6c70e2, type: 2}
     comboWindowStart: 0.2
     comboWindowEnd: 0.7
     comboTransitionPoint: 0.6
@@ -24,7 +24,7 @@ MonoBehaviour:
     hitboxEndTime: 0.5
     damageMultiplier: 1
     steminareduce: 8
-  - clip: {fileID: 7400000, guid: 1cf4959d4991e91428b98e9f6fb5b720, type: 2}
+  - clip: {fileID: 7400000, guid: 95f8b41d4d8905341adfa0ccd356bb18, type: 2}
     comboWindowStart: 0.2
     comboWindowEnd: 0.7
     comboTransitionPoint: 0.6

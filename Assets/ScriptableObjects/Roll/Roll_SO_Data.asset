@@ -16,6 +16,6 @@ MonoBehaviour:
   iframeStart: 0.05
   iframeEnd: 0.7
   preInputWindowStart: 0.6
-  cancelWindow: 0.8
+  cancelWindow: 0.85
   animationEnd: 0.9
   staminaCost: 15
