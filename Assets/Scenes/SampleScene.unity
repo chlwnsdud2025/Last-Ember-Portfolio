@@ -3628,8 +3628,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   maxHp: 100
   maxStamina: 80
-  staminaRegenRate: 15
-  regenDelay: 0.5
+  staminaRegenRate: 40
+  regenDelay: 0.25
   canRegen: 1
 --- !u!1001 &79513574
 PrefabInstance:

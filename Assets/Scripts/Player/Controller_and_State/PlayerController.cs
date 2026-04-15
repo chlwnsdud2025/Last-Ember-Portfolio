@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isSprintButtonHeld = false;
     [HideInInspector] public bool isWalkButtonHeld = false;
 
+    bool isDead = false;
 
     public PlayerStats stats { get; private set; }
 
@@ -343,19 +344,21 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // 2. 스탯에 데미지 적용 및 사망 여부 확인
-        stats = GetComponent<PlayerStats>();
-        bool isDead = false;
+        
+        
+        
+
+        if (isDead)
+        {
+            return;
+        }
 
         if (stats != null)
         {
             isDead = stats.TakeDamage(damage);
         }
 
-        if (isDead)
-        {
-            return;
-        }
+       
 
         // 3. 상태 전환
         if (isDead)
