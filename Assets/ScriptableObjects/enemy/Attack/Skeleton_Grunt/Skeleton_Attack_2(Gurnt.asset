@@ -16,7 +16,7 @@ MonoBehaviour:
   clip: {fileID: 7400000, guid: 3a2038ab6081ddd408e5645d921c0e44, type: 3}
   minAttackRange: 0
   maxAttackRange: 1
-  cooldown: 10
+  cooldown: 5
   priorityWeight: 10
   trackingWindowEnd: 0.2
   transitionPoint: 0.9

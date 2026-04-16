@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7309fead7fa0aab42a9da2099f83743e, type: 3}
   m_Name: Skeleton_Attack_3(Gurnt
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack_SO_Data
-  attackAnimName: "\uC8FC\uBA39"
+  attackAnimName: "\uBCA0\uAE30"
   clip: {fileID: 7400000, guid: a01a9da7a50c9e64182d2806dba510a7, type: 3}
   minAttackRange: 0
   maxAttackRange: 1
-  cooldown: 10
+  cooldown: 6
   priorityWeight: 10
   trackingWindowEnd: 0.2
   transitionPoint: 0.9
