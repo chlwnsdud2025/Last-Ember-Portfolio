@@ -29,24 +29,35 @@ public class EnemyStrafeState : EnemyBaseState
         float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.target.position);
 
         // 사거리를 벗어날시 chase 전환
-        if (distanceToPlayer > enemy.attackRange * 1.2f)
+        if (distanceToPlayer > enemy.strafeRange * 1.2f)
         {
             enemyStateMachine.ChangeState(enemy.chaseState);
             return;
         }
 
-        // 공격
-
+        // -------------------------------------------------------------
+        //  견제 중 쿨타임 회복 시 행동 판단
+        // -------------------------------------------------------------
         if (Time.time >= enemy.lastAttackTime + enemy.attackCooldown)
         {
-            if (distanceToPlayer <= enemy.attackRange)
+            EnemyAttackState nextAttack = enemy.GetBestAttack(distanceToPlayer);
+
+            if (nextAttack != null)
             {
-                enemyStateMachine.ChangeState(enemy.attackState);
+                // 돌다가 거리가 맞아서 공격할 수 있으면 즉시 공격!
+                enemyStateMachine.ChangeState(nextAttack);
+                return;
+            }
+            else
+            {
+                //  [핵심] 쿨타임은 다 찼는데 거리가 멀어서 때릴 기술이 없다면?
+                // 게걸음을 멈추고 거리를 좁히기 위해 다시 Chase 상태로 돌아갑니다!
+                enemyStateMachine.ChangeState(enemy.chaseState);
                 return;
             }
         }
-        
-        
+
+
 
 
         Vector3 dirToTarget = (enemy.target.position - enemy.transform.position).normalized;

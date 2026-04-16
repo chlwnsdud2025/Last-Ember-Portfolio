@@ -380,6 +380,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1837561388062912668}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2529977675134006022
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 150560303924536623}
+  m_Layer: 6
+  m_Name: LockOnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &150560303924536623
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2529977675134006022}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.044, z: 0.039}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2063693198035146591}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2969000361891934610
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,7 +457,7 @@ GameObject:
   - component: {fileID: 8563175152508061840}
   - component: {fileID: 1184811370917258831}
   m_Layer: 6
-  m_Name: Enemy_2
+  m_Name: SkeletonSoldier
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -440,14 +471,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3002210075908726729}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.9581072, z: -0, w: 0.28641006}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0.9949673, z: -0, w: 0.10020108}
+  m_LocalPosition: {x: -21.3, y: 0, z: 2.55}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8170440277174863432}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -146.714, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -168.498, z: 0}
 --- !u!95 &6255261342481217291
 Animator:
   serializedVersion: 7
@@ -492,18 +523,25 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 256
-  AttackRangge: 3
   target: {fileID: 0}
-  moveSpeed: 1
-  attackRange: 3
-  strafeRange: 2
+  moveSpeed: 1.5
+  strafeRange: 3.5
   strafeSpeed: 0.5
   attackCooldown: 3
   lastAttackTime: -999
   gravity: -9.81
   gravityMultiplier: 2
   verticalVelocity: 0
-  currentWeaponScript: {fileID: 5774020818209095424}
+  weapons:
+  - {fileID: 5774020818209095424}
+  - {fileID: 668620074313591841}
+  attackPatterns:
+  - {fileID: 11400000, guid: a0d5ce59e7a4b7a4580a21ef74e2b7ef, type: 2}
+  - {fileID: 11400000, guid: 25349b9df3f8bbf438543584fffbe2d0, type: 2}
+  - {fileID: 11400000, guid: 872fd2b2604abaf4c9fce841a86bfbef, type: 2}
+  - {fileID: 11400000, guid: 3eb1850655bba6548b51f8cd2bda24aa, type: 2}
+  - {fileID: 11400000, guid: d4517f821dcd1724f938c3e227eb128e, type: 2}
+  lockOnPoint: {fileID: 150560303924536623}
 --- !u!143 &8563175152508061840
 CharacterController:
   m_ObjectHideFlags: 0
@@ -813,6 +851,7 @@ GameObject:
   - component: {fileID: 291021261994524065}
   - component: {fileID: 2588757256666614123}
   - component: {fileID: 7899714360289664641}
+  - component: {fileID: 668620074313591841}
   m_Layer: 0
   m_Name: shield-skeleton
   m_TagString: Untagged
@@ -907,13 +946,28 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -4120980620770835025, guid: e03c6a46627e10b439a839618f86939f, type: 3}
+--- !u!114 &668620074313591841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4102182717024348350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b30abf56d6907e4db083e37b4829b02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeaponController
+  weaponCollider: {fileID: 7899714360289664641}
+  damage: 10
+  targetTag: Player
 --- !u!1 &4151125900630192570
 GameObject:
   m_ObjectHideFlags: 0
@@ -978,6 +1032,7 @@ Transform:
   - {fileID: 2947828282386216664}
   - {fileID: 3927087744439415224}
   - {fileID: 9148919815946157113}
+  - {fileID: 150560303924536623}
   m_Father: {fileID: 4610277956825224180}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4521804820733149916
@@ -1972,8 +2027,8 @@ GameObject:
   - component: {fileID: 7392429729964012685}
   - component: {fileID: 5852696243423525672}
   - component: {fileID: 8564724373566869474}
-  - component: {fileID: 6752267418831721536}
   - component: {fileID: 5774020818209095424}
+  - component: {fileID: 8817626172466286688}
   m_Layer: 0
   m_Name: sword-skeleton
   m_TagString: Untagged
@@ -1991,7 +2046,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1112888230237486449}
@@ -2053,8 +2108,23 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6752267418831721536
-MeshCollider:
+--- !u!114 &5774020818209095424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7916482623348338231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b30abf56d6907e4db083e37b4829b02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeaponController
+  weaponCollider: {fileID: 8817626172466286688}
+  damage: 10
+  targetTag: Player
+--- !u!136 &8817626172466286688
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2071,25 +2141,11 @@ MeshCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2185844781372370992, guid: 52ec1cc3a3f60cc42a66203b0d61f2ba, type: 3}
---- !u!114 &5774020818209095424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7916482623348338231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b30abf56d6907e4db083e37b4829b02, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeaponController
-  weaponCollider: {fileID: 6752267418831721536}
-  damage: 10
-  targetTag: Player
+  serializedVersion: 2
+  m_Radius: 0.15462188
+  m_Height: 0.7831152
+  m_Direction: 1
+  m_Center: {x: -0.00079544086, y: 0.40535027, z: 0.00037399694}
 --- !u!1 &7920872481458950971
 GameObject:
   m_ObjectHideFlags: 0

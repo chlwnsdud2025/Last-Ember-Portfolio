@@ -43,17 +43,29 @@ public class EnemyChaseState : EnemyBaseState
             enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRotation, 10f * Time.deltaTime);
         }
 
-        if (distanceToPlayer <= enemy.attackRange)
+
+        if (Time.time >= enemy.lastAttackTime + enemy.attackCooldown)
         {
-            if (Time.time >= enemy.lastAttackTime + enemy.attackCooldown)
+            EnemyAttackState nextAttack = enemy.GetBestAttack(distanceToPlayer);
+
+            if (nextAttack != null)
             {
-                enemyStateMachine.ChangeState(enemy.attackState);
+                // 지금 당장 때릴 수 있는 공격이 있으면 발동!
+                enemyStateMachine.ChangeState(nextAttack);
+                return;
             }
-            else
+            // 여기서 else로 Strafe를 부르지 않습니다! 
+            // 쿨타임은 찼는데 거리가 안 닿는다면, 아래쪽의 MoveEnemy가 실행되어 계속 다가갑니다.
+        }
+        // 2. 공격 쿨타임이 돌고 있을 때 (시간을 벌어야 함)
+        else
+        {
+            // 아직 때리지도 못하는데 플레이어와 충분히 가깝다면(strafeRange), 빙빙 돌면서 시간을 끕니다.
+            if (distanceToPlayer <= enemy.strafeRange)
             {
                 enemyStateMachine.ChangeState(enemy.strafeState);
+                return;
             }
-            return;
         }
         enemy.MoveEnemy(enemy.transform.forward * enemy.moveSpeed * Time.deltaTime);
         //enemy.characterController.Move(enemy.transform.forward * enemy.moveSpeed * Time.deltaTime);

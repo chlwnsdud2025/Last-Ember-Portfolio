@@ -34,6 +34,11 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Transform currentTarget;
     [HideInInspector] public bool isLockedOn = false;
 
+    [Header("Lock-On Switch")]
+    public float switchCooldown = 0.3f; // 락온 변경 쿨타임
+    private float currentSwitchCooldown = 0f;
+    private bool hasFlicked = false;
+
     [Header("Anim_Components")]
     public Animator animator;
     public CharacterController characterController;
@@ -62,6 +67,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isWalkButtonHeld = false;
 
     public bool isDead = false;
+
+
 
     public PlayerStats stats { get; private set; }
 
@@ -124,6 +131,40 @@ public class PlayerController : MonoBehaviour
 
         isSprintButtonHeld = controls.PlayerMovement.Sprint.IsPressed();
         isWalkButtonHeld = controls.PlayerMovement.Walk.IsPressed();
+
+        if (isLockedOn && currentTarget != null)
+        {
+            if (currentSwitchCooldown > 0)
+            {
+                currentSwitchCooldown -= Time.deltaTime;
+            }
+
+            // 1. 임계값(Threshold)을 대폭 상향합니다. 마우스 감도에 따라 10f ~ 30f 사이로 조절하세요!
+            float flickThreshold = 15.0f;
+
+            // 2. 쿨타임이 끝났고, 아직 방아쇠를 당기지 않은 상태일 때만 검사
+            if (currentSwitchCooldown <= 0 && !hasFlicked)
+            {
+                // 우측으로 강하게 튕김
+                if (mouseMoveInput.x > flickThreshold)
+                {
+                    SwitchLockOnTarget(1);
+                    hasFlicked = true; // 방아쇠 당김! (연속 발동 잠금)
+                }
+                // 좌측으로 강하게 튕김
+                else if (mouseMoveInput.x < -flickThreshold)
+                {
+                    SwitchLockOnTarget(-1);
+                    hasFlicked = true; // 방아쇠 당김!
+                }
+            }
+
+            // 3. ❗ [핵심] 마우스 움직임이 멈추면(0에 가까워지면) 다시 튕길 수 있도록 방아쇠를 풀어줍니다.
+            if (Mathf.Abs(mouseMoveInput.x) < 2.0f)
+            {
+                hasFlicked = false;
+            }
+        }
 
         stateMachine.Update();
     }
@@ -280,39 +321,44 @@ public class PlayerController : MonoBehaviour
     }
 
     // 락온 켜기
-    private void ToggleLockOn() 
+    private void ToggleLockOn()
     {
-        // 이미 락온 중이면 해제
         if (isLockedOn)
         {
             ClearLockOn();
             return;
         }
 
-        
         Collider[] colliders = Physics.OverlapSphere(transform.position, lockOnRadius, enemyLayer);
         float closestDistance = Mathf.Infinity;
         Transform bestTarget = null;
 
         foreach (Collider col in colliders)
         {
-            // 적이 내 카메라 시야(화면의 앞쪽)에 있는지 내적(Dot)으로 검사
             Vector3 dirToTarget = (col.transform.position - cameraTarget.position).normalized;
             float dot = Vector3.Dot(cameraTarget.forward, dirToTarget);
 
-            if (dot > 0.5f) // 약 50도 시야각 이내에 있는 적만 판별 (1.0이 정면, 0이 측면, -1이 후면)
+            if (dot > 0.5f)
             {
-                // 시야 내에 있는 적들 중 '가장 가까운 적' 찾기
                 float dist = Vector3.Distance(transform.position, col.transform.position);
                 if (dist < closestDistance)
                 {
                     closestDistance = dist;
-                    bestTarget = col.transform;
+
+                    // 적의 EnemyController를 찾아 lockOnPoint를 타겟으로 삼습니다.
+                    EnemyController targetEnemy = col.GetComponent<EnemyController>();
+                    if (targetEnemy != null && targetEnemy.lockOnPoint != null)
+                    {
+                        bestTarget = targetEnemy.lockOnPoint; // 가슴/머리 지점을 타겟팅
+                    }
+                    else
+                    {
+                        bestTarget = col.transform; // 설정이 안 되어있다면 기존처럼 발밑
+                    }
                 }
             }
         }
 
-        // 적을 찾았다면 락온 상태로 전환
         if (bestTarget != null)
         {
             currentTarget = bestTarget;
@@ -323,8 +369,60 @@ public class PlayerController : MonoBehaviour
             isLockedOn = false;
             currentTarget = null;
         }
+    }
 
-        
+    private void SwitchLockOnTarget(int direction)
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, lockOnRadius, enemyLayer);
+
+        float closestAngle = Mathf.Infinity;
+        Transform newTarget = null;
+
+        // 현재 쳐다보고 있는 방향
+        Vector3 dirToCurrent = (currentTarget.position - cameraTarget.position).normalized;
+
+        foreach (Collider col in colliders)
+        {
+            EnemyController targetEnemy = col.GetComponent<EnemyController>();
+            if (targetEnemy == null) continue;
+
+            // 락온 포인트가 있으면 쓰고, 없으면 전체 몸통 사용
+            Transform potentialTarget = targetEnemy.lockOnPoint != null ? targetEnemy.lockOnPoint : col.transform;
+
+            // 자기 자신(현재 타겟)은 건너뜀
+            if (potentialTarget == currentTarget) continue;
+
+            // 판별할 적을 향한 방향
+            Vector3 dirToPotential = (potentialTarget.position - cameraTarget.position).normalized;
+
+            // 1. 카메라 시야각 안에 있는지 확인 (뒤에 있는 적 무시)
+            if (Vector3.Dot(cameraTarget.forward, dirToPotential) < 0.2f) continue;
+
+            // 2. 이 적이 현재 타겟을 기준으로 '오른쪽'에 있는지 '왼쪽'에 있는지 판별
+            // 카메라의 Right 벡터와 내적(Dot)을 구하면 우측일 때 양수, 좌측일 때 음수가 나옵니다.
+            float dotRight = Vector3.Dot(cameraTarget.right, dirToPotential - dirToCurrent);
+            bool isRight = dotRight > 0;
+
+            // 3. 사용자가 입력한 방향(우측/좌측)과 적의 위치가 일치하는지 확인
+            if ((direction == 1 && isRight) || (direction == -1 && !isRight))
+            {
+                // 4. 방향이 맞는 적들 중에서 '현재 타겟과 가장 각도가 가까운' 적을 찾음
+                float angle = Vector3.Angle(dirToCurrent, dirToPotential);
+                if (angle < closestAngle)
+                {
+                    closestAngle = angle;
+                    newTarget = potentialTarget;
+                }
+            }
+        }
+
+        // 새로운 타겟을 찾았다면 변경!
+        if (newTarget != null)
+        {
+            currentTarget = newTarget;
+            currentSwitchCooldown = switchCooldown; // 쿨타임 초기화
+            // Debug.Log("락온 타겟 변경 완료!");
+        }
     }
 
 

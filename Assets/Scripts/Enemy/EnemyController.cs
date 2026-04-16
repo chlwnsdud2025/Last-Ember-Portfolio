@@ -7,15 +7,11 @@ public class EnemyController : MonoBehaviour
     public CharacterController characterController;
 
     [Header("Aggro Settings")]
-    public float detectionRadius = 10f; // ���� �ݰ�
+    public float detectionRadius = 10f; // 탐지 반경
     [Range(0, 360)]
-    public float viewAngle = 120f;      // �þ߰�
-    public LayerMask playerLayer;       // �÷��̾� ���̾�
-    public LayerMask obstacleLayer;     // ���� ���ؿ� ��ֹ� ���̾�
-
-
-    [Header("Attack Settings")]
-    public float AttackRangge = 1f;
+    public float viewAngle = 120f;      // 시야각
+    public LayerMask playerLayer;       // 플레이어 레이어
+    public LayerMask obstacleLayer;     // 장애물 레이어
 
     [HideInInspector] public Transform target;
 
@@ -23,33 +19,37 @@ public class EnemyController : MonoBehaviour
     public float moveSpeed = 1f;
 
     [Header("Combat Settings")]
-    public float attackRange = 0.1f;     // ���� ��Ÿ�
-    public float strafeRange = 2f;
-    public float strafeSpeed = 0.3f;     
-    public float attackCooldown = 3f;    // ���� ��Ÿ�� 
-    [HideInInspector] public float lastAttackTime = -999f; // ���������� ������ �ð�
+    public float strafeRange = 3f;
+    public float strafeSpeed = 0.3f;
+    public float attackCooldown = 3f;    // 공격 쿨타임 
+    [HideInInspector] public float lastAttackTime = -999f; // 마지막 공격 시간
 
-    //�߷�
     [Header("Gravity Settings")]
     public float gravity = -9.81f;
     public float gravityMultiplier = 2f;
     [HideInInspector] public float verticalVelocity;
 
+    [Header("Weapons / Hitboxes")]
+    public EnemyWeaponController[] weapons;
 
-    [Header("Weapon data")]
-    public EnemyWeaponController currentWeaponScript;
+    [Header("Attack Patterns (SO)")]
+    public EnemyAttack_SO_Data[] attackPatterns;
 
 
+    [Header("Targeting")]
+    public Transform lockOnPoint;
 
-    // ���� �ӽ�
+    private AnimatorOverrideController overrideController;
+    // 상태들
     public EnemyStateMachine stateMachine { get; private set; }
     public EnemyIdleState idleState { get; private set; }
     public EnemyChaseState chaseState { get; private set; }
     public EnemyStrafeState strafeState { get; private set; }
-    public EnemyAttackState attackState { get; private set; }
     public EnemyHitState hitsState { get; private set; }
     public EnemyDeadState deadState { get; private set; }
 
+    // ❗ 다중 공격 상태 배열
+    public EnemyAttackState[] attackStates { get; private set; }
 
     private void Awake()
     {
@@ -57,10 +57,37 @@ public class EnemyController : MonoBehaviour
         idleState = new EnemyIdleState(this, stateMachine);
         chaseState = new EnemyChaseState(this, stateMachine);
         strafeState = new EnemyStrafeState(this, stateMachine);
-        attackState = new EnemyAttackState(this, stateMachine);
         hitsState = new EnemyHitState(this, stateMachine);
         deadState = new EnemyDeadState(this, stateMachine);
 
+        // -------------------------------------------------------------
+        // ❗ [핵심 변경] 런타임 클립 교체 (오버라이드) 세팅
+        // -------------------------------------------------------------
+        if (animator.runtimeAnimatorController != null)
+        {
+            overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+            animator.runtimeAnimatorController = overrideController;
+        }
+
+        if (attackPatterns != null && attackPatterns.Length > 0)
+        {
+            attackStates = new EnemyAttackState[attackPatterns.Length];
+
+            for (int i = 0; i < attackPatterns.Length; i++)
+            {
+                // 1. 에너미 애니메이터에 있는 가짜 노드 이름 (예: "Attack0", "Attack1")
+                string stateName = $"Attack{i}";
+
+                // 2. SO에 클립이 등록되어 있다면 런타임에 갈아끼웁니다! (플레이어와 동일한 방식)
+                if (attackPatterns[i].clip != null)
+                {
+                    overrideController[stateName] = attackPatterns[i].clip;
+                }
+
+                // 3. State를 생성할 때, "Attack0", "Attack1" 같은 재생할 노드 이름을 같이 넘겨줍니다.
+                attackStates[i] = new EnemyAttackState(this, stateMachine, attackPatterns[i], stateName);
+            }
+        }
     }
 
     private void Start()
@@ -73,14 +100,22 @@ public class EnemyController : MonoBehaviour
         stateMachine.Update();
     }
 
-   
+    public EnemyWeaponController GetWeapon(int index)
+    {
+        if (weapons != null && index >= 0 && index < weapons.Length)
+        {
+            return weapons[index];
+        }
+        Debug.LogWarning($"[EnemyController] {index}번 무기가 할당되지 않았습니다!");
+        return null;
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
 
         Gizmos.color = Color.red;
-
         Vector3 leftBoundary = DirFromAngle(transform.eulerAngles.y, -viewAngle / 2);
         Gizmos.DrawLine(transform.position, transform.position + leftBoundary * detectionRadius);
 
@@ -88,9 +123,8 @@ public class EnemyController : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + rightBoundary * detectionRadius);
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawWireSphere(transform.position, strafeRange);
     }
-
 
     private Vector3 DirFromAngle(float eulerY, float angleInDegrees)
     {
@@ -102,61 +136,46 @@ public class EnemyController : MonoBehaviour
     {
         if (characterController.isGrounded)
         {
-            if (verticalVelocity < 0.0f) verticalVelocity = -2f; 
+            if (verticalVelocity < 0.0f) verticalVelocity = -2f;
         }
         else
         {
-            verticalVelocity += gravity * gravityMultiplier * Time.deltaTime; 
+            verticalVelocity += gravity * gravityMultiplier * Time.deltaTime;
         }
 
         horizontal.y += verticalVelocity * Time.deltaTime;
-
         characterController.Move(horizontal);
     }
 
     private void OnAnimatorMove()
     {
-        // 루트 모션이 켜져 있을 때만 애니메이션의 이동 값을 CharacterController에 적용
-        if (animator.applyRootMotion && characterController != null)
+        if (animator.applyRootMotion && characterController != null && characterController.enabled)
         {
             Vector3 rootMotion = animator.deltaPosition;
-            rootMotion.y = 0f; // 수평 이동만 분리
+            rootMotion.y = 0f;
 
-            // --- [프롬소프트웨어식: 적(Enemy) 타겟 워핑 & 감쇄 로직] ---
-            if (target != null && stateMachine.enemyCurrentState == attackState)
+            // ------------------------------------------------------------------
+            //  [핵심 에러 해결] is 키워드를 사용하여 "현재 상태의 종류"를 검사합니다.
+            // ------------------------------------------------------------------
+            if (target != null && stateMachine.enemyCurrentState is EnemyAttackState)
             {
                 float dist = Vector3.Distance(transform.position, target.position);
-
-                // 무기 리치나 몬스터 크기에 따라 조절하세요
-                float stopDistance = 2.0f;       // 1. 플레이어와 겹치면 전진 차단 (지터링 방지)
-                float perfectHitDistance = 2.0f; // 2. 이 거리보다 멀면 플레이어를 향해 미끄러지듯 돌진
+                float stopDistance = 1.0f;
 
                 float forwardMagnitude = Vector3.Dot(rootMotion, transform.forward);
 
-                // 뒤로 빠지는 모션이 아닌, 앞으로 전진하는 모션일 때만 발동
                 if (forwardMagnitude > 0)
                 {
                     Vector3 forwardVector = transform.forward * forwardMagnitude;
 
                     if (dist < stopDistance)
                     {
-                        // [감쇄] 플레이어와 너무 가깝다면 루트 모션의 전진력을 깎아냄
                         float damping = dist / stopDistance;
                         rootMotion -= forwardVector * (1f - damping);
                     }
-                    //else if (dist > perfectHitDistance)
-                    //{
-                    //    // [몬스터 전용 부스트] 거리가 멀면 루트 모션 증폭
-                    //    float boostMultiplier = Mathf.Clamp(dist / perfectHitDistance, 1f, 1.2f);
-
-                    //    rootMotion -= forwardVector;
-                    //    rootMotion += forwardVector * boostMultiplier;
-                    //}
                 }
             }
-            // -------------------------------------------------------------
 
-            // 중력 적용 (기존 로직 유지)
             if (!characterController.isGrounded)
             {
                 verticalVelocity += gravity * gravityMultiplier * Time.deltaTime;
@@ -166,13 +185,53 @@ public class EnemyController : MonoBehaviour
                 verticalVelocity = -2f;
             }
 
-            // 수평 이동(워핑 적용됨) + 수직 이동(중력) 합치기
             rootMotion.y = verticalVelocity * Time.deltaTime;
-
-            // 최종 이동 실행
             characterController.Move(rootMotion);
         }
     }
 
+    public EnemyAttackState GetBestAttack(float distanceToPlayer)
+    {
+        if (attackPatterns == null || attackPatterns.Length == 0) return null;
 
+        System.Collections.Generic.List<int> validIndices = new System.Collections.Generic.List<int>();
+        int totalWeight = 0;
+
+        // 1. 발동 가능한 공격들만 추려내기 (거리 검사 + ❗개별 쿨타임 검사)
+        for (int i = 0; i < attackPatterns.Length; i++)
+        {
+            // 거리 조건 확인
+            bool isDistanceValid = distanceToPlayer >= attackPatterns[i].minAttackRange &&
+                                   distanceToPlayer <= attackPatterns[i].maxAttackRange;
+
+            //  [핵심] 이 스킬의 개별 쿨타임이 다 돌았는가?
+            bool isSkillReady = Time.time >= attackStates[i].lastUsedTime + attackPatterns[i].cooldown;
+
+            // 거리도 맞고 쿨타임도 돌았다면 후보에 추가!
+            if (isDistanceValid && isSkillReady)
+            {
+                validIndices.Add(i);
+                totalWeight += attackPatterns[i].priorityWeight;
+            }
+        }
+
+        // 현재 쓸 수 있는 공격이 하나도 없다면 null 반환
+        if (validIndices.Count == 0) return null;
+
+        // 2. 가중치(Priority Weight) 기반 룰렛 돌리기
+        int randomValue = Random.Range(0, totalWeight);
+        int cumulativeWeight = 0;
+
+        foreach (int index in validIndices)
+        {
+            cumulativeWeight += attackPatterns[index].priorityWeight;
+            if (randomValue < cumulativeWeight)
+            {
+                //  기존에 있던 attackCooldown 덮어쓰기 삭제! (개별 쿨타임만 돕니다)
+                return attackStates[index];
+            }
+        }
+
+        return attackStates[validIndices[0]];
+    }
 }

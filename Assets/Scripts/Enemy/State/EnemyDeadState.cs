@@ -9,22 +9,26 @@ public class EnemyDeadState : EnemyBaseState
 
     public override void Enter()
     {
-
         enemy.animator.applyRootMotion = true;
         enemy.animator.CrossFadeInFixedTime(deadAnimHash, 0.2f, 0, 0f);
+
         PlayerController player = Object.FindObjectOfType<PlayerController>();
 
         if (player != null && player.isLockedOn)
         {
-            if (player.currentTarget == enemy.transform)
+            // [핵심 수정] 타겟이 '몸통'이거나 '락온 포인트(가슴)'일 때 모두 락온을 풉니다!
+            if (player.currentTarget == enemy.transform || player.currentTarget == enemy.lockOnPoint)
             {
                 player.ClearLockOn(); // 락온 해제
             }
         }
 
-        if (enemy.currentWeaponScript != null)
+        if (enemy.weapons != null)
         {
-            enemy.currentWeaponScript.DisableHitbox();
+            foreach (EnemyWeaponController weapon in enemy.weapons)
+            {
+                if (weapon != null) weapon.DisableHitbox();
+            }
         }
 
         // 콜라이더를 끄기

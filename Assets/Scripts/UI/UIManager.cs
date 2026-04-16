@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
     [Header("UI Components")]
     [SerializeField] private Slider hpSlider;
     [SerializeField] private Slider staminaSlider;
+    [SerializeField] private GameObject gameOver;
+
 
     [Header("Size Settings")]
     [Tooltip("체력 1당 UI 바의 픽셀 길이 (예: 2로 설정하면 최대체력 100일 때 길이 200)")]
@@ -23,6 +25,11 @@ public class UIManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+    }
+
+    private void Start()
+    {
+        gameOver.SetActive(false);
     }
 
     void OnEnable()
@@ -71,6 +78,17 @@ public class UIManager : MonoBehaviour
             RectTransform rect = staminaSlider.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(max * staminaWidthMultiplier, rect.sizeDelta.y);
         }
+    }
+
+    public  void GameOver()
+    {
+        gameOver.SetActive(true);
+    }
+
+    public  void Respawn()
+    {
+        gameOver.SetActive(false);
+
     }
 
 }
