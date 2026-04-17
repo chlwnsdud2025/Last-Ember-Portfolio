@@ -7,7 +7,8 @@ public enum BossStateType
     Dodge,
     Stun,
     Walk,
-    Idle
+    Idle,
+    Attack
 }
 
 
@@ -28,4 +29,7 @@ public class BossActionOption
 
     [Header("Weight (°¡ÁßÄ¡)")]
     public int baseWeight = 10;
+
+    [Header("Attack Data (Only for Attack State)")]
+    public BossAttack_SO_Data attackData;
 }

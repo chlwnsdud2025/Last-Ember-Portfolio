@@ -17,15 +17,17 @@ public class Humanoid_Boss_Dodge_State : BossBaseState
         float targetX = 0f;
         float targetY = 0f;
 
+
+
         if (distanceToPlayer < 3f)
         {
             targetY = -1f; // πÈΩ∫≈‹
         }
-        else if(distanceToPlayer > 15f)
+        else if (distanceToPlayer > 10f)
         {
             targetY = 1f;
         }
-        else
+        else if (distanceToPlayer >= 3f && distanceToPlayer <= 10f)
         {
             targetX = Random.value > 0.5f ? 1f : -1f; // ªÁ¿ÃµÂΩ∫≈‹
         }

@@ -4,7 +4,7 @@ public class Humanoid_Boss_Walk_State : BossBaseState
 {
     private float stateTimer;
     private float maxWalkTime = 4f; // 최대 4초까지만 걷기
-    private float targetAttackRange = 3f; // 이 거리 안에 들어오면 공격을 위해 멈춤
+    private float targetAttackRange = 5f; // 이 거리 안에 들어오면 공격을 위해 멈춤
 
     public Humanoid_Boss_Walk_State(BossBaseController boss, BossStateMachine stateMachine) : base(boss, stateMachine) { }
 

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e1dde6025c3c0b4bb3465e1e6fd1872, type: 3}
+  m_Name: Skeleton_Guard_Dash_Attack
+  m_EditorClassIdentifier: Assembly-CSharp::BossAttack_SO_Data
+  attackClip: {fileID: 7400000, guid: c8c6511ae07ddbc44b5388841a7ef7ee, type: 3}
+  attackName: "\uB300\uC26C \uACF5\uACA9"
+  minDistance: 0
+  maxDistance: 20
+  minAngle: -180
+  maxAngle: -180
+  cooldown: 0
+  weight: 20
+  requiredPhase: 1
+  lastUsedTime: -999
+  canTrackTarget: 1
+  animationName: 
+  hitboxStartTime: 0.313
+  hitboxEndTime: 0.52
+  comboEnableTime: 0.747
+  attackEndTime: 0.864
+  damage: 20
+  trackTarget: 1
+  nextCombo: {fileID: 0}

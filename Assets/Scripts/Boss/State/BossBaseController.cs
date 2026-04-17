@@ -13,6 +13,8 @@ public abstract class BossBaseController : MonoBehaviour
     public float rotationSpeed = 5f;
     public int currentPhase = 1;
 
+    public AnimatorOverrideController overrideController { get; protected set; }
+
     // 상태 머신
     public BossStateMachine stateMachine { get; protected set; }
 
@@ -31,6 +33,12 @@ public abstract class BossBaseController : MonoBehaviour
     {
         stateMachine = new BossStateMachine();
         animator = GetComponent<Animator>();
+
+        if (animator != null)
+        {
+            overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+            animator.runtimeAnimatorController = overrideController;
+        }
     }
 
     protected virtual void Start()
@@ -45,7 +53,7 @@ public abstract class BossBaseController : MonoBehaviour
     }
 
     // ---------------------------------------------------
-    //  [추가] 행동을 마치고 다시 생각하러 돌아가는 핵심 트리거
+    //  행동을 마치고 다시 생각하러 돌아가는 핵심 트리거
     // ---------------------------------------------------
     public void ReturnToDecision()
     {

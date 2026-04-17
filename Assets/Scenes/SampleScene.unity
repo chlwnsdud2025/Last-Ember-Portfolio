@@ -99273,35 +99273,64 @@ MonoBehaviour:
     maxDistance: 100
     cooldown: 100
     lastUsedTime: 0
-    baseWeight: 10
+    baseWeight: 5
+    attackData: {fileID: 0}
   - actionName: Walk
     stateType: 4
     minDistance: 5
     maxDistance: 30
     cooldown: 0
     lastUsedTime: 0
-    baseWeight: 10
+    baseWeight: 5
+    attackData: {fileID: 0}
   - actionName: Run
     stateType: 0
     minDistance: 10
     maxDistance: 100
     cooldown: 0
     lastUsedTime: 0
-    baseWeight: 10
+    baseWeight: 5
+    attackData: {fileID: 0}
   - actionName: Strafe
     stateType: 1
     minDistance: 0
     maxDistance: 15
     cooldown: 0
     lastUsedTime: 0
-    baseWeight: 10
+    baseWeight: 5
+    attackData: {fileID: 0}
   - actionName: Dodge
     stateType: 2
     minDistance: 0
     maxDistance: 50
     cooldown: 10
     lastUsedTime: 0
-    baseWeight: 10
+    baseWeight: 5
+    attackData: {fileID: 0}
+  - actionName: "\uC810\uD504\uACF5\uACA9"
+    stateType: 6
+    minDistance: 5
+    maxDistance: 25
+    cooldown: 10
+    lastUsedTime: 0
+    baseWeight: 15
+    attackData: {fileID: 11400000, guid: 54c9aa7cc41834f4699e7d3c4cfebe75, type: 2}
+  - actionName: "\uC5F0\uC18D \uACF5\uACA91"
+    stateType: 6
+    minDistance: 0
+    maxDistance: 15
+    cooldown: 10
+    lastUsedTime: 0
+    baseWeight: 15
+    attackData: {fileID: 11400000, guid: cb1a76b31b54c8542b43479452cc8e3e, type: 2}
+  - actionName: "\uB300\uC26C \uACF5\uACA9"
+    stateType: 6
+    minDistance: 5
+    maxDistance: 20
+    cooldown: 10
+    lastUsedTime: 0
+    baseWeight: 15
+    attackData: {fileID: 11400000, guid: 5675822e11878b04c8b3e8ccd8bb6ae6, type: 2}
 --- !u!95 &1904205597
 Animator:
   serializedVersion: 7
