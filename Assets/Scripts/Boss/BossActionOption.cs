@@ -18,16 +18,16 @@ public class BossActionOption
     public string actionName;
 
     [Header("State Link")]
-    public BossStateType stateType; //  ÀÎ½ºÆåÅÍ¿¡¼­´Â ÀÌ µå·Ó´Ù¿î ¸Þ´º¸¸ °í¸£°Ô µË´Ï´Ù.
-    [HideInInspector] public BossBaseState targetState; //  ½ÇÁ¦ ·±Å¸ÀÓ¿¡ ÄÚµå°¡ ¿¬°áÇØÁÙ º¯¼ö (¼û±è)
+    public BossStateType stateType; 
+    [HideInInspector] public BossBaseState targetState; 
 
-    [Header("Conditions (Á¶°Ç)")]
+    [Header("Conditions (ï¿½ï¿½ï¿½ï¿½)")]
     public float minDistance = 0f;
     public float maxDistance = 999f;
     public float cooldown = 0f;
     [HideInInspector] public float lastUsedTime = -999f;
 
-    [Header("Weight (°¡ÁßÄ¡)")]
+    [Header("Weight (ï¿½ï¿½ï¿½ï¿½Ä¡)")]
     public int baseWeight = 10;
 
     [Header("Attack Data (Only for Attack State)")]

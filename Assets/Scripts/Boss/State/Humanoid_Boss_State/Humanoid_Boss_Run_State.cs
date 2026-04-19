@@ -3,8 +3,8 @@ using UnityEngine;
 public class Humanoid_Boss_Run_State : BossBaseState
 {
     private float stateTimer;
-    private float maxRunTime = 6f; // ´Þ¸®±â ÃÖ´ë ½Ã°£
-    private float targetAttackRange = 6f; // ´Þ¸®´Ù°¡ ¸ØÃâ °Å¸® (°È±âº¸´Ù »ìÂ¦ ±æ°Ô ÁÖ¾î µ¹Áø±â ¿¬°è À¯µµ)
+    private float maxRunTime = 6f; // ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ã°ï¿½
+    private float targetAttackRange = 6f; // ï¿½Þ¸ï¿½ï¿½Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ (ï¿½È±âº¸ï¿½ï¿½ ï¿½ï¿½Â¦ ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 
     public Humanoid_Boss_Run_State(BossBaseController boss, BossStateMachine stateMachine) : base(boss, stateMachine) { }
 
@@ -19,21 +19,21 @@ public class Humanoid_Boss_Run_State : BossBaseState
         stateTimer += Time.deltaTime;
         float distanceToPlayer = Vector3.Distance(boss.transform.position, boss.target.position);
 
-        //  Á¾·á Á¶°Ç 1: µ¹Áø/°ø°ÝÇÏ±â ÁÁÀº °Å¸®¿¡ µµ´Þ
+        //  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1: ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (distanceToPlayer <= targetAttackRange)
         {
             boss.ReturnToDecision();
             return;
         }
 
-        //  Á¾·á Á¶°Ç 2: Å¸ÀÓ¾Æ¿ô
+        //  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2: Å¸ï¿½Ó¾Æ¿ï¿½
         if (stateTimer >= maxRunTime)
         {
             boss.ReturnToDecision();
             return;
         }
 
-        // ÀÌµ¿ ·ÎÁ÷: ÇÃ·¹ÀÌ¾î¸¦ ¹Ù¶óº¸¸ç ÃÖ´ë ¼Óµµ·Î ÀüÁø
+        // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½Ù¶óº¸¸ï¿½ ï¿½Ö´ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         boss.RotateTowardsTarget();
         boss.MoveBoss(boss.transform.forward * boss.moveSpeed * Time.deltaTime);
     }

@@ -4,20 +4,20 @@ public class Humanoid_Boss_Strafe_State : BossBaseState
 {
     private float stateTimer;
     private float strafeDuration;
-    private int strafeDirection; // 1ÀÌ¸é ¿ìÃø, -1ÀÌ¸é ÁÂÃø
+    private int strafeDirection; // 1ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½, -1ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 
     public Humanoid_Boss_Strafe_State(BossBaseController boss, BossStateMachine stateMachine) : base(boss, stateMachine) { }
 
     public override void Enter()
     {
         stateTimer = 0f;
-        strafeDuration = Random.Range(1.5f, 3.0f); // 1.5ÃÊ ~ 3ÃÊ µ¿¾È ºùºù µ½´Ï´Ù.
+        strafeDuration = Random.Range(1.5f, 3.0f); // 1.5ï¿½ï¿½ ~ 3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½.
 
-        // ½ÃÀÛÇÒ ¶§ ÁÂ, ¿ì Áß ¾î´À ¹æÇâÀ¸·Î µ¹Áö 50% È®·ü·Î °áÁ¤ÇÕ´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 50% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         strafeDirection = Random.value > 0.5f ? 1 : -1;
         boss.animator.SetFloat("strafeDirection", strafeDirection);
         boss.animator.CrossFadeInFixedTime("Strafe", 0.2f);
-        // ÆÁ: ¾Ö´Ï¸ÞÀÌÅÍ¿¡ ¿ìÃø °È±â, ÁÂÃø °È±â°¡ µû·Î ÀÖ´Ù¸é strafeDirection¿¡ µû¶ó ºÐ±â Ã³¸®ÇÏ¸é µË´Ï´Ù.
+        // ï¿½ï¿½: ï¿½Ö´Ï¸ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½È±ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½È±â°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ strafeDirectionï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½ Ã³ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ë´Ï´ï¿½.
     }
 
     public override void Update()
@@ -25,22 +25,22 @@ public class Humanoid_Boss_Strafe_State : BossBaseState
         stateTimer += Time.deltaTime;
         float distanceToPlayer = Vector3.Distance(boss.transform.position, boss.target.position);
 
-        //  Á¾·á Á¶°Ç 1: °£À» ´Ù ºÃÀ¸¸é ´Ù½Ã °ø°Ý/ÀÌµ¿ ÆÇ´Ü
+        //  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½Ìµï¿½ ï¿½Ç´ï¿½
         if (stateTimer >= strafeDuration)
         {
             boss.ReturnToDecision();
             return;
         }
 
-        //  Á¾·á Á¶°Ç 2: ºùºù µ¹°í ÀÖ´Âµ¥ ÇÃ·¹ÀÌ¾î°¡ °©ÀÚ±â È® ¸Ö¾îÁö°Å³ª È® ´Ù°¡¿Ã ¶§
-        // (»óÈ²ÀÌ º¯ÇßÀ¸¹Ç·Î µ¹±â¸¦ ¸ØÃß°í ´Ù½Ã »ý°¢ÇÕ´Ï´Ù)
+        //  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Âµï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½Ú±ï¿½ È® ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½Å³ï¿½ È® ï¿½Ù°ï¿½ï¿½ï¿½ ï¿½ï¿½
+        // (ï¿½ï¿½È²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½â¸¦ ï¿½ï¿½ï¿½ß°ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½)
         if (distanceToPlayer > 8f || distanceToPlayer < 1.5f)
         {
             boss.ReturnToDecision();
             return;
         }
 
-        // ÀÌµ¿ ·ÎÁ÷: ÇÃ·¹ÀÌ¾î¸¦ ¶È¹Ù·Î ÃÄ´Ùº» »óÅÂ¿¡¼­ '¿·À¸·Î(transform.right)' ÀÌµ¿ÇÕ´Ï´Ù.
+        // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½È¹Ù·ï¿½ ï¿½Ä´Ùºï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(transform.right)' ï¿½Ìµï¿½ï¿½Õ´Ï´ï¿½.
         boss.RotateTowardsTarget();
         Vector3 moveDir = boss.transform.right * strafeDirection;
         boss.MoveBoss(moveDir * (boss.moveSpeed * 0.4f) * Time.deltaTime);

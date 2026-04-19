@@ -31,10 +31,7 @@ public abstract class PlayerBaseState
         {
             stateMachine.ChangeState(player.dashState);
         }
-        else
-        {
-            
-        }
+        
     }
 
     // 기본 이동 회전 (Root 기준)

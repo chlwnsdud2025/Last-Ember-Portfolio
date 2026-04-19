@@ -9,7 +9,7 @@ public class EnemyIdleState : EnemyBaseState
 
     public override void Enter()
     {
-        //Debug.Log("Enemy »óÅÂ: Idle");
+        //Debug.Log("Enemy ï¿½ï¿½ï¿½ï¿½: Idle");
         enemy.animator.CrossFadeInFixedTime(idleAnimHash, 0.1f);
     }
 
@@ -23,18 +23,18 @@ public class EnemyIdleState : EnemyBaseState
 
             Vector3 dirToTarget = (potentialTarget.position - enemy.transform.position).normalized;
 
-            //  ÀûÀÇ Á¤¸é(forward)°ú ÇÃ·¹ÀÌ¾î »çÀÌÀÇ °¢µµ°¡ ½Ã¾ß°¢(viewAngle)ÀÇ Àý¹Ý ÀÌ³»ÀÎ°¡?
+            //  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(forward)ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¾ß°ï¿½(viewAngle)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì³ï¿½ï¿½Î°ï¿½?
             if (Vector3.Angle(enemy.transform.forward, dirToTarget) < enemy.viewAngle / 2)
             {
-                // ÀûÀÇ ´«°ú ÇÃ·¹ÀÌ¾î »çÀÌ¿¡ º®(obstacleLayer)ÀÌ ÀÖ´Â°¡?
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½ ï¿½ï¿½(obstacleLayer)ï¿½ï¿½ ï¿½Ö´Â°ï¿½?
 
-                // Àû°ú ÇÃ·¹ÀÌ¾îÀÇ ´«³ôÀÌ(¾à 1.5f)¸¦ ¸ÂÃç¼­ ·¹ÀÌÀú¸¦ ½õ´Ï´Ù
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ 1.5f)ï¿½ï¿½ ï¿½ï¿½ï¿½ç¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½
                 Vector3 eyePosition = enemy.transform.position + Vector3.up * 1.5f;
                 Vector3 targetPosition = potentialTarget.position + Vector3.up * 1.5f;
                 Vector3 rayDir = (targetPosition - eyePosition).normalized;
                 float distanceToTarget = Vector3.Distance(eyePosition, targetPosition);
 
-                // ·¹ÀÌÀú¸¦ ½ú´Âµ¥ º®(Obstacle)¿¡ ¸ÂÁö ¾Ê¾Ò´Ù¸é? -> ¿Ïº®È÷ ½Ã¾ß¿¡ µé¾î¿È!
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Âµï¿½ ï¿½ï¿½(Obstacle)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½? -> ï¿½Ïºï¿½ï¿½ï¿½ ï¿½Ã¾ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½!
                 if (!Physics.Raycast(eyePosition, rayDir, distanceToTarget, enemy.obstacleLayer))
                 {
                     enemy.target = potentialTarget;

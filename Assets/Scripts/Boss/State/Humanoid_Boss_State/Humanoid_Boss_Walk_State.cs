@@ -3,8 +3,8 @@ using UnityEngine;
 public class Humanoid_Boss_Walk_State : BossBaseState
 {
     private float stateTimer;
-    private float maxWalkTime = 4f; // ÃÖ´ë 4ÃÊ±îÁö¸¸ °È±â
-    private float targetAttackRange = 5f; // ÀÌ °Å¸® ¾È¿¡ µé¾î¿À¸é °ø°ÝÀ» À§ÇØ ¸ØÃã
+    private float maxWalkTime = 4f; // ï¿½Ö´ï¿½ 4ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È±ï¿½
+    private float targetAttackRange = 5f; // ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
     public Humanoid_Boss_Walk_State(BossBaseController boss, BossStateMachine stateMachine) : base(boss, stateMachine) { }
 
@@ -19,21 +19,21 @@ public class Humanoid_Boss_Walk_State : BossBaseState
         stateTimer += Time.deltaTime;
         float distanceToPlayer = Vector3.Distance(boss.transform.position, boss.target.position);
 
-        //  Á¾·á Á¶°Ç 1: ¶§¸®±â µü ÁÁÀº °Å¸®±îÁö ´Ù°¡¿ÔÀ» ¶§
+        //  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
         if (distanceToPlayer <= targetAttackRange)
         {
             boss.ReturnToDecision();
             return;
         }
 
-        //  Á¾·á Á¶°Ç 2: ³Ê¹« ¿À·¡ °É¾úÀ» ¶§ (Àå¾Ö¹°¿¡ ¸·Çû°Å³ª ÇÃ·¹ÀÌ¾î°¡ °è¼Ó µµ¸ÁÄ§)
+        //  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2: ï¿½Ê¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¾ï¿½ï¿½ï¿½ ï¿½ï¿½ (ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä§)
         if (stateTimer >= maxWalkTime)
         {
             boss.ReturnToDecision();
             return;
         }
 
-        // ÀÌµ¿ ·ÎÁ÷: ÇÃ·¹ÀÌ¾î¸¦ ¹Ù¶óº¸¸ç ±âº» ¼ÓµµÀÇ Àý¹Ý(0.5f)À¸·Î ÃµÃµÈ÷ ÀüÁø
+        // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½Ù¶óº¸¸ï¿½ ï¿½âº» ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(0.5f)ï¿½ï¿½ï¿½ï¿½ ÃµÃµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         boss.RotateTowardsTarget();
         boss.MoveBoss(boss.transform.forward * (boss.moveSpeed * 0.5f) * Time.deltaTime);
     }

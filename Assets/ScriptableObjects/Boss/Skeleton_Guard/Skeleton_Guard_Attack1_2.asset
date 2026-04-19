@@ -10,24 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e1dde6025c3c0b4bb3465e1e6fd1872, type: 3}
-  m_Name: Skeleton_Guard_Attack3
+  m_Name: Skeleton_Guard_Attack1_2
   m_EditorClassIdentifier: Assembly-CSharp::BossAttack_SO_Data
-  attackClip: {fileID: 7400000, guid: 391c26eff98137f4c81f9dfa397a42b9, type: 2}
-  attackName: "\uC5F0\uC18D\uACF5\uACA93"
+  attackName: "\uC5F0\uC18D\uACF5\uACA92"
   minDistance: 0
   maxDistance: 20
-  minAngle: -180
-  maxAngle: -180
+  validMinAngle: -45
+  validMaxAngle: 45
   cooldown: 0
   weight: 10
   requiredPhase: 1
-  lastUsedTime: -999
-  canTrackTarget: 1
-  animationName: .
+  attackClip: {fileID: 7400000, guid: 0283ab0d172ab2f41af5b3897b9e2719, type: 2}
+  transitionDuration: 0.2
+  animationSpeedMultiplier: 0.8
+  useRootMotion: 1
+  trackingType: 2
+  turnSpeed: 20
+  stopTrackingTime: 0.3
+  damage: 20
+  poiseDamage: 10
+  hasHyperArmor: 1
   hitboxStartTime: 0.167
   hitboxEndTime: 0.5
-  comboEnableTime: 0.75
+  comboEnableTime: 0.8
   attackEndTime: 0.9
-  damage: 20
-  trackTarget: 1
-  nextCombo: {fileID: 11400000, guid: 24ee3e3a3d65372428ef2df1917ba47a, type: 2}
+  nextCombo: {fileID: 11400000, guid: d3bd123424fa71d4f99dbbead77d981d, type: 2}
+  lastUsedTime: -999

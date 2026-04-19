@@ -3,14 +3,14 @@ using UnityEngine;
 public class Humanoid_Boss_Idle_State : BossBaseState
 {
     private float stateTimer;
-    private float idleDuration; // ½¯ ½Ã°£
+    private float idleDuration; // ï¿½ï¿½ ï¿½Ã°ï¿½
 
     public Humanoid_Boss_Idle_State(BossBaseController boss, BossStateMachine stateMachine) : base(boss, stateMachine) { }
 
     public override void Enter()
     {
         stateTimer = 0f;
-        // 0.5ÃÊ¿¡¼­ 1.5ÃÊ »çÀÌ·Î ·£´ýÇÏ°Ô ¼ûÀ» °í¸¨´Ï´Ù (±â°èÀûÀÎ ´À³¦ ¹æÁö)
+        // 0.5ï¿½Ê¿ï¿½ï¿½ï¿½ 1.5ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         idleDuration = Random.Range(0.5f, 1.5f);
 
         boss.animator.CrossFadeInFixedTime("Idle", 0.2f);
@@ -20,10 +20,10 @@ public class Humanoid_Boss_Idle_State : BossBaseState
     {
         stateTimer += Time.deltaTime;
 
-        // °¡¸¸È÷ ¼­ ÀÖ´õ¶óµµ ½Ã¼±Àº ÇÃ·¹ÀÌ¾î¸¦ ÇâÇØ ¹¬Á÷ÇÏ°Ô °íÁ¤ÇÕ´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½Ã¼ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         boss.RotateTowardsTarget();
 
-        //  Á¾·á Á¶°Ç: ½¬´Â ½Ã°£ÀÌ ³¡³ª¸é ´Ù½Ã »ý°¢ÇÏ·¯ °©´Ï´Ù.
+        //  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½.
         if (stateTimer >= idleDuration)
         {
             boss.ReturnToDecision();

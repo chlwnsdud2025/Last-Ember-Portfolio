@@ -5,7 +5,7 @@ public abstract class BossBaseState
     protected BossBaseController boss;
     protected BossStateMachine stateMachine;
 
-    // »ý¼ºÀÚ: ÀÚ½Ä »óÅÂµéÀÌ »ý¼ºµÉ ¶§ º¸½ºÀÇ ¸öÅë°ú »óÅÂ ¸Ó½ÅÀ» ¿¬°á¹Þ½À´Ï´Ù.
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Þ½ï¿½ï¿½Ï´ï¿½.
     public BossBaseState(BossBaseController boss, BossStateMachine stateMachine)
     {
         this.boss = boss;
@@ -15,4 +15,6 @@ public abstract class BossBaseState
     public virtual void Enter() { }
     public virtual void Update() { }
     public virtual void Exit() { }
+
+
 }

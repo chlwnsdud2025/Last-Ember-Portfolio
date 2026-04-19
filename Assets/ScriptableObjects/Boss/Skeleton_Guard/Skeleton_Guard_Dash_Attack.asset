@@ -12,22 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e1dde6025c3c0b4bb3465e1e6fd1872, type: 3}
   m_Name: Skeleton_Guard_Dash_Attack
   m_EditorClassIdentifier: Assembly-CSharp::BossAttack_SO_Data
-  attackClip: {fileID: 7400000, guid: c8c6511ae07ddbc44b5388841a7ef7ee, type: 3}
   attackName: "\uB300\uC26C \uACF5\uACA9"
   minDistance: 0
-  maxDistance: 20
-  minAngle: -180
-  maxAngle: -180
+  maxDistance: 15
+  validMinAngle: -100
+  validMaxAngle: -99
   cooldown: 0
   weight: 20
   requiredPhase: 1
-  lastUsedTime: -999
-  canTrackTarget: 1
-  animationName: 
+  attackClip: {fileID: 7400000, guid: c8c6511ae07ddbc44b5388841a7ef7ee, type: 3}
+  transitionDuration: 0.1
+  animationSpeedMultiplier: 0.85
+  useRootMotion: 1
+  trackingType: 1
+  turnSpeed: 5
+  stopTrackingTime: 0.3
+  damage: 20
+  poiseDamage: 10
+  hasHyperArmor: 1
   hitboxStartTime: 0.313
   hitboxEndTime: 0.52
-  comboEnableTime: 0.747
-  attackEndTime: 0.864
-  damage: 20
-  trackTarget: 1
+  comboEnableTime: 0.7
+  attackEndTime: 0.8
   nextCombo: {fileID: 0}
+  lastUsedTime: -999

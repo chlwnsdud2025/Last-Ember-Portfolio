@@ -7,7 +7,7 @@ public class EnemyStats : MonoBehaviour
     public float maxHealth = 100f;
     public float currentHealth;
 
-    // ³ªÁß¿¡ ¸÷ ¸Ó¸® À§ Ã¼·Â¹Ù UI¸¦ ¸¸µé ¶§ »ç¿ëÇÒ ÀÌº¥Æ®
+    // ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ ï¿½Ó¸ï¿½ ï¿½ï¿½ Ã¼ï¿½Â¹ï¿½ UIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ®
     public event Action<float, float> OnEnemyHpChanged;
 
     private EnemyController enemyController;
@@ -18,16 +18,16 @@ public class EnemyStats : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    // ÇÃ·¹ÀÌ¾îÀÇ ¹«±â(WeaponController)¿¡¼­ ÀûÀ» ¶§¸± ¶§ ÀÌ ÇÔ¼ö¸¦ È£ÃâÇÏ°Ô µË´Ï´Ù.
+    // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(WeaponController)ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ë´Ï´ï¿½.
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        // Ã¼·Â¹Ù UI ¾÷µ¥ÀÌÆ® ½ÅÈ£ ¹ß¼Û
+        // Ã¼ï¿½Â¹ï¿½ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È£ ï¿½ß¼ï¿½
         OnEnemyHpChanged?.Invoke(currentHealth, maxHealth);
 
-        // µ¥¹ÌÁö¸¦ ÀÔ¾úÀ» ¶§ÀÇ »óÅÂ ÀüÈ¯ (Hit ¶Ç´Â Dead)
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ (Hit ï¿½Ç´ï¿½ Dead)
         if (enemyController != null)
         {
             if (currentHealth <= 0)
@@ -36,7 +36,7 @@ public class EnemyStats : MonoBehaviour
             }
             else
             {
-                // Ã¼·ÂÀÌ ³²¾ÆÀÖ´Ù¸é ÇÇ°Ý(°æÁ÷) »óÅÂ·Î
+                // Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´Ù¸ï¿½ ï¿½Ç°ï¿½(ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½Â·ï¿½
                 enemyController.stateMachine.ChangeState(enemyController.hitsState);
             }
         }

@@ -8,7 +8,7 @@ public class HitState : PlayerBaseState
 
     public override void Enter()
     {
-        //Debug.Log("Enemy »óÅÂ: Hit (°æÁ÷!)");
+        //Debug.Log("Enemy ï¿½ï¿½ï¿½ï¿½: Hit (ï¿½ï¿½ï¿½ï¿½!)");
 
         player.animator.CrossFadeInFixedTime(hitAnimHash, 0.1f, 0, 0f);
 
@@ -19,10 +19,10 @@ public class HitState : PlayerBaseState
     {
         AnimatorStateInfo stateInfo = player.animator.GetCurrentAnimatorStateInfo(0);
 
-        // ÇöÀç ½ÇÁ¦·Î "Hit" ¸ð¼ÇÀÌ Àç»ý ÁßÀÎÁö È®ÀÎ
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "Hit" ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         if (stateInfo.shortNameHash == hitAnimHash && !player.animator.IsInTransition(0))
         {
-            // °æÁ÷ÀÌ Ç®¸± ½Ã
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç®ï¿½ï¿½ ï¿½ï¿½
             if (stateInfo.normalizedTime >= 0.9f)
             {
 
@@ -38,6 +38,6 @@ public class HitState : PlayerBaseState
         player.animator.applyRootMotion = false;
     }
 
-    public override void OnAttackInput() {/*¹«½Ã*/}
-    public override void OnDashInput() {/*¹«½Ã*/}
+    public override void OnAttackInput() {/*ï¿½ï¿½ï¿½ï¿½*/}
+    public override void OnDashInput() {/*ï¿½ï¿½ï¿½ï¿½*/}
 }

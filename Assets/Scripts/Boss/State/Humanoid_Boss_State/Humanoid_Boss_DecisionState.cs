@@ -11,20 +11,20 @@ public class BossDecisionState : BossBaseState
 
         if (chosenOption != null)
         {
-            //attackÀÏ °æ¿ì
+            //attackï¿½ï¿½ ï¿½ï¿½ï¿½
             if (chosenOption.targetState == boss.attackState && chosenOption.attackData != null)
             {
-                // AttackState·Î Çüº¯È¯ÇÑ µÚ, currentAttackData¿¡ SO¸¦ ½ï ²È¾ÆÁÝ´Ï´Ù!
+                // AttackStateï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½, currentAttackDataï¿½ï¿½ SOï¿½ï¿½ ï¿½ï¿½ ï¿½È¾ï¿½ï¿½Ý´Ï´ï¿½!
                 var attackState = (Humanoid_Boss_Attack_State)boss.attackState;
                 attackState.currentAttackData = chosenOption.attackData;
             }
 
-            // µ¥ÀÌÅÍ ¼¼ÆÃÀÌ ³¡³µÀ¸´Ï ¾È½ÉÇÏ°í »óÅÂ¸¦ ÀüÈ¯ÇÕ´Ï´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½È¯ï¿½Õ´Ï´ï¿½.
             stateMachine.ChangeState(chosenOption.targetState);
         }
         else
         {
-            boss.ReturnToDecision(); // ¾ÈÀüÀåÄ¡
+            boss.ReturnToDecision(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡
         }
     }
 
@@ -54,12 +54,12 @@ public class BossDecisionState : BossBaseState
             if (randomValue < cumulativeWeight)
             {
                 option.lastUsedTime = Time.time;
-                //  º¯°æ: option.targetState°¡ ¾Æ´Ï¶ó option ÀÚÃ¼¸¦ ¸®ÅÏ!
+                //  ï¿½ï¿½ï¿½ï¿½: option.targetStateï¿½ï¿½ ï¿½Æ´Ï¶ï¿½ option ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!
                 return option;
             }
         }
 
-        return validOptions[0]; // ¾ÈÀüÀåÄ¡
+        return validOptions[0]; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡
     }
 
 }

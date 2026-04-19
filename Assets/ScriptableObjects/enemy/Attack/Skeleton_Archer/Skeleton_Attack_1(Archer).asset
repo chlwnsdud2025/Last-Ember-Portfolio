@@ -20,7 +20,7 @@ MonoBehaviour:
   priorityWeight: 10
   trackingWindowEnd: 0.2
   transitionPoint: 0.9
-  weaponIndex: 1
+  weaponIndex: 0
   hitTimings:
   - startTime: 0.1
     endTime: 0.5

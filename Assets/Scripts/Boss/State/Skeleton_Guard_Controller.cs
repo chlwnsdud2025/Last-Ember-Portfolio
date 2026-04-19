@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Skeleton_Guard_Controller : BossBaseController
 {
-    //  부모(BossBaseController)에 없는 이 보스만의 고유 상태들
     public BossBaseState runState { get; private set; }
     public BossBaseState strafeState { get; private set; }
     public BossBaseState dodgeState { get; private set; }
@@ -12,7 +11,6 @@ public class Skeleton_Guard_Controller : BossBaseController
     {
         base.Awake();
 
-        // 1. 상태 레고 블록 생성 (메모리 할당)
         decisionState = new BossDecisionState(this, stateMachine);
         idleState = new Humanoid_Boss_Idle_State(this, stateMachine);
         chaseState = new Humanoid_Boss_Walk_State(this, stateMachine);

@@ -2,24 +2,24 @@ using UnityEngine;
 
 public class Humanoid_Boss_Stun_State : BossBaseState
 {
-    // »ý¼ºÀÚ: ºÎ¸ð(BossBaseState)¿¡°Ô º¸½º ÄÁÆ®·Ñ·¯¿Í »óÅÂ ¸Ó½ÅÀ» ³Ñ°ÜÁÝ´Ï´Ù.
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½Î¸ï¿½(BossBaseState)ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½Ñ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ý´Ï´ï¿½.
     public Humanoid_Boss_Stun_State(BossBaseController boss, BossStateMachine stateMachine) : base(boss, stateMachine)
     {
     }
 
     public override void Enter()
     {
-        Debug.Log("º¸½º Stun »óÅÂ ÁøÀÔ!");
+        Debug.Log("ï¿½ï¿½ï¿½ï¿½ Stun ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!");
         // ex) boss.animator.CrossFadeInFixedTime("Idle", 0.2f);
     }
 
     public override void Update()
     {
-        // ex) ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸®¸¦ Àç¼­ °È±â³ª ¶Ù±â·Î ÀüÈ¯ÇÏ´Â ·ÎÁ÷
+        // ex) ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ç¼­ ï¿½È±â³ª ï¿½Ù±ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
     public override void Exit()
     {
-        // »óÅÂ¸¦ ºüÁ®³ª°¥ ¶§ ÇÊ¿äÇÑ Á¤¸® ÀÛ¾÷
+        // ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½
     }
 }

@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class Humanoid_Boss_Dodge_State : BossBaseState
 {
-    //  ¾Ö´Ï¸ÞÀÌÅÍ ÆÄ¶ó¹ÌÅÍ ¹× »óÅÂ ÇØ½Ã°ª (¹Ì¸® Ä³½ÌÇÏ¿© ¼º´É ±Ø´ëÈ­)
+    //  ï¿½Ö´Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½Ã°ï¿½ (ï¿½Ì¸ï¿½ Ä³ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½È­)
     private readonly int dodgeXHash = Animator.StringToHash("DodgeX");
     private readonly int dodgeYHash = Animator.StringToHash("DodgeY");
-    private readonly int dodgeStateHash = Animator.StringToHash("Dodge"); // »óÅÂ ÀÌ¸§ ÇØ½Ã
+    private readonly int dodgeStateHash = Animator.StringToHash("Dodge"); // ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½Ø½ï¿½
 
     public Humanoid_Boss_Dodge_State(BossBaseController boss, BossStateMachine stateMachine) : base(boss, stateMachine) { }
 
@@ -21,7 +21,7 @@ public class Humanoid_Boss_Dodge_State : BossBaseState
 
         if (distanceToPlayer < 3f)
         {
-            targetY = -1f; // ¹é½ºÅÜ
+            targetY = -1f; // ï¿½é½ºï¿½ï¿½
         }
         else if (distanceToPlayer > 10f)
         {
@@ -29,7 +29,7 @@ public class Humanoid_Boss_Dodge_State : BossBaseState
         }
         else if (distanceToPlayer >= 3f && distanceToPlayer <= 10f)
         {
-            targetX = Random.value > 0.5f ? 1f : -1f; // »çÀÌµå½ºÅÜ
+            targetX = Random.value > 0.5f ? 1f : -1f; // ï¿½ï¿½ï¿½Ìµå½ºï¿½ï¿½
         }
 
         boss.animator.SetFloat(dodgeXHash, targetX);
@@ -42,11 +42,11 @@ public class Humanoid_Boss_Dodge_State : BossBaseState
     {
         boss.RotateTowardsTarget();
 
-        //  À¯Àú´ÔÀÇ ¾ÆÀÌµð¾î Àû¿ë: ÁøÇàµµ¸¦ °¡Á®¿Í¼­ ÆÇ´Ü!
+        //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½àµµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½Ç´ï¿½!
         AnimatorStateInfo stateInfo = boss.animator.GetCurrentAnimatorStateInfo(0);
 
-        // 1. ÇöÀç Àç»ý ÁßÀÎ »óÅÂ°¡ ¿Ïº®ÇÏ°Ô 'Dodge'ÀÎÁö È®ÀÎ (Æ®·£Áö¼Ç ²¿ÀÓ ¹æÁö)
-        // 2. ¾Ö´Ï¸ÞÀÌ¼Ç ÁøÇàµµ°¡ 95% ÀÌ»ó ÁøÇàµÇ¾ú´ÂÁö È®ÀÎ (1.0À¸·Î µü ¸ÂÃß¸é 1ÇÁ·¹ÀÓ Æ¢´Â Çö»ó ¹æÁö)
+        // 1. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ ï¿½Ïºï¿½ï¿½Ï°ï¿½ 'Dodge'ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ (Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+        // 2. ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½àµµï¿½ï¿½ 95% ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ (1.0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ß¸ï¿½ 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         if (stateInfo.shortNameHash == dodgeStateHash && stateInfo.normalizedTime >= 0.95f)
         {
             boss.ReturnToDecision();

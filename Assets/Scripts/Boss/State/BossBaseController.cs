@@ -15,14 +15,14 @@ public abstract class BossBaseController : MonoBehaviour
 
     public AnimatorOverrideController overrideController { get; protected set; }
 
-    // »óÅÂ ¸Ó½Å
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½
     public BossStateMachine stateMachine { get; protected set; }
 
     
     public BossBaseState decisionState { get; protected set; }
     public List<BossActionOption> availableActions = new List<BossActionOption>();
 
-    // »óÅÂ ½½·Ôµé
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½
     public BossBaseState idleState { get; protected set; }
     public BossBaseState chaseState { get; protected set; }
     public BossBaseState attackState { get; protected set; }
@@ -52,9 +52,7 @@ public abstract class BossBaseController : MonoBehaviour
         stateMachine.Update();
     }
 
-    // ---------------------------------------------------
-    //  Çàµ¿À» ¸¶Ä¡°í ´Ù½Ã »ý°¢ÇÏ·¯ µ¹¾Æ°¡´Â ÇÙ½É Æ®¸®°Å
-    // ---------------------------------------------------
+
     public void ReturnToDecision()
     {
         if (stateMachine.CurrentState != decisionState && decisionState != null)
@@ -63,13 +61,14 @@ public abstract class BossBaseController : MonoBehaviour
         }
     }
 
-    // --- °ø¿ë ÀÌµ¿ ·ÎÁ÷ ---
     public void MoveBoss(Vector3 moveVector)
     {
         transform.position += moveVector;
     }
 
-    public void RotateTowardsTarget()
+    // ìˆ˜ì • ì „: public void RotateTowardsTarget()
+    // ìˆ˜ì • í›„: speed ê°’ì„ ë„˜ê²¨ë°›ì„ ìˆ˜ ìžˆê²Œ ì˜¤ë²„ë¡œë”© (ê¸°ë³¸ê°’ì€ ê¸°ì¡´ rotationSpeed)
+    public void RotateTowardsTarget(float overrideSpeed = -1f)
     {
         if (target == null) return;
 
@@ -78,8 +77,11 @@ public abstract class BossBaseController : MonoBehaviour
 
         if (dirToTarget != Vector3.zero)
         {
+            // overrideSpeedê°€ ì•ˆ ë“¤ì–´ì˜¤ë©´(-1) ê¸°ë³¸ ì†ë„, ë“¤ì–´ì˜¤ë©´ ê·¸ ì†ë„ë¥¼ ì”ë‹ˆë‹¤.
+            float finalSpeed = (overrideSpeed > 0f) ? overrideSpeed : rotationSpeed;
+
             Quaternion targetRotation = Quaternion.LookRotation(dirToTarget);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, finalSpeed * Time.deltaTime);
         }
     }
 }

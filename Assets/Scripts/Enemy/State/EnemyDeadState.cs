@@ -16,10 +16,10 @@ public class EnemyDeadState : EnemyBaseState
 
         if (player != null && player.isLockedOn)
         {
-            // [ÇÙ½É ¼öÁ¤] Å¸°ÙÀÌ '¸öÅë'ÀÌ°Å³ª '¶ô¿Â Æ÷ÀÎÆ®(°¡½¿)'ÀÏ ¶§ ¸ðµÎ ¶ô¿ÂÀ» Ç±´Ï´Ù!
+            // [ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½] Å¸ï¿½ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½'ï¿½Ì°Å³ï¿½ 'ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®(ï¿½ï¿½ï¿½ï¿½)'ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Ç±ï¿½Ï´ï¿½!
             if (player.currentTarget == enemy.transform || player.currentTarget == enemy.lockOnPoint)
             {
-                player.ClearLockOn(); // ¶ô¿Â ÇØÁ¦
+                player.ClearLockOn(); // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             }
         }
 
@@ -31,7 +31,7 @@ public class EnemyDeadState : EnemyBaseState
             }
         }
 
-        // ÄÝ¶óÀÌ´õ¸¦ ²ô±â
+        // ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         if (enemy.characterController != null)
         {
             enemy.characterController.enabled = false;

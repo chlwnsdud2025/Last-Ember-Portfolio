@@ -1210,6 +1210,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SkeletonSoldier (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3002210075908726729, guid: a741b9e43e8ad4b48aa668355504c689, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3654773133961971604, guid: a741b9e43e8ad4b48aa668355504c689, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.3000001
@@ -1825,6 +1829,10 @@ PrefabInstance:
     - target: {fileID: 3728137311764476794, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
       propertyPath: m_Name
       value: Skeleton (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3728137311764476794, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8211183897011229856, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2785,7 +2793,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &62783730
 Transform:
   m_ObjectHideFlags: 0
@@ -8142,6 +8150,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Skeleton (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3728137311764476794, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8211183897011229856, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.53
@@ -10441,6 +10453,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Skeleton (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3728137311764476794, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8211183897011229856, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.38
@@ -12601,7 +12617,8 @@ GameObject:
   m_Component:
   - component: {fileID: 237939455}
   - component: {fileID: 237939457}
-  - component: {fileID: 237939456}
+  - component: {fileID: 237939458}
+  - component: {fileID: 237939459}
   m_Layer: 0
   m_Name: PlayerCinemachine
   m_TagString: Untagged
@@ -12617,39 +12634,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 237939454}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7299999, y: 1.8, z: -14.83}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.7299999, y: 2, z: -18.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &237939456
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 237939454}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 625c14eee3ad46c99df7c7c891ef668a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineThirdPersonFollow
-  Damping: {x: 1, y: 1.5, z: 1}
-  ShoulderOffset: {x: 0, y: -0.1, z: -1.5}
-  VerticalArmLength: 0.5
-  CameraSide: 0.5
-  CameraDistance: 1.5
-  AvoidObstacles:
-    Enabled: 0
-    CollisionFilter:
-      serializedVersion: 2
-      m_Bits: 1
-    IgnoreTag: 
-    CameraRadius: 0.2
-    DampingIntoCollision: 0
-    DampingFromCollision: 0.5
 --- !u!114 &237939457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12674,7 +12665,7 @@ MonoBehaviour:
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
-    FieldOfView: 70
+    FieldOfView: 35
     OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
@@ -12693,6 +12684,46 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &237939458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 237939454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 625c14eee3ad46c99df7c7c891ef668a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineThirdPersonFollow
+  Damping: {x: 2, y: 1, z: 1}
+  ShoulderOffset: {x: 0, y: 0, z: 0}
+  VerticalArmLength: 1
+  CameraSide: 0.5
+  CameraDistance: 7
+  AvoidObstacles:
+    Enabled: 0
+    CollisionFilter:
+      serializedVersion: 2
+      m_Bits: 1
+    IgnoreTag: 
+    CameraRadius: 0.2
+    DampingIntoCollision: 0
+    DampingFromCollision: 0.5
+--- !u!114 &237939459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 237939454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4cee5bcf8a91d34cbda2571b23ce999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockCameraY
+  fixedYPosition: 2
+  isLockedOn: 1
 --- !u!4 &240324864 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 449052, guid: 939f27c57ef13654eafcf37ff873a454, type: 3}
@@ -12772,6 +12803,10 @@ PrefabInstance:
     - target: {fileID: 3002210075908726729, guid: a741b9e43e8ad4b48aa668355504c689, type: 3}
       propertyPath: m_Name
       value: SkeletonSoldier (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3002210075908726729, guid: a741b9e43e8ad4b48aa668355504c689, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3654773133961971604, guid: a741b9e43e8ad4b48aa668355504c689, type: 3}
       propertyPath: m_LocalScale.x
@@ -31945,7 +31980,7 @@ Transform:
   m_GameObject: {fileID: 599824391}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7299999, y: 1.4, z: -11.83}
+  m_LocalPosition: {x: 0.7299999, y: 1.7, z: -11.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -32953,8 +32988,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 626292860}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7299999, y: 1.8, z: -14.83}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.7299999, y: 2, z: -18.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -33077,7 +33112,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 70
+  field of view: 35
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -53500,6 +53535,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Skeleton
       objectReference: {fileID: 0}
+    - target: {fileID: 3728137311764476794, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6284307588181696733, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
       propertyPath: viewAngle
       value: 86
@@ -66597,7 +66636,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1278931338
 Transform:
   m_ObjectHideFlags: 0
@@ -99273,7 +99312,7 @@ MonoBehaviour:
     maxDistance: 100
     cooldown: 100
     lastUsedTime: 0
-    baseWeight: 5
+    baseWeight: 3
     attackData: {fileID: 0}
   - actionName: Walk
     stateType: 4
@@ -99281,7 +99320,7 @@ MonoBehaviour:
     maxDistance: 30
     cooldown: 0
     lastUsedTime: 0
-    baseWeight: 5
+    baseWeight: 3
     attackData: {fileID: 0}
   - actionName: Run
     stateType: 0
@@ -99289,7 +99328,7 @@ MonoBehaviour:
     maxDistance: 100
     cooldown: 0
     lastUsedTime: 0
-    baseWeight: 5
+    baseWeight: 3
     attackData: {fileID: 0}
   - actionName: Strafe
     stateType: 1
@@ -99297,7 +99336,7 @@ MonoBehaviour:
     maxDistance: 15
     cooldown: 0
     lastUsedTime: 0
-    baseWeight: 5
+    baseWeight: 3
     attackData: {fileID: 0}
   - actionName: Dodge
     stateType: 2
@@ -99305,7 +99344,7 @@ MonoBehaviour:
     maxDistance: 50
     cooldown: 10
     lastUsedTime: 0
-    baseWeight: 5
+    baseWeight: 10
     attackData: {fileID: 0}
   - actionName: "\uC810\uD504\uACF5\uACA9"
     stateType: 6
@@ -99313,7 +99352,7 @@ MonoBehaviour:
     maxDistance: 25
     cooldown: 10
     lastUsedTime: 0
-    baseWeight: 15
+    baseWeight: 20
     attackData: {fileID: 11400000, guid: 54c9aa7cc41834f4699e7d3c4cfebe75, type: 2}
   - actionName: "\uC5F0\uC18D \uACF5\uACA91"
     stateType: 6
@@ -99321,7 +99360,7 @@ MonoBehaviour:
     maxDistance: 15
     cooldown: 10
     lastUsedTime: 0
-    baseWeight: 15
+    baseWeight: 30
     attackData: {fileID: 11400000, guid: cb1a76b31b54c8542b43479452cc8e3e, type: 2}
   - actionName: "\uB300\uC26C \uACF5\uACA9"
     stateType: 6
@@ -99329,8 +99368,16 @@ MonoBehaviour:
     maxDistance: 20
     cooldown: 10
     lastUsedTime: 0
-    baseWeight: 15
+    baseWeight: 30
     attackData: {fileID: 11400000, guid: 5675822e11878b04c8b3e8ccd8bb6ae6, type: 2}
+  - actionName: "\uC5F0\uC18D\uACF5\uACA92"
+    stateType: 6
+    minDistance: 5
+    maxDistance: 20
+    cooldown: 10
+    lastUsedTime: 0
+    baseWeight: 30
+    attackData: {fileID: 11400000, guid: 236b03c7a6dc44d48a5c6409886351d5, type: 2}
 --- !u!95 &1904205597
 Animator:
   serializedVersion: 7
@@ -99387,7 +99434,7 @@ Transform:
   m_GameObject: {fileID: 1904205595}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 15.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -99810,7 +99857,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3002210075908726729, guid: a741b9e43e8ad4b48aa668355504c689, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3654773133961971604, guid: a741b9e43e8ad4b48aa668355504c689, type: 3}
       propertyPath: m_LocalPosition.x
@@ -101946,6 +101993,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1904205599}
     m_Modifications:
+    - target: {fileID: 2611838448583870408, guid: 8b84704c434f2a642bba5c236d190d4d, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3793412650054521457, guid: 8b84704c434f2a642bba5c236d190d4d, type: 3}
       propertyPath: m_Name
       value: Skeleton_Soldier_Boss
@@ -110559,7 +110610,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3728137311764476794, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8211183897011229856, guid: 58328d218390bea45beccf7ecd15bdd0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -110626,6 +110677,10 @@ PrefabInstance:
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 599824393}
+    - target: {fileID: 4162472679781091843, guid: 89f7ab862a7b24f4f9cf1a52f65bb8bb, type: 3}
+      propertyPath: cameraYLockScript
+      value: 
+      objectReference: {fileID: 237939459}
     - target: {fileID: 4162472679781091843, guid: 89f7ab862a7b24f4f9cf1a52f65bb8bb, type: 3}
       propertyPath: currentWeaponScript
       value: 

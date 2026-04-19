@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     public float switchCooldown = 0.3f; // 락온 변경 쿨타임
     private float currentSwitchCooldown = 0f;
     private bool hasFlicked = false;
+    public LockCameraY cameraYLockScript;//락온시 카메라y축 고정할 스크립트
 
     [Header("Anim_Components")]
     public Animator animator;
@@ -140,7 +141,7 @@ public class PlayerController : MonoBehaviour
             }
 
             // 1. 임계값(Threshold)을 대폭 상향합니다. 마우스 감도에 따라 10f ~ 30f 사이로 조절하세요!
-            float flickThreshold = 15.0f;
+            float flickThreshold = 30.0f;
 
             // 2. 쿨타임이 끝났고, 아직 방아쇠를 당기지 않은 상태일 때만 검사
             if (currentSwitchCooldown <= 0 && !hasFlicked)
@@ -159,7 +160,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            // 3. ❗ [핵심] 마우스 움직임이 멈추면(0에 가까워지면) 다시 튕길 수 있도록 방아쇠를 풀어줍니다.
+            // 3.  [핵심] 마우스 움직임이 멈추면(0에 가까워지면) 다시 튕길 수 있도록 방아쇠를 풀어줍니다.
             if (Mathf.Abs(mouseMoveInput.x) < 2.0f)
             {
                 hasFlicked = false;
@@ -171,56 +172,49 @@ public class PlayerController : MonoBehaviour
 
 
     // 카메라 회전 및 움직임 ( 락온 부분 이해 필요! )
-    private void LateUpdate() 
+    private void LateUpdate()
     {
         if (cameraTransform == null || cameraTarget == null) return;
 
-        // 중심축이 플레이어의 '위치'만 따라갑니다. 
-        // 플레이어의 '회전'은 무시하므로, 캐릭터가 구르거나 빙글빙글 돌아도 카메라는 요동치지 않습니다.
-        // 캐릭터 발밑이 아니라 가슴이나 머리 높이를 중심점으로 삼도록 Y값을 1.5f 정도 올려줍니다.
-        cameraTarget.position = transform.position + Vector3.up * 1.5f;
+        cameraTarget.position = transform.position + Vector3.up;
 
         // 락온 카메라 처리
         if (isLockedOn && currentTarget != null)
         {
             Vector3 dirToTarget = currentTarget.position - cameraTarget.position;
+
+            // Y축 높이 차이를 무시하여 상하 회전 방지 (위치 고정)
+            dirToTarget.y = 0f;
+
             float distanceToTarget = dirToTarget.magnitude;
 
-            // 1. 수직(Y축) 흔들림 억제 (기존 유지)
-            if (distanceToTarget < 10.0f)
+            // 거리가 0이 되어 LookRotation이 에러를 뿜는 것 방지
+            if (dirToTarget != Vector3.zero)
             {
-                dirToTarget.y *= (distanceToTarget / 10.0f);
+                Quaternion targetRot = Quaternion.LookRotation(dirToTarget);
+                float angleToTarget = Vector3.Angle(cameraTarget.forward, dirToTarget);
+
+                float currentRotationSpeed = 15f;
+                if (distanceToTarget < 1.0f)
+                {
+                    currentRotationSpeed = Mathf.Lerp(2f, 15f, distanceToTarget / 2.0f);
+                }
+
+                if (angleToTarget < 10.0f)
+                {
+                    currentRotationSpeed *= (angleToTarget / 5.0f);
+                }
+
+                cameraTarget.rotation = Quaternion.Slerp(cameraTarget.rotation, targetRot, currentRotationSpeed * Time.deltaTime);
             }
 
-            Quaternion targetRot = Quaternion.LookRotation(dirToTarget);
-            float angleToTarget = Vector3.Angle(cameraTarget.forward, dirToTarget);
-
-            // 2. 거리 비례 기본 감속 (초근접 시 휙휙 도는 것 방지)
-            float currentRotationSpeed = 15f;
-            if (distanceToTarget < 1.0f)
-            {
-                currentRotationSpeed = Mathf.Lerp(2f, 15f, distanceToTarget / 2.0f);
-            }
-
-            // 3. [핵심 수정] 소프트 데드존 (Soft Deadzone)
-            // 하드하게 멈추지 않고, 10도 이내로 들어오면 각도에 비례해서 속도를 부드럽게 줄입니다.
-            if (angleToTarget < 10.0f)
-            {
-                // 각도가 5도면 속도 100%, 2.5도면 50%, 0도면 0%로 스무스하게 브레이크가 걸립니다.
-                currentRotationSpeed *= (angleToTarget / 5.0f);
-            }
-
-            //  if문으로 회전을 막지 않고, 매 프레임 Slerp를 실행하여 부드러움을 유지합니다.
-            cameraTarget.rotation = Quaternion.Slerp(cameraTarget.rotation, targetRot, currentRotationSpeed * Time.deltaTime);
-
-            // 락온이 풀렸을 때 마우스 튀는 현상 방지
             Vector3 euler = cameraTarget.rotation.eulerAngles;
             cameraYaw = euler.y;
             cameraPitch = euler.x > 180 ? euler.x - 360 : euler.x;
         }
         else
         {
-            // 자유 카메라 처리 (기존 코드 유지)
+            // 자유 카메라 처리 (기존과 동일)
             float lookX = mouseMoveInput.x * mouseSensitivity * 0.1f;
             float lookY = mouseMoveInput.y * mouseSensitivity * 0.1f;
 
@@ -318,8 +312,10 @@ public class PlayerController : MonoBehaviour
     {
         isLockedOn = false;
         currentTarget = null;
+        cameraYLockScript.isLockedOn = false;
     }
 
+    // 락온 켜기
     // 락온 켜기
     private void ToggleLockOn()
     {
@@ -345,29 +341,40 @@ public class PlayerController : MonoBehaviour
                 {
                     closestDistance = dist;
 
-                    // 적의 EnemyController를 찾아 lockOnPoint를 타겟으로 삼습니다.
                     EnemyController targetEnemy = col.GetComponent<EnemyController>();
+                    BossBaseController targetBoss = col.GetComponent<BossBaseController>();
+
                     if (targetEnemy != null && targetEnemy.lockOnPoint != null)
                     {
-                        bestTarget = targetEnemy.lockOnPoint; // 가슴/머리 지점을 타겟팅
+                        bestTarget = targetEnemy.lockOnPoint;
+                    }
+                    else if (targetBoss != null && targetBoss.lockOnPoint != null)
+                    {
+                        bestTarget = targetBoss.lockOnPoint;
                     }
                     else
                     {
-                        bestTarget = col.transform; // 설정이 안 되어있다면 기존처럼 발밑
+                        bestTarget = col.transform;
                     }
                 }
             }
         }
 
+        //  타겟을 확실히 찾았을 때만 모든 변수를 true로 만듭니다.
         if (bestTarget != null)
         {
             currentTarget = bestTarget;
             isLockedOn = true;
+
+            if (cameraYLockScript != null)
+            {
+                cameraYLockScript.isLockedOn = true;
+                Debug.Log("카메라 Y축 고정 스크립트 ON!"); // 디버그 로그 추가
+            }
         }
         else
         {
-            isLockedOn = false;
-            currentTarget = null;
+            ClearLockOn(); // 허공에 눌렀을 때 확실하게 초기화
         }
     }
 
@@ -384,10 +391,18 @@ public class PlayerController : MonoBehaviour
         foreach (Collider col in colliders)
         {
             EnemyController targetEnemy = col.GetComponent<EnemyController>();
-            if (targetEnemy == null) continue;
+            BossBaseController targetBoss = col.GetComponent<BossBaseController>();
+            if (targetEnemy == null && targetBoss == null) continue;
 
+
+            //Transform potentialTarget = targetEnemy.lockOnPoint != null ? targetEnemy.lockOnPoint : col.transform;
+            Transform potentialTarget = col.transform; // 기본값
+
+            if (targetEnemy != null && targetEnemy.lockOnPoint != null)
+                potentialTarget = targetEnemy.lockOnPoint;
+            else if (targetBoss != null && targetBoss.lockOnPoint != null)
+                potentialTarget = targetBoss.lockOnPoint;
             // 락온 포인트가 있으면 쓰고, 없으면 전체 몸통 사용
-            Transform potentialTarget = targetEnemy.lockOnPoint != null ? targetEnemy.lockOnPoint : col.transform;
 
             // 자기 자신(현재 타겟)은 건너뜀
             if (potentialTarget == currentTarget) continue;

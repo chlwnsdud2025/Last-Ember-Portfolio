@@ -8,12 +8,12 @@ public class EnemyHitState : EnemyBaseState
 
     public override void Enter()
     {
-        //Debug.Log("Enemy »óÅÂ: Hit (°æÁ÷!)");
+        //Debug.Log("Enemy ï¿½ï¿½ï¿½ï¿½: Hit (ï¿½ï¿½ï¿½ï¿½!)");
 
-        // ÇÇ°Ý ¸ð¼Ç Àç»ý (ÀÌÀü ¾Ö´Ï¸ÞÀÌ¼Ç ¹«½ÃÇÏ°í °­Á¦·Î 0ÃÊºÎÅÍ ½ÃÀÛ)
+        // ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½Êºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         enemy.animator.CrossFadeInFixedTime(hitAnimHash, 0.1f, 0, 0f);
 
-        // ¸¸¾à ¸Â´Â ¾Ö´Ï¸ÞÀÌ¼Ç¿¡ µÚ·Î ¹Ð·Á³ª´Â ·çÆ® ¸ð¼ÇÀÌ ÀÖ´Ù¸é ÄÕ´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Â´ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼Ç¿ï¿½ ï¿½Ú·ï¿½ ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½Õ´Ï´ï¿½.
         enemy.animator.applyRootMotion = true;
     }
 
@@ -21,10 +21,10 @@ public class EnemyHitState : EnemyBaseState
     {
         AnimatorStateInfo stateInfo = enemy.animator.GetCurrentAnimatorStateInfo(0);
 
-        // ÇöÀç ½ÇÁ¦·Î "Hit" ¸ð¼ÇÀÌ Àç»ý ÁßÀÎÁö È®ÀÎ
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "Hit" ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         if (stateInfo.shortNameHash == hitAnimHash && !enemy.animator.IsInTransition(0))
         {
-            // °æÁ÷ÀÌ Ç®¸± ½Ã
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç®ï¿½ï¿½ ï¿½ï¿½
             if (stateInfo.normalizedTime >= 0.9f)
             {
                 

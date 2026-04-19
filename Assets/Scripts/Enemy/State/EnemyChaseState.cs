@@ -8,23 +8,23 @@ public class EnemyChaseState : EnemyBaseState
 
     public override void Enter()
     {
-        //Debug.Log("Enemy »óÅÂ: Chase (ÃßÀû ½ÃÀÛ!)");
+        //Debug.Log("Enemy ï¿½ï¿½ï¿½ï¿½: Chase (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!)");
         enemy.animator.CrossFadeInFixedTime(chaseAnimHash, 0.1f);
     }
 
     public override void Update()
     {
-        //Idle ÀüÈ¯
+        //Idle ï¿½ï¿½È¯
         if (enemy.target == null)
         {
             enemyStateMachine.ChangeState(enemy.idleState);
             return;
         }
 
-        // ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸® °è»ê
+        // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½
         float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.target.position);
 
-        // ¾î±×·Î Ç®¸² Á¶°Ç -> Å½Áö °Å¸®ÀÇ 1.5¹è ÀÌ»ó ¸Ö¾îÁö¸é º¹±Í
+        // ï¿½ï¿½×·ï¿½ Ç®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ -> Å½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ 1.5ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (distanceToPlayer > enemy.detectionRadius * 1.5f)
         {
             enemy.target = null;
@@ -36,7 +36,7 @@ public class EnemyChaseState : EnemyBaseState
         Vector3 dirToTarget = (enemy.target.position - enemy.transform.position).normalized;
         dirToTarget.y = 0f;
 
-        // È¸Àü
+        // È¸ï¿½ï¿½
         if (dirToTarget != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(dirToTarget);
@@ -50,17 +50,17 @@ public class EnemyChaseState : EnemyBaseState
 
             if (nextAttack != null)
             {
-                // Áö±Ý ´çÀå ¶§¸± ¼ö ÀÖ´Â °ø°ÝÀÌ ÀÖÀ¸¸é ¹ßµ¿!
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ßµï¿½!
                 enemyStateMachine.ChangeState(nextAttack);
                 return;
             }
-            // ¿©±â¼­ else·Î Strafe¸¦ ºÎ¸£Áö ¾Ê½À´Ï´Ù! 
-            // ÄðÅ¸ÀÓÀº Ã¡´Âµ¥ °Å¸®°¡ ¾È ´ê´Â´Ù¸é, ¾Æ·¡ÂÊÀÇ MoveEnemy°¡ ½ÇÇàµÇ¾î °è¼Ó ´Ù°¡°©´Ï´Ù.
+            // ï¿½ï¿½ï¿½â¼­ elseï¿½ï¿½ Strafeï¿½ï¿½ ï¿½Î¸ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½! 
+            // ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ Ã¡ï¿½Âµï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Â´Ù¸ï¿½, ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ MoveEnemyï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ ï¿½Ù°ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
         }
-        // 2. °ø°Ý ÄðÅ¸ÀÓÀÌ µ¹°í ÀÖÀ» ¶§ (½Ã°£À» ¹ú¾î¾ß ÇÔ)
+        // 2. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ (ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
         else
         {
-            // ¾ÆÁ÷ ¶§¸®Áöµµ ¸øÇÏ´Âµ¥ ÇÃ·¹ÀÌ¾î¿Í ÃæºÐÈ÷ °¡±õ´Ù¸é(strafeRange), ºùºù µ¹¸é¼­ ½Ã°£À» ²ü´Ï´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½(strafeRange), ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é¼­ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½.
             if (distanceToPlayer <= enemy.strafeRange)
             {
                 enemyStateMachine.ChangeState(enemy.strafeState);

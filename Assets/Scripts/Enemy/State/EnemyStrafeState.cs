@@ -12,7 +12,7 @@ public class EnemyStrafeState : EnemyBaseState
         //Debug.Log("Enemy: Strafe");
         enemy.animator.CrossFadeInFixedTime(strafeAnimHash, 0.1f);
 
-        //È¸Àü ¹æÇâ ¼³Á¤
+        //È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         strafeDirection = Random.Range(0, 2) == 0 ? 1 : -1;
         enemy.animator.SetFloat("strafeDirection", strafeDirection);
     }
@@ -25,10 +25,10 @@ public class EnemyStrafeState : EnemyBaseState
             return;
         }
 
-        // ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸® °è»ê
+        // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½
         float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.target.position);
 
-        // »ç°Å¸®¸¦ ¹þ¾î³¯½Ã chase ÀüÈ¯
+        // ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î³¯ï¿½ï¿½ chase ï¿½ï¿½È¯
         if (distanceToPlayer > enemy.strafeRange * 1.2f)
         {
             enemyStateMachine.ChangeState(enemy.chaseState);
@@ -36,7 +36,7 @@ public class EnemyStrafeState : EnemyBaseState
         }
 
         // -------------------------------------------------------------
-        //  °ßÁ¦ Áß ÄðÅ¸ÀÓ È¸º¹ ½Ã Çàµ¿ ÆÇ´Ü
+        //  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ ï¿½àµ¿ ï¿½Ç´ï¿½
         // -------------------------------------------------------------
         if (Time.time >= enemy.lastAttackTime + enemy.attackCooldown)
         {
@@ -44,14 +44,14 @@ public class EnemyStrafeState : EnemyBaseState
 
             if (nextAttack != null)
             {
-                // µ¹´Ù°¡ °Å¸®°¡ ¸Â¾Æ¼­ °ø°ÝÇÒ ¼ö ÀÖÀ¸¸é Áï½Ã °ø°Ý!
+                // ï¿½ï¿½ï¿½Ù°ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½Â¾Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!
                 enemyStateMachine.ChangeState(nextAttack);
                 return;
             }
             else
             {
-                //  [ÇÙ½É] ÄðÅ¸ÀÓÀº ´Ù Ã¡´Âµ¥ °Å¸®°¡ ¸Ö¾î¼­ ¶§¸± ±â¼úÀÌ ¾ø´Ù¸é?
-                // °Ô°ÉÀ½À» ¸ØÃß°í °Å¸®¸¦ Á¼È÷±â À§ÇØ ´Ù½Ã Chase »óÅÂ·Î µ¹¾Æ°©´Ï´Ù!
+                //  [ï¿½Ù½ï¿½] ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ã¡ï¿½Âµï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½Ö¾î¼­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½?
+                // ï¿½Ô°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß°ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ Chase ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½Ï´ï¿½!
                 enemyStateMachine.ChangeState(enemy.chaseState);
                 return;
             }
