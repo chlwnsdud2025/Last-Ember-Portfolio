@@ -34,18 +34,11 @@ public class WeaponController : MonoBehaviour
         {
             //맞았던 적 제외
             //alreadyHitEnemies.Add(other);
-
-            
-            if(targetTag == "Enemy")
+            EnemyStats hitEnemy = other.GetComponent<EnemyStats>();
+            if (hitEnemy != null)
             {
-                EnemyStats hitEnemy = other.GetComponent<EnemyStats>();
-                if (hitEnemy != null)
-                {
-                    hitEnemy.TakeDamage(currentDamage);
-                }
+                hitEnemy.TakeDamage(currentDamage);
             }
-            
-            
         }
     }
 }

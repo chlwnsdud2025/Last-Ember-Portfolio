@@ -15,14 +15,12 @@ public abstract class BossBaseController : MonoBehaviour
 
     public AnimatorOverrideController overrideController { get; protected set; }
 
-    // ���� �ӽ�
     public BossStateMachine stateMachine { get; protected set; }
 
     
     public BossBaseState decisionState { get; protected set; }
     public List<BossActionOption> availableActions = new List<BossActionOption>();
 
-    // ���� ���Ե�
     public BossBaseState idleState { get; protected set; }
     public BossBaseState chaseState { get; protected set; }
     public BossBaseState attackState { get; protected set; }

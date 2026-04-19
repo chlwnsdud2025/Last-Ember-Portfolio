@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
-    // ¾îµð¼­µç Á¢±Ù °¡´ÉÇÑ ½Ì±ÛÅæ
+    // ï¿½ï¿½ð¼­µï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì±ï¿½ï¿½ï¿½
     public static UIManager Instance { get; private set; }
 
     [Header("Player Reference")]
@@ -15,9 +15,9 @@ public class UIManager : MonoBehaviour
 
 
     [Header("Size Settings")]
-    [Tooltip("Ã¼·Â 1´ç UI ¹ÙÀÇ ÇÈ¼¿ ±æÀÌ (¿¹: 2·Î ¼³Á¤ÇÏ¸é ÃÖ´ëÃ¼·Â 100ÀÏ ¶§ ±æÀÌ 200)")]
+    [Tooltip("Ã¼ï¿½ï¿½ 1ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ ï¿½È¼ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½: 2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ö´ï¿½Ã¼ï¿½ï¿½ 100ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 200)")]
     [SerializeField] private float hpWidthMultiplier = 0.5f;
-    [Tooltip("½ºÅ×¹Ì³ª 1´ç UI ¹ÙÀÇ ÇÈ¼¿ ±æÀÌ")]
+    [Tooltip("ï¿½ï¿½ï¿½×¹Ì³ï¿½ 1ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ ï¿½È¼ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private float staminaWidthMultiplier = 0.3f;
 
 
@@ -34,7 +34,7 @@ public class UIManager : MonoBehaviour
 
     void OnEnable()
     {
-        // ÇÃ·¹ÀÌ¾î ½ºÅ©¸³Æ®ÀÇ ÀÌº¥Æ®¿¡ ÇÔ¼ö ¿¬°á (±¸µ¶)
+        // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½)
         if (playerStats != null)
         {
             playerStats.OnHpChanged += UpdateHpUI;
@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour
 
     void OnDisable()
     {
-        // ¸Þ¸ð¸® ´©¼ö ¹æÁö¸¦ À§ÇÑ ±¸µ¶ ÇØÁ¦
+        // ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (playerStats != null)
         {
             playerStats.OnHpChanged -= UpdateHpUI;
@@ -56,11 +56,11 @@ public class UIManager : MonoBehaviour
     {
         if (hpSlider != null)
         {
-            // 1. °ª °»½Å
+            // 1. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             hpSlider.maxValue = max;
             hpSlider.value = current;
 
-            // 2. ÃÖ´ë Ã¼·Â¿¡ ¸ÂÃç ½½¶óÀÌ´õÀÇ °¡·Î ±æÀÌ(Width) Á¶Àý
+            // 2. ï¿½Ö´ï¿½ Ã¼ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(Width) ï¿½ï¿½ï¿½ï¿½
             RectTransform rect = hpSlider.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(max * hpWidthMultiplier, rect.sizeDelta.y);
         }
@@ -70,11 +70,11 @@ public class UIManager : MonoBehaviour
     {
         if (staminaSlider != null)
         {
-            // 1. °ª °»½Å
+            // 1. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             staminaSlider.maxValue = max;
             staminaSlider.value = current;
 
-            // 2. ÃÖ´ë ½ºÅ×¹Ì³ª¿¡ ¸ÂÃç ½½¶óÀÌ´õÀÇ °¡·Î ±æÀÌ(Width) Á¶Àý
+            // 2. ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½×¹Ì³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(Width) ï¿½ï¿½ï¿½ï¿½
             RectTransform rect = staminaSlider.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(max * staminaWidthMultiplier, rect.sizeDelta.y);
         }

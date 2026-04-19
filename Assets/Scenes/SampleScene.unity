@@ -99280,6 +99280,7 @@ GameObject:
   - component: {fileID: 1904205598}
   - component: {fileID: 1904205597}
   - component: {fileID: 1904205596}
+  - component: {fileID: 1904205600}
   m_Layer: 6
   m_Name: Skeleton_Guard_Boss
   m_TagString: Enemy
@@ -99441,6 +99442,20 @@ Transform:
   - {fileID: 1672056811}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &1904205600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1904205595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1304b69328672e742a2b083473e79fe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
+  maxHealth: 100
+  currentHealth: 0
 --- !u!4 &1904963426 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 498858, guid: 8b910cd6f920f4c49aec7f9d5364de2c, type: 3}

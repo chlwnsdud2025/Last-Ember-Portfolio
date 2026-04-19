@@ -8,12 +8,9 @@ public class EnemyHitState : EnemyBaseState
 
     public override void Enter()
     {
-        //Debug.Log("Enemy ����: Hit (����!)");
 
-        // �ǰ� ��� ��� (���� �ִϸ��̼� �����ϰ� ������ 0�ʺ��� ����)
         enemy.animator.CrossFadeInFixedTime(hitAnimHash, 0.1f, 0, 0f);
 
-        // ���� �´� �ִϸ��̼ǿ� �ڷ� �з����� ��Ʈ ����� �ִٸ� �մϴ�.
         enemy.animator.applyRootMotion = true;
     }
 
@@ -21,10 +18,8 @@ public class EnemyHitState : EnemyBaseState
     {
         AnimatorStateInfo stateInfo = enemy.animator.GetCurrentAnimatorStateInfo(0);
 
-        // ���� ������ "Hit" ����� ��� ������ Ȯ��
         if (stateInfo.shortNameHash == hitAnimHash && !enemy.animator.IsInTransition(0))
         {
-            // ������ Ǯ�� ��
             if (stateInfo.normalizedTime >= 0.9f)
             {
                 

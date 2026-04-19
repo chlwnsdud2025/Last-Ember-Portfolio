@@ -60,9 +60,7 @@ public class EnemyController : MonoBehaviour
         hitsState = new EnemyHitState(this, stateMachine);
         deadState = new EnemyDeadState(this, stateMachine);
 
-        // -------------------------------------------------------------
-        // ❗ [핵심 변경] 런타임 클립 교체 (오버라이드) 세팅
-        // -------------------------------------------------------------
+        
         if (animator.runtimeAnimatorController != null)
         {
             overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
@@ -110,6 +108,7 @@ public class EnemyController : MonoBehaviour
         return null;
     }
 
+    //사거리 그리기
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.white;
@@ -126,6 +125,7 @@ public class EnemyController : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, strafeRange);
     }
 
+    //사거리 그리기위한 앵글 계산
     private Vector3 DirFromAngle(float eulerY, float angleInDegrees)
     {
         angleInDegrees += eulerY;
@@ -154,9 +154,7 @@ public class EnemyController : MonoBehaviour
             Vector3 rootMotion = animator.deltaPosition;
             rootMotion.y = 0f;
 
-            // ------------------------------------------------------------------
-            //  [핵심 에러 해결] is 키워드를 사용하여 "현재 상태의 종류"를 검사합니다.
-            // ------------------------------------------------------------------
+            
             if (target != null && stateMachine.enemyCurrentState is EnemyAttackState)
             {
                 float dist = Vector3.Distance(transform.position, target.position);
@@ -197,14 +195,14 @@ public class EnemyController : MonoBehaviour
         System.Collections.Generic.List<int> validIndices = new System.Collections.Generic.List<int>();
         int totalWeight = 0;
 
-        // 1. 발동 가능한 공격들만 추려내기 (거리 검사 + ❗개별 쿨타임 검사)
+        // 1. 발동 가능한 공격들만 추려내기 (거리 검사 + 개별 쿨타임 검사)
         for (int i = 0; i < attackPatterns.Length; i++)
         {
             // 거리 조건 확인
             bool isDistanceValid = distanceToPlayer >= attackPatterns[i].minAttackRange &&
                                    distanceToPlayer <= attackPatterns[i].maxAttackRange;
 
-            //  [핵심] 이 스킬의 개별 쿨타임이 다 돌았는가?
+            // 이 스킬의 개별 쿨타임이 다 돌았는가?
             bool isSkillReady = Time.time >= attackStates[i].lastUsedTime + attackPatterns[i].cooldown;
 
             // 거리도 맞고 쿨타임도 돌았다면 후보에 추가!
