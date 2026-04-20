@@ -16,10 +16,19 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float regenDelay = 1.5f; 
     private float lastUseTime;
 
+    [Header("Potions")]
+    public int maxPotions = 3;         // 최대 소지 가능 물약 수
+    public int currentPotions = 3;     // 현재 남은 물약 수
+    public float healAmount = 40f;     // 한 번 마실 때 차오르는 회복량
+
     public event Action<float, float> OnHpChanged;
     public event Action<float, float> OnStaminaChanged;
-
+    public event Action<int> OnMoneyChanged;
+    public event Action<int, int> OnPotionChanged;
     public bool canRegen = true;
+
+    [Header("Currency")]
+    public int currentMoney = 0;
 
     void Awake()
     {
@@ -83,6 +92,45 @@ public class PlayerStats : MonoBehaviour
     public void DelayRegen()
     {
         lastUseTime = Time.time;
+    }
+
+    public void AddMoney(int amount)
+    {
+        currentMoney += amount;
+        Debug.Log($"돈 획득! +{amount} (현재 잔액: {currentMoney})");
+
+        // UI 업데이트 방송 송출
+        OnMoneyChanged?.Invoke(currentMoney);
+    }
+
+
+    public void RefillPotions()
+    {
+        currentPotions = maxPotions;
+        Debug.Log(" 화톳불: 물약이 모두 보충되었습니다.");
+        OnPotionChanged?.Invoke(currentPotions, maxPotions);
+    }
+
+    public bool CanDrinkPotion()
+    {
+        return currentPotions > 0 && currentHp < maxHp;
+    }
+
+    public void ConsumePotion()
+    {
+        if (currentPotions > 0)
+        {
+            currentPotions--;
+            OnPotionChanged?.Invoke(currentPotions, maxPotions);
+        }
+    }
+
+    public void Heal()
+    {
+        currentHp += healAmount;
+        currentHp = Mathf.Clamp(currentHp, 0, maxHp);
+
+        OnHpChanged?.Invoke(currentHp, maxHp); 
     }
 
 }

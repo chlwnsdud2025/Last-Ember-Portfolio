@@ -16,7 +16,6 @@ public abstract class BossBaseController : MonoBehaviour
     [Header("Stats & Phase")]
     private EnemyStats myStats; // 내 몸뚱이 스탯
     public float phase2Threshold = 0.5f;
-    private bool isPhase2Triggered = false;
 
     [Header("UI 연결")]
     public BossUIManager bossUI;

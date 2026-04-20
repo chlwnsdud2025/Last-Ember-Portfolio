@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour
     public HitState hitState { get; private set; }
 
     public DeadState deadState { get; private set; }
-
+    public DrinkState drinkState { get; private set; }
 
     private void Awake()
     {
@@ -99,6 +99,7 @@ public class PlayerController : MonoBehaviour
         walkState = new WalkState(this, stateMachine);
         hitState = new HitState(this, stateMachine);
         deadState = new DeadState(this, stateMachine);
+        drinkState = new DrinkState(this, stateMachine);
 
         // 단발성 액션 이벤트
         controls.PlayerMovement.Attack.performed += ctx => stateMachine.CurrentState.OnAttackInput();
