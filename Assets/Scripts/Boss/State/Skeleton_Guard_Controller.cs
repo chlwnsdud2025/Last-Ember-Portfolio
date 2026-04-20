@@ -22,7 +22,7 @@ public class Skeleton_Guard_Controller : BossBaseController
         attackState = new Humanoid_Boss_Attack_State(this, stateMachine);
         phaseChangeState = new Humanoid_Boss_PhaseChange_State(this, stateMachine);
         sleepState = new Humanoid_Boss_Sleep_State(this, stateMachine);
-
+        deadState = new Humanoid_Boss_Dead_State(this, stateMachine);
 
         if (animator != null)
         {

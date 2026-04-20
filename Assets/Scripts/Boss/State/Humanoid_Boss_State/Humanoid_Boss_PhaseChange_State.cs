@@ -17,7 +17,7 @@ public class Humanoid_Boss_PhaseChange_State : BossBaseState
         //Instantiate(phase2AuraEffect, boss.transform.position, Quaternion.identity);
 
         // 2페이즈 돌입 포효 애니메이션 재생
-        boss.animator.CrossFadeInFixedTime("Pase2", 0.2f);
+        boss.animator.CrossFadeInFixedTime("Phase2", 0.2f);
     }
 
     public override void Update()

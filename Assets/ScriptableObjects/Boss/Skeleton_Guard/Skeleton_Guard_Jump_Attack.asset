@@ -12,22 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e1dde6025c3c0b4bb3465e1e6fd1872, type: 3}
   m_Name: Skeleton_Guard_Jump_Attack
   m_EditorClassIdentifier: Assembly-CSharp::BossAttack_SO_Data
-  attackClip: {fileID: 7400000, guid: aa679c350f5a5094faaaeb9815c09818, type: 2}
   attackName: "\uC810\uD504 \uACF5\uACA9"
   minDistance: 0
-  maxDistance: 20
-  minAngle: -180
-  maxAngle: -180
+  maxDistance: 15
+  validMinAngle: -45
+  validMaxAngle: 45
   cooldown: 0
   weight: 20
-  requiredPhase: 1
-  lastUsedTime: -999
-  canTrackTarget: 1
-  animationName: 
+  requiredPhase: 2
+  attackClip: {fileID: 7400000, guid: aa679c350f5a5094faaaeb9815c09818, type: 2}
+  transitionDuration: 0.1
+  animationSpeedMultiplier: 1
+  useRootMotion: 1
+  trackingType: 1
+  turnSpeed: 5
+  stopTrackingTime: 0.3
+  damage: 20
+  poiseDamage: 10
+  hasHyperArmor: 1
   hitboxStartTime: 0.313
   hitboxEndTime: 0.52
   comboEnableTime: 0.747
   attackEndTime: 0.864
-  damage: 20
-  trackTarget: 1
   nextCombo: {fileID: 0}
+  lastUsedTime: -999

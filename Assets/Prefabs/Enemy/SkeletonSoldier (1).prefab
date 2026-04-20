@@ -629,8 +629,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   animator: {fileID: 6255261342481217291}
   characterController: {fileID: 8563175152508061840}
-  detectionRadius: 10
-  viewAngle: 83
+  detectionRadius: 20
+  viewAngle: 101
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
