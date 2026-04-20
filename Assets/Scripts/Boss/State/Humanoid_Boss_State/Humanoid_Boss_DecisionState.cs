@@ -11,20 +11,17 @@ public class BossDecisionState : BossBaseState
 
         if (chosenOption != null)
         {
-            //attack�� ���
             if (chosenOption.targetState == boss.attackState && chosenOption.attackData != null)
             {
-                // AttackState�� ����ȯ�� ��, currentAttackData�� SO�� �� �Ⱦ��ݴϴ�!
                 var attackState = (Humanoid_Boss_Attack_State)boss.attackState;
                 attackState.currentAttackData = chosenOption.attackData;
             }
 
-            // ������ ������ �������� �Ƚ��ϰ� ���¸� ��ȯ�մϴ�.
             stateMachine.ChangeState(chosenOption.targetState);
         }
         else
         {
-            boss.ReturnToDecision(); // ������ġ
+            boss.ReturnToDecision();
         }
     }
 
@@ -38,6 +35,15 @@ public class BossDecisionState : BossBaseState
         {
             if (distanceToPlayer < option.minDistance || distanceToPlayer > option.maxDistance) continue;
             if (Time.time < option.lastUsedTime + option.cooldown) continue;
+
+            //페이즈 판단
+            if (option.stateType == BossStateType.Attack && option.attackData != null)
+            {
+                if (option.attackData.requiredPhase > boss.currentPhase)
+                {
+                    continue;
+                }
+            }
 
             validOptions.Add(option);
             totalWeight += option.baseWeight;

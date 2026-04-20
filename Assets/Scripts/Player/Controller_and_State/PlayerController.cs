@@ -176,7 +176,7 @@ public class PlayerController : MonoBehaviour
     {
         if (cameraTransform == null || cameraTarget == null) return;
 
-        cameraTarget.position = transform.position + Vector3.up;
+        cameraTarget.position = transform.position + Vector3.up * 2f;
 
         // 락온 카메라 처리
         if (isLockedOn && currentTarget != null)
@@ -226,7 +226,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //무기 및 구르기의 모션 데이터 등 덮어쓰기
+    //공격 및 구르기의 모션 데이터 덮어쓰기
     public void EquipWeapon(Attack_SO_Data newData)
     {
         currentWeapon = newData;
@@ -316,7 +316,6 @@ public class PlayerController : MonoBehaviour
     }
 
     // 락온 켜기
-    // 락온 켜기
     private void ToggleLockOn()
     {
         if (isLockedOn)
@@ -378,6 +377,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //락온 바꾸기
     private void SwitchLockOnTarget(int direction)
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, lockOnRadius, enemyLayer);

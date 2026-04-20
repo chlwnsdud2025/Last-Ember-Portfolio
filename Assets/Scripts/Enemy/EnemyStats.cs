@@ -7,37 +7,32 @@ public class EnemyStats : MonoBehaviour
     public float maxHealth = 100f;
     public float currentHealth;
 
-    // 체력 변경 시 UI 등에 알림을 보내는 이벤트 (현재 체력, 최대 체력 전달)
-    //public event Action<float, float> OnEnemyHpChanged;
-
-    private EnemyController enemyController;
-    private BossBaseController bossController;
-
+    //  방송국(Event) 개설: "체력이 변했다!", "피가 0이 됐다!"
+    public event Action<float, float> OnHpChanged;
+    public event Action OnZeroHealth;
+    public event Action OnTakeDamage;
 
     private void Awake()
     {
-        enemyController = GetComponent<EnemyController>();
-        bossController = GetComponent<BossBaseController>();
         currentHealth = maxHealth;
     }
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);// 체력이 0 미만이나 최대치 초과가 되지 않게 방지
+        if (currentHealth <= 0) return; // 이미 죽었으면 무시
 
-        //OnEnemyHpChanged?.Invoke(currentHealth, maxHealth);
-        Debug.Log($"남은 체력:{currentHealth}");
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        Debug.Log($"[EnemyStats] 데미지 {damage} 받음! 남은 체력: {currentHealth}");
+
         
+        OnHpChanged?.Invoke(currentHealth, maxHealth);
+        OnTakeDamage?.Invoke();
+
         if (currentHealth <= 0)
         {
-            enemyController.stateMachine.ChangeState(enemyController.deadState);
-            bossController.stateMachine.ChangeState(bossController.deadState);
+            OnZeroHealth?.Invoke();
         }
-        else
-        {
-            enemyController.stateMachine.ChangeState(enemyController.hitsState);
-        }
-        
     }
 }

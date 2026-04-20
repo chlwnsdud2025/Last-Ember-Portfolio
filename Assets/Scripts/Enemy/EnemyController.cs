@@ -35,6 +35,7 @@ public class EnemyController : MonoBehaviour
     [Header("Attack Patterns (SO)")]
     public EnemyAttack_SO_Data[] attackPatterns;
 
+    private EnemyStats myStats;
 
     [Header("Targeting")]
     public Transform lockOnPoint;
@@ -85,6 +86,13 @@ public class EnemyController : MonoBehaviour
                 // 3. State를 생성할 때, "Attack0", "Attack1" 같은 재생할 노드 이름을 같이 넘겨줍니다.
                 attackStates[i] = new EnemyAttackState(this, stateMachine, attackPatterns[i], stateName);
             }
+        }
+
+        myStats = GetComponent<EnemyStats>();
+        if (myStats != null)
+        {
+            myStats.OnTakeDamage += HandleDamageTaken;
+            myStats.OnZeroHealth += HandleDeath;
         }
     }
 
@@ -231,5 +239,26 @@ public class EnemyController : MonoBehaviour
         }
 
         return attackStates[validIndices[0]];
+    }
+
+    private void HandleDamageTaken()
+    {
+        if (myStats.currentHealth <= 0) return;
+        stateMachine.ChangeState(hitsState);
+    }
+
+    private void HandleDeath()
+    {
+        stateMachine.ChangeState(deadState);
+    }
+
+    private void OnDestroy()
+    {
+        // 에러 방지를 위해 오브젝트가 파괴될 때 구독 취소
+        if (myStats != null)
+        {
+            myStats.OnTakeDamage -= HandleDamageTaken;
+            myStats.OnZeroHealth -= HandleDeath;
+        }
     }
 }

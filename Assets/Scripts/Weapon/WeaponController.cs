@@ -3,13 +3,11 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
-    public Collider weaponCollider; 
+    public Collider weaponCollider;
     public float currentDamage = 10f;
 
-    public string targetTag = "Enemy";
-
-    // 이번 공격에 맞았던 적 저장
-    //private List<Collider> alreadyHitEnemies = new List<Collider>();
+    // 🚨 다단히트 방지용 리스트 (절대 주석 해제 유지!)
+    private List<Collider> alreadyHitEnemies = new List<Collider>();
 
     private void Start()
     {
@@ -19,7 +17,8 @@ public class WeaponController : MonoBehaviour
     public void EnableHitbox()
     {
         weaponCollider.enabled = true;
-        //alreadyHitEnemies.Clear(); // 매 공격 시 초기화
+        // 새로운 공격 모션이 시작될 때마다 명부를 싹 비워줍니다.
+        alreadyHitEnemies.Clear();
     }
 
     public void DisableHitbox()
@@ -29,16 +28,18 @@ public class WeaponController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-       
-        if (other.CompareTag(targetTag) /*&& !alreadyHitEnemies.Contains(other)*/)
+        // 1. 이번 칼질에 이미 맞은 적인가? (다단히트 방지)
+        if (alreadyHitEnemies.Contains(other)) return;
+
+        if (other.TryGetComponent<EnemyStats>(out EnemyStats hitEnemy))
         {
-            //맞았던 적 제외
-            //alreadyHitEnemies.Add(other);
-            EnemyStats hitEnemy = other.GetComponent<EnemyStats>();
-            if (hitEnemy != null)
-            {
-                hitEnemy.TakeDamage(currentDamage);
-            }
+            // 2. 명부에 기록해서 이번 스윙에는 더 이상 안 맞게 처리
+            alreadyHitEnemies.Add(other);
+
+            // 3. 데미지 주기!
+            hitEnemy.TakeDamage(currentDamage);
+
+            // 여기에 타격 이펙트, 역경직, 타격음 재생 코드를 넣으면 완벽합니다!
         }
     }
 }

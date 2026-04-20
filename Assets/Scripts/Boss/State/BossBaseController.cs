@@ -13,6 +13,13 @@ public abstract class BossBaseController : MonoBehaviour
     public float rotationSpeed = 5f;
     public int currentPhase = 1;
 
+    [Header("Stats & Phase")]
+    private EnemyStats myStats; // 내 몸뚱이 스탯
+    public float phase2Threshold = 0.5f;
+    private bool isPhase2Triggered = false;
+
+    [Header("UI 연결")]
+    public BossUIManager bossUI;
     public AnimatorOverrideController overrideController { get; protected set; }
 
     public BossStateMachine stateMachine { get; protected set; }
@@ -26,7 +33,9 @@ public abstract class BossBaseController : MonoBehaviour
     public BossBaseState attackState { get; protected set; }
     public BossBaseState deadState { get; protected set; }
     public BossBaseState hitState { get; protected set; }
+    public BossBaseState phaseChangeState { get; protected set; }
 
+    public BossBaseState sleepState { get; protected set; }
     protected virtual void Awake()
     {
         stateMachine = new BossStateMachine();
@@ -36,6 +45,14 @@ public abstract class BossBaseController : MonoBehaviour
         {
             overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
             animator.runtimeAnimatorController = overrideController;
+        }
+
+        myStats = GetComponent<EnemyStats>();
+        if (myStats != null)
+        {
+            //  스탯 방송국 구독! (피격당하면 내 함수를 실행해라!)
+            myStats.OnTakeDamage += HandleDamageTaken;
+            myStats.OnZeroHealth += HandleDeath;
         }
     }
 
@@ -80,6 +97,48 @@ public abstract class BossBaseController : MonoBehaviour
 
             Quaternion targetRotation = Quaternion.LookRotation(dirToTarget);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, finalSpeed * Time.deltaTime);
+        }
+    }
+
+    private void HandleDamageTaken()
+    {
+        // 2페이즈 전환 로직이 여기에 들어오면 완벽합니다!
+        if (myStats.currentHealth <= myStats.maxHealth * 0.5f && currentPhase == 1)
+        {
+            Debug.Log(" 2페이즈 돌입!");
+            if (phaseChangeState != null) stateMachine.ChangeState(phaseChangeState);
+        }
+    }
+
+    private void HandleDeath()
+    {
+        Debug.Log(" 보스 사망!");
+        stateMachine.ChangeState(deadState);
+    }
+
+    private void OnDestroy()
+    {
+        // ❗ 에러 방지를 위해 오브젝트가 파괴될 때 구독 취소
+        if (myStats != null)
+        {
+            myStats.OnTakeDamage -= HandleDamageTaken;
+            myStats.OnZeroHealth -= HandleDeath;
+        }
+    }
+
+    public void WakeUpBoss()
+    {
+        // 자고 있을 때만 깨웁니다 (중복 실행 방지)
+        if (stateMachine.CurrentState == sleepState)
+        {
+
+            //  추후 여기에 보스 체력바 UI 활성화 코드를 넣으면 완벽합니다!
+            if (bossUI != null)
+            {
+                bossUI.ActivateBossUI();
+            }
+            // 수면 상태를 끝내고, 뇌(Decision)를 가동시킵니다.
+            stateMachine.ChangeState(decisionState);
         }
     }
 }

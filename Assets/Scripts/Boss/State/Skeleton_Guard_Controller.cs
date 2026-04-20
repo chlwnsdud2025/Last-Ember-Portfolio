@@ -7,6 +7,7 @@ public class Skeleton_Guard_Controller : BossBaseController
     public BossBaseState dodgeState { get; private set; }
     public BossBaseState stunState { get; private set; }
 
+
     protected override void Awake()
     {
         base.Awake();
@@ -19,9 +20,10 @@ public class Skeleton_Guard_Controller : BossBaseController
         dodgeState = new Humanoid_Boss_Dodge_State(this, stateMachine);
         stunState = new Humanoid_Boss_Stun_State(this, stateMachine);
         attackState = new Humanoid_Boss_Attack_State(this, stateMachine);
+        phaseChangeState = new Humanoid_Boss_PhaseChange_State(this, stateMachine);
+        sleepState = new Humanoid_Boss_Sleep_State(this, stateMachine);
 
 
-       
         if (animator != null)
         {
             overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
@@ -49,9 +51,9 @@ public class Skeleton_Guard_Controller : BossBaseController
     {
         base.Start();
 
-        if (decisionState != null)
+        if (sleepState != null)
         {
-            stateMachine.Initialize(decisionState);
+            stateMachine.Initialize(sleepState);
         }
     }
 
