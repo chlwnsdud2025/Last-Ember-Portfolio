@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
-    // ��𼭵� ���� ������ �̱���
     public static UIManager Instance { get; private set; }
 
     [Header("Player Reference")]
@@ -34,7 +33,6 @@ public class UIManager : MonoBehaviour
 
     void OnEnable()
     {
-        // �÷��̾� ��ũ��Ʈ�� �̺�Ʈ�� �Լ� ���� (����)
         if (playerStats != null)
         {
             playerStats.OnHpChanged += UpdateHpUI;
@@ -44,7 +42,6 @@ public class UIManager : MonoBehaviour
 
     void OnDisable()
     {
-        // �޸� ���� ������ ���� ���� ����
         if (playerStats != null)
         {
             playerStats.OnHpChanged -= UpdateHpUI;
@@ -56,11 +53,8 @@ public class UIManager : MonoBehaviour
     {
         if (hpSlider != null)
         {
-            // 1. �� ����
             hpSlider.maxValue = max;
             hpSlider.value = current;
-
-            // 2. �ִ� ü�¿� ���� �����̴��� ���� ����(Width) ����
             RectTransform rect = hpSlider.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(max * hpWidthMultiplier, rect.sizeDelta.y);
         }
@@ -70,11 +64,9 @@ public class UIManager : MonoBehaviour
     {
         if (staminaSlider != null)
         {
-            // 1. �� ����
             staminaSlider.maxValue = max;
             staminaSlider.value = current;
 
-            // 2. �ִ� ���׹̳��� ���� �����̴��� ���� ����(Width) ����
             RectTransform rect = staminaSlider.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(max * staminaWidthMultiplier, rect.sizeDelta.y);
         }
