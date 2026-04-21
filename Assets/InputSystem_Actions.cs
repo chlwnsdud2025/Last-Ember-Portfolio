@@ -1144,6 +1144,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Potion"",
+                    ""type"": ""Button"",
+                    ""id"": ""a8778f4f-3751-4b78-aceb-7a3d7435747d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1333,6 +1342,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Walk"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""022b37f2-88d4-47b1-a0e9-b2d386316fce"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Potion"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1432,6 +1452,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_PlayerMovement_Sprint = m_PlayerMovement.FindAction("Sprint", throwIfNotFound: true);
         m_PlayerMovement_LockOn = m_PlayerMovement.FindAction("LockOn", throwIfNotFound: true);
         m_PlayerMovement_Walk = m_PlayerMovement.FindAction("Walk", throwIfNotFound: true);
+        m_PlayerMovement_Potion = m_PlayerMovement.FindAction("Potion", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1900,6 +1921,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMovement_Sprint;
     private readonly InputAction m_PlayerMovement_LockOn;
     private readonly InputAction m_PlayerMovement_Walk;
+    private readonly InputAction m_PlayerMovement_Potion;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerMovement".
     /// </summary>
@@ -1939,6 +1961,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerMovement/Walk".
         /// </summary>
         public InputAction @Walk => m_Wrapper.m_PlayerMovement_Walk;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerMovement/Potion".
+        /// </summary>
+        public InputAction @Potion => m_Wrapper.m_PlayerMovement_Potion;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1986,6 +2012,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Walk.started += instance.OnWalk;
             @Walk.performed += instance.OnWalk;
             @Walk.canceled += instance.OnWalk;
+            @Potion.started += instance.OnPotion;
+            @Potion.performed += instance.OnPotion;
+            @Potion.canceled += instance.OnPotion;
         }
 
         /// <summary>
@@ -2018,6 +2047,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Walk.started -= instance.OnWalk;
             @Walk.performed -= instance.OnWalk;
             @Walk.canceled -= instance.OnWalk;
+            @Potion.started -= instance.OnPotion;
+            @Potion.performed -= instance.OnPotion;
+            @Potion.canceled -= instance.OnPotion;
         }
 
         /// <summary>
@@ -2321,5 +2353,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnWalk(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Potion" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPotion(InputAction.CallbackContext context);
     }
 }

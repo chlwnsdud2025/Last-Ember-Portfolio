@@ -33,6 +33,10 @@ public abstract class PlayerBaseState
         }
         
     }
+    public virtual void OnPotionInput()
+    {
+        stateMachine.ChangeState(player.drinkState);
+    }
 
     // 기본 이동 회전 (Root 기준)
     protected virtual void HandleRotation()

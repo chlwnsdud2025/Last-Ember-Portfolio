@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour
         controls.PlayerMovement.Attack.performed += ctx => stateMachine.CurrentState.OnAttackInput();
         controls.PlayerMovement.Dodge.performed += ctx => stateMachine.CurrentState.OnDashInput();
         controls.PlayerMovement.LockOn.performed += ctx => ToggleLockOn();
-
+        controls.PlayerMovement.Potion.performed += ctx => stateMachine.CurrentState.OnPotionInput();
 
         // 런타임에 애니메이션 클립을 동적으로 갈아끼우기 위한 오버라이드 컨트롤러 세팅
         overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
