@@ -18,7 +18,7 @@ public class EnemyHealthBar : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
-        player = FindObjectOfType<PlayerController>(); // 플레이어 참조 (Singleton이 있다면 인스턴스 사용 권장)
+        player = FindAnyObjectByType<PlayerController>(); // 플레이어 참조 (Singleton이 있다면 인스턴스 사용 권장)
 
         if (enemyStats != null)
         {

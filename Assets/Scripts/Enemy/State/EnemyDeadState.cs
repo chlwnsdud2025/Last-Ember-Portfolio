@@ -12,7 +12,7 @@ public class EnemyDeadState : EnemyBaseState
         enemy.animator.applyRootMotion = true;
         enemy.animator.CrossFadeInFixedTime(deadAnimHash, 0.2f, 0, 0f);
 
-        PlayerController player = Object.FindObjectOfType<PlayerController>();
+        PlayerController player = Object.FindAnyObjectByType<PlayerController>();
 
         if (player != null && player.isLockedOn)
         {

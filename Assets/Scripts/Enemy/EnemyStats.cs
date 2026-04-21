@@ -34,7 +34,7 @@ public class EnemyStats : MonoBehaviour
         if (currentHealth <= 0)
         {
             // 1. 맵에 있는 플레이어 지갑을 찾아서 돈을 넣어줍니다.
-            PlayerStats playerStats = FindObjectOfType<PlayerStats>();
+            PlayerStats playerStats = FindAnyObjectByType<PlayerStats>();
             if (playerStats != null)
             {
                 playerStats.AddMoney(dropMoneyAmount);
