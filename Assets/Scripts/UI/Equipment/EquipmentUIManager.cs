@@ -72,15 +72,15 @@ public class EquipmentUIManager : MonoBehaviour
     // ==========================================
     public void RefreshUI()
     {
-        // 현재는 EquipmentManager가 단일 장비만 기억하므로 첫 번째 슬롯에만 데이터를 뿌려줍니다.
-        // 추후 EquipmentManager를 배열로 수정하면 for문을 돌려 전체 슬롯을 업데이트할 수 있습니다.
+        // ★ 수정: 무기 슬롯 4칸을 돌면서, Manager의 배열 데이터를 1:1로 매칭해줍니다!
+        for (int i = 0; i < weaponSlots.Length; i++)
+        {
+            weaponSlots[i].UpdateSlotUI(EquipmentManager.Instance.currentWeapons[i]);
+        }
 
-        UpdateSlotArray(weaponSlots, EquipmentManager.Instance.currentWeapon);
-        UpdateSlotArray(armorSlots, EquipmentManager.Instance.currentArmor);
-        UpdateSlotArray(artifactSlots, EquipmentManager.Instance.currentAccessory);
-
-        // 소모품은 별도 로직이 필요할 수 있으므로 일단 비워둠
-        // UpdateSlotArray(consumableSlots, ...);
+        // 방어구, 장신구는 아직 1칸이므로 0번째 슬롯에만 세팅
+        if (armorSlots.Length > 0) armorSlots[0].UpdateSlotUI(EquipmentManager.Instance.currentArmor);
+        if (artifactSlots.Length > 0) artifactSlots[0].UpdateSlotUI(EquipmentManager.Instance.currentAccessory);
 
         UpdatePlayerStatusUI();
     }
@@ -132,20 +132,21 @@ public class EquipmentUIManager : MonoBehaviour
         PlayerStats stats = FindFirstObjectByType<PlayerStats>();
         if (stats != null)
         {
-            // PlayerStats의 변수명에 맞춰 수정 (예: currentMoney, maxHp 등)
-            // 현재 보내주신 PlayerStats.cs 기준으로 매칭
-            playerHpText.text = $"HP: {stats.healAmount} (Heal Pwr)";
-            playerStaminaText.text = $"STAMINA: {stats.CurrentStamina:F0}";
+            if (playerHpText != null) playerHpText.text = $"HP: {stats.healAmount} (Heal Pwr)";
+            if (playerStaminaText != null) playerStaminaText.text = $"STAMINA: {stats.CurrentStamina:F0}";
 
-            if (EquipmentManager.Instance.currentWeapon != null)
+            if (playerTotalDamageText != null)
             {
-                // 무기가 장착되어 있다면 계산된 데미지 표시
-                float damage = EquipmentManager.Instance.currentWeapon.GetCalculatedDamage(10, 10);
-                playerTotalDamageText.text = $"DAMAGE: {damage}";
-            }
-            else
-            {
-                playerTotalDamageText.text = "DAMAGE: 0";
+                // ★ 수정: 현재는 '1번 무기(인덱스 0)'의 데미지만 표시하도록 임시 설정
+                if (EquipmentManager.Instance.currentWeapons[0] != null)
+                {
+                    float damage = EquipmentManager.Instance.currentWeapons[0].GetCalculatedDamage(10, 10);
+                    playerTotalDamageText.text = $"DAMAGE: {damage}";
+                }
+                else
+                {
+                    playerTotalDamageText.text = "DAMAGE: 0";
+                }
             }
         }
     }
@@ -154,7 +155,7 @@ public class EquipmentUIManager : MonoBehaviour
     {
         if (EquipSelectionPopupUI.Instance != null)
         {
-            EquipSelectionPopupUI.Instance.OpenPopup(slotType);
+            EquipSelectionPopupUI.Instance.OpenPopup(slotType, targetSlotIndex);
         }
     }
 

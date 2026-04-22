@@ -5,9 +5,12 @@ public class EquipSelectionPopupUI : MonoBehaviour
 {
     public static EquipSelectionPopupUI Instance { get; private set; }
 
-    public GameObject popupPanel;      // 팝업 패널 전체
-    public Transform scrollContent;    // Scroll View의 Content 영역
-    public GameObject inventorySlotPrefab; // 위에서 만든 InventorySlotUI가 붙은 프리팹
+    public GameObject popupPanel;
+    public Transform scrollContent;
+    public GameObject inventorySlotPrefab;
+
+    // ★ 추가: 현재 열려있는 팝업이 '몇 번 슬롯'을 위한 것인지 기억하는 변수
+    private int currentTargetSlotIndex;
 
     private void Awake()
     {
@@ -15,29 +18,33 @@ public class EquipSelectionPopupUI : MonoBehaviour
         popupPanel.SetActive(false);
     }
 
-    public void OpenPopup(ItemType targetType)
+    // ★ 수정: 매개변수로 slotIndex를 추가로 받습니다.
+    public void OpenPopup(ItemType targetType, int slotIndex)
     {
+        currentTargetSlotIndex = slotIndex; // 몇 번 슬롯인지 기억!
         popupPanel.SetActive(true);
 
-        // 기존 슬롯 청소
         foreach (Transform child in scrollContent)
         {
             Destroy(child.gameObject);
         }
 
-        // 카테고리에 맞는 아이템만 쏙쏙 뽑아오기
         List<ItemInstance> filteredItems = InventoryManager.Instance.GetItemsByType(targetType);
 
-        // 슬롯 생성
         foreach (ItemInstance item in filteredItems)
         {
             GameObject newSlotObj = Instantiate(inventorySlotPrefab, scrollContent);
             InventorySlotUI slotUI = newSlotObj.GetComponent<InventorySlotUI>();
-            if (slotUI != null) slotUI.InitSlot(item, (selectedItem) =>
+
+            if (slotUI != null)
             {
-                EquipmentManager.Instance.Equip(selectedItem);
-                ClosePopup();
-            });
+                slotUI.InitSlot(item, (selectedItem) =>
+                {
+                    // ★ 수정: 장착할 때 "내가 기억해둔 슬롯 인덱스"를 같이 넘겨줍니다!
+                    EquipmentManager.Instance.Equip(selectedItem, currentTargetSlotIndex);
+                    ClosePopup();
+                });
+            }
         }
     }
 

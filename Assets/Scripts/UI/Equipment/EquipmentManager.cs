@@ -6,19 +6,18 @@ public class EquipmentManager : MonoBehaviour
     public static EquipmentManager Instance { get; private set; }
 
     [Header("Bones / Anchors")]
-    public Transform weaponHolder; // 무기가 실제로 생성되어 붙을 손 위치 (Bone)
+    public Transform weaponHolder;
 
     [Header("Current Equipment")]
-    public ItemInstance currentWeapon;
-    // 향후 확장을 위해 미리 정의
+    // 4칸짜리 무기 배열로 변경합니다!
+    public ItemInstance[] currentWeapons = new ItemInstance[4];
     public ItemInstance currentArmor;
     public ItemInstance currentAccessory;
 
-    // 장비가 바뀔 때마다 UI나 다른 시스템에 알림
     public event Action OnEquipmentChanged;
 
     private PlayerController playerController;
-    private GameObject spawnedWeaponModel; // 현재 손에 들고 있는 무기 프리팹 인스턴스
+    private GameObject spawnedWeaponModel;
 
     private void Awake()
     {
@@ -26,48 +25,42 @@ public class EquipmentManager : MonoBehaviour
         playerController = GetComponent<PlayerController>();
     }
 
-    /// <summary>
-    /// 아이템을 특정 슬롯에 장착합니다.
-    /// </summary>
-    public void Equip(ItemInstance item)
+    // 장착할 때 인덱스 번호를 받습니다.
+    public void Equip(ItemInstance item, int slotIndex = 0)
     {
         if (item == null || item.itemData == null) return;
 
         switch (item.itemData.itemType)
         {
             case ItemType.Weapon:
-                EquipWeapon(item);
+                EquipWeapon(item, slotIndex); // 인덱스 토스
                 break;
             case ItemType.Armor:
                 currentArmor = item;
-                // 방어구 스탯 적용 로직 추가 가능
                 break;
-                // 추가 케이스...
         }
 
         OnEquipmentChanged?.Invoke();
-        Debug.Log($"{item.itemData.itemName}을(를) 장착했습니다.");
+        Debug.Log($"{item.itemData.itemName}을(를) {slotIndex}번 슬롯에 장착했습니다.");
     }
 
-    private void EquipWeapon(ItemInstance weaponInstance)
+    // 인덱스를 받아서 배열에 저장합니다.
+    private void EquipWeapon(ItemInstance weaponInstance, int slotIndex)
     {
         WeaponData data = weaponInstance.itemData as WeaponData;
         if (data == null) return;
 
-        // 1. 기존 무기 모델 제거
         if (spawnedWeaponModel != null)
         {
             Destroy(spawnedWeaponModel);
         }
 
-        // 2. 새 무기 모델 생성 및 손에 부착
         if (data.weaponPrefab != null && weaponHolder != null)
         {
             spawnedWeaponModel = Instantiate(data.weaponPrefab, weaponHolder);
             spawnedWeaponModel.transform.localPosition = Vector3.zero;
             spawnedWeaponModel.transform.localRotation = Quaternion.identity;
 
-            // WeaponController 연결 (공격 판정을 위해)
             WeaponController weaponScript = spawnedWeaponModel.GetComponent<WeaponController>();
             if (weaponScript != null)
             {
@@ -75,29 +68,41 @@ public class EquipmentManager : MonoBehaviour
             }
         }
 
-        // 3. 데이터 업데이트
-        currentWeapon = weaponInstance;
+        // 수정: 단일 변수가 아니라 배열의 [해당 칸]에 저장합니다.
+        currentWeapons[slotIndex] = weaponInstance;
 
-        // 4. PlayerController의 애니메이션/공격 데이터 갱신
         playerController.EquipWeapon(data.attackData);
 
-        // 5. 무기 공격력 계산 (스탯 반영)
-        // 현재 무기의 실제 공격력을 PlayerController의 데미지로 전달
-        float finalDamage = weaponInstance.GetCalculatedDamage(10, 10); // 임시 스탯 값
+        float finalDamage = weaponInstance.GetCalculatedDamage(10, 10);
         if (playerController.currentWeaponScript != null)
         {
             playerController.currentWeaponScript.currentDamage = finalDamage;
         }
     }
 
-    public void Unequip(ItemType type)
+    public void Unequip(ItemType type, int slotIndex = 0)
     {
         if (type == ItemType.Weapon)
         {
+            // 손에 쥐고 있던 3D 모델링 파괴
             if (spawnedWeaponModel != null) Destroy(spawnedWeaponModel);
-            currentWeapon = null;
-            // 기본 맨손 상태로 복구 로직 추가 가능
+
+            // 배열에서 해당 칸을 비워줍니다!
+            currentWeapons[slotIndex] = null;
+
+            // (선택) 맨손 애니메이션으로 복구하는 로직
+            // playerController.EquipWeapon(기본_맨손_데이터);
         }
+        else if (type == ItemType.Armor)
+        {
+            currentArmor = null;
+        }
+        else if (type == ItemType.Artifact) // 또는 Accessory
+        {
+            currentAccessory = null;
+        }
+
+        // UI 매니저에게 장비가 빠졌다고 알려서 화면 갱신
         OnEquipmentChanged?.Invoke();
     }
 }
