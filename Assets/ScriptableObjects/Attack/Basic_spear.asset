@@ -12,43 +12,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51da54e293698b64b85722d2a1a9e8ed, type: 3}
   m_Name: Basic_spear
   m_EditorClassIdentifier: Assembly-CSharp::weapon_1_ob
-  weaponName: basic_sword
-  weaponPrefab: {fileID: 0}
+  weaponName: basic_Spear
   comboAttacks:
-  - clip: {fileID: 7400000, guid: 450e08c7d54b8784293440e1b5fdd02b, type: 2}
+  - clip: {fileID: 7400000, guid: 3a9c5e817625eb54e99c1192d1222232, type: 3}
     comboWindowStart: 0.1
     comboWindowEnd: 0.5
-    comboTransitionPoint: 0.4
-    cancelWindowStart: 0.6
-    hitboxStartTime: 0.1
-    hitboxEndTime: 0.38
-    damageMultiplier: 1
-    steminareduce: 8
-  - clip: {fileID: 7400000, guid: 95f8b41d4d8905341adfa0ccd356bb18, type: 2}
-    comboWindowStart: 0.1
-    comboWindowEnd: 0.5
-    comboTransitionPoint: 0.4
-    cancelWindowStart: 0.6
-    hitboxStartTime: 0.1
-    hitboxEndTime: 0.38
-    damageMultiplier: 1
-    steminareduce: 10
-  - clip: {fileID: 7400000, guid: fb0d266e647081246adf00940ed13dc1, type: 2}
-    comboWindowStart: 0.2
-    comboWindowEnd: 0.6
-    comboTransitionPoint: 0.55
+    comboTransitionPoint: 0.7
     cancelWindowStart: 0.7
-    hitboxStartTime: 0.1
-    hitboxEndTime: 0.48
+    hitboxStartTime: 0.2
+    hitboxEndTime: 0.6
     damageMultiplier: 1
-    steminareduce: 8
-  - clip: {fileID: 7400000, guid: 04eb6f5edd983ac4a9bac8d402b607e2, type: 2}
-    comboWindowStart: 0.2
+    steminareduce: 1
+  - clip: {fileID: 7400000, guid: 1facf71fb6c255d4cb6c673177071280, type: 3}
+    comboWindowStart: 0.1
     comboWindowEnd: 0.5
-    comboTransitionPoint: 0.55
-    cancelWindowStart: 0.6
-    hitboxStartTime: 0.25
-    hitboxEndTime: 0.5
-    damageMultiplier: 1.3
-    steminareduce: 15
+    comboTransitionPoint: 0.7
+    cancelWindowStart: 0.7
+    hitboxStartTime: 0.2
+    hitboxEndTime: 0.6
+    damageMultiplier: 1
+    steminareduce: 1
+  - clip: {fileID: 7400000, guid: dbee55cbd5807234985496b63ed0aff5, type: 3}
+    comboWindowStart: 0.1
+    comboWindowEnd: 0.5
+    comboTransitionPoint: 0.7
+    cancelWindowStart: 0.7
+    hitboxStartTime: 0.2
+    hitboxEndTime: 0.6
+    damageMultiplier: 1
+    steminareduce: 1
+  - clip: {fileID: 7400000, guid: 5f22147b4f3c6664b87f533af06de9a2, type: 3}
+    comboWindowStart: 0.1
+    comboWindowEnd: 0.5
+    comboTransitionPoint: 0.7
+    cancelWindowStart: 0.7
+    hitboxStartTime: 0.2
+    hitboxEndTime: 0.6
+    damageMultiplier: 1
+    steminareduce: 1
   baseDamage: 2

@@ -23,7 +23,7 @@ MonoBehaviour:
   weaponCategory: 1
   baseDamage: 10
   baseStaminaCost: 10
-  attackData: {fileID: 11400000, guid: 58a625f376515e64caca8cc6ce1eacc2, type: 2}
+  attackData: {fileID: 11400000, guid: 330b0d979f5d41148afe723c7795cd15, type: 2}
   weaponPrefab: {fileID: 1050500482381291807, guid: ccd5c8b77a31b804194592accd942a72, type: 3}
   strScaling: 10
   dexScaling: 10
