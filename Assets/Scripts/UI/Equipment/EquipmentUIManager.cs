@@ -1,6 +1,6 @@
 using UnityEngine;
 using TMPro;
-
+using UnityEngine.UI;
 public class EquipmentUIManager : MonoBehaviour
 {
     public static EquipmentUIManager Instance { get; private set; }
@@ -11,7 +11,12 @@ public class EquipmentUIManager : MonoBehaviour
     [Header("Left Area: Equipment Slots")]
     // 각 타입별 슬롯 배열 (인스펙터에서 드래그 앤 드롭)
     public EquipSlotUI[] weaponSlots;
-    public EquipSlotUI[] armorSlots;
+
+    public EquipSlotUI headSlot;
+    public EquipSlotUI chestSlot;
+    public EquipSlotUI legsSlot;
+    public EquipSlotUI bootsSlot;
+
     public EquipSlotUI[] artifactSlots;
     public EquipSlotUI[] consumableSlots;
 
@@ -20,6 +25,7 @@ public class EquipmentUIManager : MonoBehaviour
     public TextMeshProUGUI centerItemNameText;
     public TextMeshProUGUI centerItemDescriptionText;
     public TextMeshProUGUI centerItemStatsText;
+    public Image centerItemIconImage;
 
     [Header("Right Area: Player Status")]
     public TextMeshProUGUI playerHpText;
@@ -46,9 +52,7 @@ public class EquipmentUIManager : MonoBehaviour
         }
     }
 
-    // ==========================================
     // 0. 창 열기/닫기 (MenuUIManager에서 호출)
-    // ==========================================
     public void OpenWindow()
     {
         if (equipmentWindow != null)
@@ -67,20 +71,35 @@ public class EquipmentUIManager : MonoBehaviour
         }
     }
 
-    // ==========================================
     // 1. 데이터 동기화 (Refresh UI)
-    // ==========================================
     public void RefreshUI()
     {
-        // ★ 수정: 무기 슬롯 4칸을 돌면서, Manager의 배열 데이터를 1:1로 매칭해줍니다!
+        // 무기 슬롯 4개 업데이트
         for (int i = 0; i < weaponSlots.Length; i++)
         {
             weaponSlots[i].UpdateSlotUI(EquipmentManager.Instance.currentWeapons[i]);
         }
 
-        // 방어구, 장신구는 아직 1칸이므로 0번째 슬롯에만 세팅
-        if (armorSlots.Length > 0) armorSlots[0].UpdateSlotUI(EquipmentManager.Instance.currentArmor);
-        if (artifactSlots.Length > 0) artifactSlots[0].UpdateSlotUI(EquipmentManager.Instance.currentAccessory);
+        // ★ 추가: 장신구 슬롯 4개 업데이트
+        for (int i = 0; i < artifactSlots.Length; i++)
+        {
+            artifactSlots[i].UpdateSlotUI(EquipmentManager.Instance.currentAccessories[i]);
+        }
+
+        for (int i = 0; i < consumableSlots.Length; i++)
+        {
+            // (안전장치) 배열 길이를 넘어서지 않게 체크
+            if (i < EquipmentManager.Instance.currentConsumables.Length)
+            {
+                consumableSlots[i].UpdateSlotUI(EquipmentManager.Instance.currentConsumables[i]);
+            }
+        }
+
+        // 방어구 단일 슬롯들 업데이트
+        if (headSlot != null) headSlot.UpdateSlotUI(EquipmentManager.Instance.currentHead);
+        if (chestSlot != null) chestSlot.UpdateSlotUI(EquipmentManager.Instance.currentChest);
+        if (legsSlot != null) legsSlot.UpdateSlotUI(EquipmentManager.Instance.currentLegs);
+        if (bootsSlot != null) bootsSlot.UpdateSlotUI(EquipmentManager.Instance.currentBoots);
 
         UpdatePlayerStatusUI();
     }
@@ -98,9 +117,7 @@ public class EquipmentUIManager : MonoBehaviour
         }
     }
 
-    // ==========================================
     // 2. 마우스 Hover 시 중앙 패널(Tooltip) 처리
-    // ==========================================
     public void ShowItemTooltip(ItemInstance item)
     {
         if (item == null || item.itemData == null) return;
@@ -109,13 +126,24 @@ public class EquipmentUIManager : MonoBehaviour
         centerItemNameText.text = item.itemData.itemName;
         centerItemDescriptionText.text = item.itemData.description;
 
+        if (centerItemIconImage != null && item.itemData.icon != null)
+        {
+            centerItemIconImage.sprite = item.itemData.icon;
+            centerItemIconImage.enabled = true; // 이미지 켜기
+        }
+        else if (centerItemIconImage != null)
+        {
+            centerItemIconImage.enabled = false; // 이미지가 없으면 끄기
+        }
+
+        // 스탯 텍스트 띄우기 (기존과 동일)
         if (item.itemData is WeaponData weapon)
         {
-            centerItemStatsText.text = $"공격력: {weapon.baseDamage} \n스태미나 소모: {weapon.baseStaminaCost}";
+            centerItemStatsText.text = $"attack: {weapon.baseDamage} \nstamina: {weapon.baseStaminaCost}";
         }
         else if (item.itemData is ConsumableData potion)
         {
-            centerItemStatsText.text = $"회복량: {potion.healAmount}";
+            centerItemStatsText.text = $"heal: {potion.healAmount}";
         }
     }
 
@@ -151,11 +179,12 @@ public class EquipmentUIManager : MonoBehaviour
         }
     }
 
-    public void OpenInventoryPopupForSlot(ItemType slotType, int targetSlotIndex)
+    public void OpenInventoryPopupForSlot(ItemType slotType, ArmorType armorType, int targetSlotIndex)
     {
         if (EquipSelectionPopupUI.Instance != null)
         {
-            EquipSelectionPopupUI.Instance.OpenPopup(slotType, targetSlotIndex);
+            // 팝업 매니저에게 세부 부위까지 알려줍니다.
+            EquipSelectionPopupUI.Instance.OpenPopup(slotType, armorType, targetSlotIndex);
         }
     }
 

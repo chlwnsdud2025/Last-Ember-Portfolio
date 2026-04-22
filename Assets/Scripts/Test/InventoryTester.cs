@@ -48,15 +48,12 @@ public class InventoryTester : MonoBehaviour
     {
         if (itemArray == null || itemArray.Length == 0) return;
 
-        // 배열에 있는 아이템을 최대 2개까지만 지급합니다.
-        int count = 0;
+        // 인스펙터에 등록된 모든 아이템을 제한 없이 지급합니다!
         foreach (ItemDataBase itemData in itemArray)
         {
             if (itemData != null)
             {
                 InventoryManager.Instance.AddItem(itemData, amountToGive);
-                count++;
-                if (count >= 2) break; // 딱 2종류만 넣기
             }
         }
     }

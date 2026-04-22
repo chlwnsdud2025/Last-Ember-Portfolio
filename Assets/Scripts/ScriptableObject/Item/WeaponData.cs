@@ -3,6 +3,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Inventory/Weapon Data")]
 public class WeaponData : ItemDataBase
 {
+    [Header("Weapon Specifics")]
+    public WeaponType weaponCategory;
+
     [Header("Weapon Stats")]
     public float baseDamage;
     public float baseStaminaCost;

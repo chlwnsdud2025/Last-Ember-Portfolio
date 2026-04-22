@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51da54e293698b64b85722d2a1a9e8ed, type: 3}
+  m_Name: Basic_hand
+  m_EditorClassIdentifier: Assembly-CSharp::weapon_1_ob
+  weaponName: basic_sword
+  weaponPrefab: {fileID: 0}
+  comboAttacks:
+  - clip: {fileID: 7400000, guid: 450e08c7d54b8784293440e1b5fdd02b, type: 2}
+    comboWindowStart: 0.1
+    comboWindowEnd: 0.5
+    comboTransitionPoint: 0.4
+    cancelWindowStart: 0.6
+    hitboxStartTime: 0.1
+    hitboxEndTime: 0.38
+    damageMultiplier: 1
+    steminareduce: 8
+  - clip: {fileID: 7400000, guid: 95f8b41d4d8905341adfa0ccd356bb18, type: 2}
+    comboWindowStart: 0.1
+    comboWindowEnd: 0.5
+    comboTransitionPoint: 0.4
+    cancelWindowStart: 0.6
+    hitboxStartTime: 0.1
+    hitboxEndTime: 0.38
+    damageMultiplier: 1
+    steminareduce: 10
+  - clip: {fileID: 7400000, guid: fb0d266e647081246adf00940ed13dc1, type: 2}
+    comboWindowStart: 0.2
+    comboWindowEnd: 0.6
+    comboTransitionPoint: 0.55
+    cancelWindowStart: 0.7
+    hitboxStartTime: 0.1
+    hitboxEndTime: 0.48
+    damageMultiplier: 1
+    steminareduce: 8
+  - clip: {fileID: 7400000, guid: 04eb6f5edd983ac4a9bac8d402b607e2, type: 2}
+    comboWindowStart: 0.2
+    comboWindowEnd: 0.5
+    comboTransitionPoint: 0.55
+    cancelWindowStart: 0.6
+    hitboxStartTime: 0.25
+    hitboxEndTime: 0.5
+    damageMultiplier: 1.3
+    steminareduce: 15
+  baseDamage: 2

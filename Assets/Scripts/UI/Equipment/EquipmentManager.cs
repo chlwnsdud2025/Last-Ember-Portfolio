@@ -9,11 +9,19 @@ public class EquipmentManager : MonoBehaviour
     public Transform weaponHolder;
 
     [Header("Current Equipment")]
-    // 4칸짜리 무기 배열로 변경합니다!
-    public ItemInstance[] currentWeapons = new ItemInstance[4];
-    public ItemInstance currentArmor;
-    public ItemInstance currentAccessory;
+    public ItemInstance[] currentWeapons = new ItemInstance[4];     // 무기 4칸
+    public ItemInstance currentHead;
+    public ItemInstance currentChest;
+    public ItemInstance currentLegs;
+    public ItemInstance currentBoots;
+    public ItemInstance[] currentAccessories = new ItemInstance[4]; // 장신구 4칸
+    public ItemInstance[] currentConsumables = new ItemInstance[8]; // 소비템 8칸
 
+    [Header("Current Active Slots (0~3 / 0~7)")]
+    public int activeWeaponIndex = 0;
+    public int activeConsumableIndex = 0;
+
+    public ItemInstance currentAccessory;
     public event Action OnEquipmentChanged;
 
     private PlayerController playerController;
@@ -25,7 +33,84 @@ public class EquipmentManager : MonoBehaviour
         playerController = GetComponent<PlayerController>();
     }
 
-    // 장착할 때 인덱스 번호를 받습니다.
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.RightArrow)) CycleWeapon(1);
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) CycleWeapon(-1);
+
+        if (Input.GetKeyDown(KeyCode.DownArrow)) CycleConsumable(1);
+        if (Input.GetKeyDown(KeyCode.UpArrow)) CycleConsumable(-1);
+    }
+
+    // 
+    // 무기 스위칭
+    private void CycleWeapon(int direction)
+    {
+        int originalIndex = activeWeaponIndex;
+        int nextIndex = activeWeaponIndex;
+        int maxSlots = currentWeapons.Length;
+        bool found = false;
+
+        for (int i = 0; i < maxSlots; i++)
+        {
+            nextIndex += direction;
+            if (nextIndex >= maxSlots) nextIndex = 0;
+            else if (nextIndex < 0) nextIndex = maxSlots - 1;
+
+            // ★ 핵심 수정: 껍데기가 아닌 '진짜 데이터(itemData)'가 있는지까지 검사!
+            if (currentWeapons[nextIndex] != null && currentWeapons[nextIndex].itemData != null)
+            {
+                found = true;
+                break; // 진짜 아이템을 찾았으니 여기서 스킵 정지!
+            }
+        }
+
+        // 4칸을 다 뒤졌는데도 알맹이가 하나도 없다면 헛돌지 않게 무시
+        if (!found) return;
+
+        activeWeaponIndex = nextIndex;
+        ItemInstance newWeapon = currentWeapons[activeWeaponIndex];
+
+        if (spawnedWeaponModel != null) Destroy(spawnedWeaponModel);
+        if (newWeapon != null)
+        {
+            EquipWeapon(newWeapon, activeWeaponIndex);
+        }
+
+        OnEquipmentChanged?.Invoke();
+    }
+
+    // 소비템 스위칭
+    private void CycleConsumable(int direction)
+    {
+        int originalIndex = activeConsumableIndex;
+        int nextIndex = activeConsumableIndex;
+        int maxSlots = currentConsumables.Length;
+        bool found = false;
+
+        for (int i = 0; i < maxSlots; i++)
+        {
+            nextIndex += direction;
+            if (nextIndex >= maxSlots) nextIndex = 0;
+            else if (nextIndex < 0) nextIndex = maxSlots - 1;
+
+            // ★ 핵심 수정: 껍데기가 아닌 '진짜 데이터(itemData)'가 있는지까지 검사!
+            if (currentConsumables[nextIndex] != null && currentConsumables[nextIndex].itemData != null)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) return;
+
+        activeConsumableIndex = nextIndex;
+        OnEquipmentChanged?.Invoke();
+    }
+
+    // ==========================================
+    // ★ 수정됨: 장착 로직 (장착 시 해당 번호로 퀵슬롯 즉시 이동)
+    // ==========================================
     public void Equip(ItemInstance item, int slotIndex = 0)
     {
         if (item == null || item.itemData == null) return;
@@ -33,27 +118,30 @@ public class EquipmentManager : MonoBehaviour
         switch (item.itemData.itemType)
         {
             case ItemType.Weapon:
-                EquipWeapon(item, slotIndex); // 인덱스 토스
+                EquipWeapon(item, slotIndex);
+                activeWeaponIndex = slotIndex; // 추가: 장착한 무기로 퀵슬롯 화면 이동
                 break;
             case ItemType.Armor:
-                currentArmor = item;
+                EquipArmor(item);
+                break;
+            case ItemType.Artifact:
+                currentAccessories[slotIndex] = item;
+                break;
+            case ItemType.Consumable:
+                currentConsumables[slotIndex] = item;
+                activeConsumableIndex = slotIndex; // 추가: 장착한 소비템으로 퀵슬롯 화면 이동
                 break;
         }
 
         OnEquipmentChanged?.Invoke();
-        Debug.Log($"{item.itemData.itemName}을(를) {slotIndex}번 슬롯에 장착했습니다.");
     }
 
-    // 인덱스를 받아서 배열에 저장합니다.
     private void EquipWeapon(ItemInstance weaponInstance, int slotIndex)
     {
         WeaponData data = weaponInstance.itemData as WeaponData;
         if (data == null) return;
 
-        if (spawnedWeaponModel != null)
-        {
-            Destroy(spawnedWeaponModel);
-        }
+        if (spawnedWeaponModel != null) Destroy(spawnedWeaponModel);
 
         if (data.weaponPrefab != null && weaponHolder != null)
         {
@@ -68,9 +156,7 @@ public class EquipmentManager : MonoBehaviour
             }
         }
 
-        // 수정: 단일 변수가 아니라 배열의 [해당 칸]에 저장합니다.
         currentWeapons[slotIndex] = weaponInstance;
-
         playerController.EquipWeapon(data.attackData);
 
         float finalDamage = weaponInstance.GetCalculatedDamage(10, 10);
@@ -80,29 +166,46 @@ public class EquipmentManager : MonoBehaviour
         }
     }
 
-    public void Unequip(ItemType type, int slotIndex = 0)
+    private void EquipArmor(ItemInstance armorInstance)
+    {
+        ArmorData data = armorInstance.itemData as ArmorData;
+        if (data == null) return;
+
+        switch (data.armorCategory)
+        {
+            case ArmorType.Head: currentHead = armorInstance; break;
+            case ArmorType.Chest: currentChest = armorInstance; break;
+            case ArmorType.Legs: currentLegs = armorInstance; break;
+            case ArmorType.Boots: currentBoots = armorInstance; break;
+        }
+    }
+
+    public void Unequip(ItemType type, int slotIndex = 0, ArmorType? armorType = null)
     {
         if (type == ItemType.Weapon)
         {
-            // 손에 쥐고 있던 3D 모델링 파괴
             if (spawnedWeaponModel != null) Destroy(spawnedWeaponModel);
-
-            // 배열에서 해당 칸을 비워줍니다!
             currentWeapons[slotIndex] = null;
-
-            // (선택) 맨손 애니메이션으로 복구하는 로직
-            // playerController.EquipWeapon(기본_맨손_데이터);
         }
-        else if (type == ItemType.Armor)
+        else if (type == ItemType.Armor && armorType.HasValue)
         {
-            currentArmor = null;
+            switch (armorType.Value)
+            {
+                case ArmorType.Head: currentHead = null; break;
+                case ArmorType.Chest: currentChest = null; break;
+                case ArmorType.Legs: currentLegs = null; break;
+                case ArmorType.Boots: currentBoots = null; break;
+            }
         }
-        else if (type == ItemType.Artifact) // 또는 Accessory
+        else if (type == ItemType.Artifact)
         {
-            currentAccessory = null;
+            currentAccessories[slotIndex] = null;
+        }
+        else if (type == ItemType.Consumable)
+        {
+            currentConsumables[slotIndex] = null;
         }
 
-        // UI 매니저에게 장비가 빠졌다고 알려서 화면 갱신
         OnEquipmentChanged?.Invoke();
     }
 }

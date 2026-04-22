@@ -20,9 +20,10 @@ MonoBehaviour:
   description: basic Spear
   maxStackAmount: 1
   basePrice: 100
+  weaponCategory: 1
   baseDamage: 10
   baseStaminaCost: 10
   attackData: {fileID: 11400000, guid: 58a625f376515e64caca8cc6ce1eacc2, type: 2}
-  weaponPrefab: {fileID: 2691572042831786900, guid: 86613905e852c23429aec276d5e2668a, type: 3}
+  weaponPrefab: {fileID: 919132149155446097, guid: f2b20ef718c9e3f46a4fb16e91f08a47, type: 3}
   strScaling: 10
   dexScaling: 10

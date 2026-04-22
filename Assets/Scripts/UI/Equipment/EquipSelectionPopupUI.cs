@@ -19,9 +19,9 @@ public class EquipSelectionPopupUI : MonoBehaviour
     }
 
     // ★ 수정: 매개변수로 slotIndex를 추가로 받습니다.
-    public void OpenPopup(ItemType targetType, int slotIndex)
+    public void OpenPopup(ItemType mainType, ArmorType subType, int slotIndex)
     {
-        currentTargetSlotIndex = slotIndex; // 몇 번 슬롯인지 기억!
+        currentTargetSlotIndex = slotIndex;
         popupPanel.SetActive(true);
 
         foreach (Transform child in scrollContent)
@@ -29,18 +29,26 @@ public class EquipSelectionPopupUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        List<ItemInstance> filteredItems = InventoryManager.Instance.GetItemsByType(targetType);
+        // 1. 일단 대분류(Armor, Weapon 등)로 1차 필터링
+        List<ItemInstance> filteredItems = InventoryManager.Instance.GetItemsByType(mainType);
 
+        // 2. ★ 고도화: 만약 방어구라면 소분류(머리, 가슴 등)로 2차 필터링
+        if (mainType == ItemType.Armor)
+        {
+            filteredItems = filteredItems.FindAll(item =>
+                (item.itemData as ArmorData)?.armorCategory == subType
+            );
+        }
+
+        // 3. 슬롯 생성 (기존과 동일)
         foreach (ItemInstance item in filteredItems)
         {
             GameObject newSlotObj = Instantiate(inventorySlotPrefab, scrollContent);
             InventorySlotUI slotUI = newSlotObj.GetComponent<InventorySlotUI>();
-
             if (slotUI != null)
             {
                 slotUI.InitSlot(item, (selectedItem) =>
                 {
-                    // ★ 수정: 장착할 때 "내가 기억해둔 슬롯 인덱스"를 같이 넘겨줍니다!
                     EquipmentManager.Instance.Equip(selectedItem, currentTargetSlotIndex);
                     ClosePopup();
                 });
@@ -51,5 +59,13 @@ public class EquipSelectionPopupUI : MonoBehaviour
     public void ClosePopup()
     {
         popupPanel.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 }

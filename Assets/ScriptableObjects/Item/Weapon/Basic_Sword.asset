@@ -20,9 +20,10 @@ MonoBehaviour:
   description: basic Weapon
   maxStackAmount: 1
   basePrice: 100
+  weaponCategory: 0
   baseDamage: 10
   baseStaminaCost: 10
   attackData: {fileID: 11400000, guid: 58a625f376515e64caca8cc6ce1eacc2, type: 2}
-  weaponPrefab: {fileID: 2691572042831786900, guid: 86613905e852c23429aec276d5e2668a, type: 3}
+  weaponPrefab: {fileID: 8015839784862284574, guid: 781910bb852fdbf458aeb0a27e9f2975, type: 3}
   strScaling: 10
   dexScaling: 10
