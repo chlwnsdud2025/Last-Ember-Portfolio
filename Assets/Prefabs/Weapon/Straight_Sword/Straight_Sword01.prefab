@@ -128,4 +128,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponController
   weaponCollider: {fileID: 358875445753100582}
-  currentDamage: 10
+  currentDamage: 210
