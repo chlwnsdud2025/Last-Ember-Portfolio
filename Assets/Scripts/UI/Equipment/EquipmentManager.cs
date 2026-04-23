@@ -159,9 +159,11 @@ public class EquipmentManager : MonoBehaviour
         currentWeapons[slotIndex] = weaponInstance;
         playerController.EquipWeapon(data.attackData);
 
-        float finalDamage = weaponInstance.GetCalculatedDamage(10, 10);
+        float finalDamage = weaponInstance.GetCalculatedDamage(playerController.stats.strength, playerController.stats.dexterity);
+
         if (playerController.currentWeaponScript != null)
         {
+            // 이 데미지는 콤보 배율이 적용되기 전의 순수 '1.0배율 기준 데미지'입니다.
             playerController.currentWeaponScript.currentDamage = finalDamage;
         }
     }

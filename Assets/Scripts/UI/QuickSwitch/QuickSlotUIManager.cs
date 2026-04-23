@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class QuickSlotUIManager : MonoBehaviour
 {
     public static QuickSlotUIManager Instance { get; private set; }
@@ -8,6 +8,11 @@ public class QuickSlotUIManager : MonoBehaviour
     [Header("UI Icons")]
     public Image currentWeaponIcon;     // 좌측 하단 Weapon 칸의 아이콘
     public Image currentConsumableIcon; // 좌측 하단 Item 칸의 아이콘
+
+
+    [Header("UI Texts")]
+    public TextMeshProUGUI consumableCountText;
+
 
     private void Awake()
     {
@@ -37,22 +42,30 @@ public class QuickSlotUIManager : MonoBehaviour
         ItemInstance activeItem = EquipmentManager.Instance.currentConsumables[cIdx];
 
         // UI 업데이트
-        UpdateIcon(currentWeaponIcon, activeWeapon);
-        UpdateIcon(currentConsumableIcon, activeItem);
+        UpdateIcon(currentWeaponIcon, activeWeapon, null);
+        UpdateIcon(currentConsumableIcon, activeItem, consumableCountText);
     }
 
-    private void UpdateIcon(Image iconImage, ItemInstance item)
+    private void UpdateIcon(Image iconImage, ItemInstance item, TextMeshProUGUI countText)
     {
         if (iconImage == null) return;
 
-        if (item != null && item.itemData != null)
+        // 아이템이 있고, 개수가 0보다 크면 표시
+        if (item != null && item.itemData != null && item.amount > 0)
         {
             iconImage.sprite = item.itemData.icon;
             iconImage.enabled = true;
+
+            if (countText != null)
+            {
+                countText.text = item.amount.ToString();
+                countText.gameObject.SetActive(true); // 숫자 켜기
+            }
         }
         else
         {
-            iconImage.enabled = false; // 빈칸이면 이미지 숨기기
+            iconImage.enabled = false;
+            if (countText != null) countText.gameObject.SetActive(false); // 빈칸이거나 0개면 숫자 끄기
         }
     }
 

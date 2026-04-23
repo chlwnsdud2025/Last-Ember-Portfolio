@@ -40,6 +40,5 @@ public class Attack_SO_Data : ScriptableObject
     // 위에서 만든 AttackData 클래스를 배열로 가집니다.
     public AttackData[] comboAttacks;
 
-    [Header("Stats")]
-    public float baseDamage = 10f;
+    
 }

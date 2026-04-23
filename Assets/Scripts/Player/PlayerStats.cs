@@ -3,21 +3,28 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
-    [Header("HP Settings")]
-    [SerializeField] private float maxHp = 100f;
-    private float currentHp;
+    [Header("Core Stats")]
+    public int level = 1;
+    public int vigor = 10;      // 생명력 -> 최대 HP 영향
+    public int endurance = 10;  // 지구력(체력) -> 최대 스태미나 영향
+    public int strength = 10;   // 근력 -> 무기 데미지 영향
+    public int dexterity = 10;  // 기량 -> 무기 데미지 영향
+
+    [Header("Derived Stats (계산된 결과)")]
+    [SerializeField] public float maxHp;
+    public float currentHp;
 
     [Header("Stamina Settings")]
-    [SerializeField] private float maxStamina = 100f;
-    private float currentStamina;
-    [SerializeField] private float staminaRegenRate = 15f;
+    [SerializeField] public float maxStamina = 100f;
+    public float currentStamina;
+    [SerializeField] public float staminaRegenRate = 15f;
 
     [Header("Regen Delay Settings")]
     [SerializeField] private float regenDelay = 1.5f; 
     private float lastUseTime;
 
     [Header("Potions")]
-    public int maxPotions = 3;         // 최대 소지 가능 물약 수
+    public int maxPotions = 10;         // 최대 소지 가능 물약 수
     public int currentPotions = 3;     // 현재 남은 물약 수
     public float healAmount = 40f;     // 한 번 마실 때 차오르는 회복량
 
@@ -32,6 +39,7 @@ public class PlayerStats : MonoBehaviour
 
     void Awake()
     {
+        UpdateDerivedStats();
         currentHp = maxHp;
         currentStamina = maxStamina;
     }
@@ -125,12 +133,19 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    public void Heal()
+    public void Heal(float amountToHeal)
     {
-        currentHp += healAmount;
+        currentHp += amountToHeal;
         currentHp = Mathf.Clamp(currentHp, 0, maxHp);
 
-        OnHpChanged?.Invoke(currentHp, maxHp); 
+        OnHpChanged?.Invoke(currentHp, maxHp);
     }
 
+    public void UpdateDerivedStats()
+    {
+        // 다크소울 식 간단한 공식 예시 (기본치 + 스탯 보너스)
+        // 생명력 10이면 체력 500, 지구력 10이면 스태미나 100이 됩니다. (수치는 입맛대로 수정하세요!)
+        maxHp = 40 + (vigor * 10f);
+        maxStamina = 30 + (endurance * 10f);
+    }
 }

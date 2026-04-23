@@ -16,7 +16,7 @@ MonoBehaviour:
   itemName: long_Sword
   itemType: 0
   rarity: 0
-  icon: {fileID: 21300000, guid: 719c2201c2f5f6c4aafffaeb5abdf5f9, type: 3}
+  icon: {fileID: 21300000, guid: 1fc78a88640d8a34d8881b87c5d362c4, type: 3}
   description: basic Weapon
   maxStackAmount: 1
   basePrice: 100
@@ -25,5 +25,5 @@ MonoBehaviour:
   baseStaminaCost: 10
   attackData: {fileID: 11400000, guid: 58a625f376515e64caca8cc6ce1eacc2, type: 2}
   weaponPrefab: {fileID: 8015839784862284574, guid: 781910bb852fdbf458aeb0a27e9f2975, type: 3}
-  strScaling: 10
-  dexScaling: 10
+  strScaling: 1
+  dexScaling: 1

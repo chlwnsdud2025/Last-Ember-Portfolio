@@ -88,13 +88,18 @@ public class AttackState : PlayerBaseState
         //무기의 colider 켰다 끄기
         if (isPlayingAttack && !player.animator.IsInTransition(0))
         {
-            
             bool shouldHitboxBeActive = (progress >= currentAttackData.hitboxStartTime && progress <= currentAttackData.hitboxEndTime);
 
             if (shouldHitboxBeActive)
             {
+                // 현재 내 스탯으로 계산된 기본 데미지를 먼저 가져옵니다.
+                float baseDmg = EquipmentManager.Instance.currentWeapons[EquipmentManager.Instance.activeWeaponIndex]
+                    .GetCalculatedDamage(player.stats.strength, player.stats.dexterity);
+
+                // (기본 데미지 * 현재 모션의 데미지 배율)을 덮어씌웁니다!
+                player.currentWeaponScript.currentDamage = baseDmg * currentAttackData.damageMultiplier;
+
                 // 콜라이더 켜기
-                //player.currentWeaponScript.currentDamage = player.currentWeapon.baseDamage * currentAttackData.damageMultiplier;
                 player.currentWeaponScript.EnableHitbox();
             }
             else
@@ -102,11 +107,6 @@ public class AttackState : PlayerBaseState
                 // 콜라이더 끄기
                 player.currentWeaponScript.DisableHitbox();
             }
-        }
-        else
-        {
-            // 트랜지션 중이거나 찌꺼기 프레임일 때는 무조건 끕니다 (안전 장치)
-            player.currentWeaponScript.DisableHitbox();
         }
 
         // 콤보 전환 로직

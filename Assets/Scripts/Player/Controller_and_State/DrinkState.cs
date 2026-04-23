@@ -12,6 +12,7 @@ public class DrinkState : PlayerBaseState
 
     private int currentLowerStateHash;
 
+    private ConsumableData currentPotionData;
     public DrinkState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
@@ -19,21 +20,35 @@ public class DrinkState : PlayerBaseState
         hasHealed = false;
         currentLowerStateHash = 0;
 
-        // 1. 물약 개수 확인
-        if (player.stats.currentPotions > 0)
+        int activeIndex = EquipmentManager.Instance.activeConsumableIndex;
+        ItemInstance activeItem = EquipmentManager.Instance.currentConsumables[activeIndex];
+
+        if (activeItem != null && activeItem.amount > 0 && activeItem.itemData is ConsumableData potionData)
         {
-            // 성공: 물약 소모 및 Drink 애니메이션 재생
             isDrinkSuccessful = true;
-            player.stats.ConsumePotion();
+            currentPotionData = potionData; // 어떤 포션인지 기억해둠 (나중에 회복량 쓸 때 필요)
+
+            //인벤토리에서 개수 1개 차감
+            InventoryManager.Instance.RemoveItem(activeItem, 1);
+
+            // 만약 방금 마신 게 마지막 1개였다면 퀵슬롯에서 장착 해제!
+            if (activeItem.amount <= 0)
+            {
+                EquipmentManager.Instance.Unequip(ItemType.Consumable, activeIndex);
+            }
+
+            // 퀵슬롯 UI 즉시 갱신
+            QuickSlotUIManager.Instance.RefreshQuickSlots();
+
             player.animator.CrossFadeInFixedTime("Drink", 0.1f, 1);
-            Debug.Log("물약 마시기 시작!");
+            Debug.Log($"{potionData.itemName} 마시기 시작! (남은 개수: {activeItem.amount})");
         }
         else
         {
-            // 실패: 물약 없음 알림 및 CantDrink 애니메이션 재생
+            // 실패: 아이템이 없거나 다 썼을 때
             isDrinkSuccessful = false;
             player.animator.CrossFadeInFixedTime("DrinkFail", 0.1f, 1);
-            Debug.Log("물약이 부족합니다! (실패 모션 재생)");
+            Debug.Log("아이템이 부족하거나 없습니다! (실패 모션 재생)");
         }
     }
 
@@ -52,11 +67,14 @@ public class DrinkState : PlayerBaseState
 
         float progress = upperStateInfo.normalizedTime;
 
-        // 3. 회복 처리 (성공했을 때만 특정 타이밍에 실행)
+        // 3. 회복 처리 (기억해둔 포션 데이터의 healAmount만큼 회복!)
         if (isDrinkSuccessful && progress >= healTiming && !hasHealed)
         {
             hasHealed = true;
-            player.stats.Heal();
+            if (currentPotionData != null)
+            {
+                player.stats.Heal(currentPotionData.healAmount); // ★ 수정된 Heal 함수 호출
+            }
         }
 
         // 하체 이동 및 회전은 공통 처리

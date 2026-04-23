@@ -25,12 +25,22 @@ public class EquipmentUIManager : MonoBehaviour
     public TextMeshProUGUI centerItemNameText;
     public TextMeshProUGUI centerItemDescriptionText;
     public TextMeshProUGUI centerItemStatsText;
+    public TextMeshProUGUI centerItemScalingText;
+
     public Image centerItemIconImage;
 
     [Header("Right Area: Player Status")]
-    public TextMeshProUGUI playerHpText;
-    public TextMeshProUGUI playerStaminaText;
-    public TextMeshProUGUI playerTotalDamageText;
+    // ★ 수정: 스크린샷에 맞게 변수들을 완전히 새로 교체합니다!
+    public TextMeshProUGUI levelText;
+    public TextMeshProUGUI moneyText;
+    public TextMeshProUGUI healthText;     // Vigor
+    public TextMeshProUGUI staminaText;    // Endurance
+    public TextMeshProUGUI strText;        // STR
+    public TextMeshProUGUI dexText;        // DEX
+    public TextMeshProUGUI totalLifeText;  // Total Life (HP)
+    public TextMeshProUGUI totalStaminaText; // Total Stamina
+    public TextMeshProUGUI StaminaRegenText; // Stamina Regain
+
 
     private void Awake()
     {
@@ -126,24 +136,45 @@ public class EquipmentUIManager : MonoBehaviour
         centerItemNameText.text = item.itemData.itemName;
         centerItemDescriptionText.text = item.itemData.description;
 
-        if (centerItemIconImage != null && item.itemData.icon != null)
+        if (centerItemIconImage != null)
         {
-            centerItemIconImage.sprite = item.itemData.icon;
-            centerItemIconImage.enabled = true; // 이미지 켜기
-        }
-        else if (centerItemIconImage != null)
-        {
-            centerItemIconImage.enabled = false; // 이미지가 없으면 끄기
+            if (item.itemData.icon != null)
+            {
+                centerItemIconImage.sprite = item.itemData.icon;
+                centerItemIconImage.enabled = true; // 이미지 컴포넌트 켜기
+            }
+            else
+            {
+                centerItemIconImage.enabled = false; // 아이콘이 없으면 끄기
+            }
         }
 
-        // 스탯 텍스트 띄우기 (기존과 동일)
         if (item.itemData is WeaponData weapon)
         {
-            centerItemStatsText.text = $"attack: {weapon.baseDamage} \nstamina: {weapon.baseStaminaCost}";
+            PlayerStats stats = FindFirstObjectByType<PlayerStats>();
+
+            // 1. 등급 계산
+            string strGrade = GetScalingGrade(weapon.strScaling);
+            string dexGrade = GetScalingGrade(weapon.dexScaling);
+
+            if (stats != null)
+            {
+                // 2. 실제 총 데미지 계산 (내 현재 스탯 반영)
+                float totalDamage = item.GetCalculatedDamage(stats.strength, stats.dexterity);
+                float bonusDamage = totalDamage - weapon.baseDamage;
+
+                // 3. 툴팁 텍스트 구성 (등급과 총 데미지 표시)
+                centerItemStatsText.text =
+                    $"Damage: {weapon.baseDamage} + {bonusDamage:F0} (Total: {totalDamage:F0})\n\n" +
+                    $"Stamina cost: {weapon.baseStaminaCost}";
+
+                centerItemScalingText.text = $"STR:  {strGrade}                   DEX:  {dexGrade}\n";
+            }
         }
         else if (item.itemData is ConsumableData potion)
         {
             centerItemStatsText.text = $"heal: {potion.healAmount}";
+            centerItemScalingText.text = $"STR:  -                   DEX  -\n";
         }
     }
 
@@ -160,22 +191,22 @@ public class EquipmentUIManager : MonoBehaviour
         PlayerStats stats = FindFirstObjectByType<PlayerStats>();
         if (stats != null)
         {
-            if (playerHpText != null) playerHpText.text = $"HP: {stats.healAmount} (Heal Pwr)";
-            if (playerStaminaText != null) playerStaminaText.text = $"STAMINA: {stats.CurrentStamina:F0}";
+            // 1. 코어 스탯 텍스트 연동
+            if (levelText != null) levelText.text = $"{stats.level}";
+            if (moneyText != null) moneyText.text = $"{stats.currentMoney}";
+            if (healthText != null) healthText.text = $"{stats.vigor}";
+            if (staminaText != null) staminaText.text = $"{stats.endurance}";
+            if (strText != null) strText.text = $"{stats.strength}";
+            if (dexText != null) dexText.text = $"{stats.dexterity}";
 
-            if (playerTotalDamageText != null)
-            {
-                // ★ 수정: 현재는 '1번 무기(인덱스 0)'의 데미지만 표시하도록 임시 설정
-                if (EquipmentManager.Instance.currentWeapons[0] != null)
-                {
-                    float damage = EquipmentManager.Instance.currentWeapons[0].GetCalculatedDamage(10, 10);
-                    playerTotalDamageText.text = $"DAMAGE: {damage}";
-                }
-                else
-                {
-                    playerTotalDamageText.text = "DAMAGE: 0";
-                }
-            }
+            // 2. 파생 스탯(전체 체력/스태미나) 연동
+            if (totalLifeText != null)
+                totalLifeText.text = $"{Mathf.RoundToInt(stats.currentHp)} / {Mathf.RoundToInt(stats.maxHp)}";
+
+            if (totalStaminaText != null)
+                totalStaminaText.text = $"{stats.maxStamina}";
+            if (StaminaRegenText != null)
+                StaminaRegenText.text = $"{stats.staminaRegenRate}";
         }
     }
 
@@ -194,5 +225,16 @@ public class EquipmentUIManager : MonoBehaviour
         {
             EquipmentManager.Instance.OnEquipmentChanged -= RefreshUI;
         }
+    }
+
+    private string GetScalingGrade(float scalingValue)
+    {
+        if (scalingValue >= 15f) return "S"; // 황금색
+        if (scalingValue >= 12f) return "A";
+        if (scalingValue >= 9f) return "B";
+        if (scalingValue >= 6f) return "C";
+        if (scalingValue >= 3f) return "D";
+        if (scalingValue > 0f) return "E";
+        return "-"; // 보정 없음
     }
 }

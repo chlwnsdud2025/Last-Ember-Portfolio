@@ -59,6 +59,5 @@ public class EquipSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        EquipmentUIManager.Instance.HideItemTooltip();
     }
 }
