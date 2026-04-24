@@ -695,6 +695,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   maxHealth: 100
   currentHealth: 0
+  deadCoin: 20000
+  dropMoneyAmount: 20000
 --- !u!1 &3227689446537972767
 GameObject:
   m_ObjectHideFlags: 0

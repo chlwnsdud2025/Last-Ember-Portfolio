@@ -77,19 +77,17 @@ public class LevelUpUIManager : MonoBehaviour
         // 장바구니 초기화
         for (int i = 0; i < pendingStats.Length; i++) pendingStats[i] = 0;
 
-        levelUpPanel.SetActive(true);
-        SelectStatRow(0); // 처음 열면 무조건 맨 윗줄(체력) 선택
+        UIManager.Instance.OpenPanel(levelUpPanel);
+        UpdateUI(); SelectStatRow(0); // 처음 열면 무조건 맨 윗줄(체력) 선택
         UpdateUI();
     }
 
     public void CloseLevelUpPanel()
     {
-        levelUpPanel.SetActive(false);
+        UIManager.Instance.ClosePanel(levelUpPanel);
     }
 
-    // ==========================================
-    // ★ 선택 패널 이동 로직
-    // ==========================================
+    // 선택 패널 이동 로직
     public void SelectStatRow(int index)
     {
         selectedIndex = index;

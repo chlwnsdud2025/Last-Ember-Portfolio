@@ -106,11 +106,42 @@ public class PlayerController : MonoBehaviour
         pickupState = new PickUpState(this, stateMachine);
 
         // 단발성 액션 이벤트
-        controls.PlayerMovement.Attack.performed += ctx => stateMachine.CurrentState.OnAttackInput();
-        controls.PlayerMovement.Dodge.performed += ctx => stateMachine.CurrentState.OnDashInput();
-        controls.PlayerMovement.LockOn.performed += ctx => ToggleLockOn();
-        controls.PlayerMovement.Potion.performed += ctx => stateMachine.CurrentState.OnPotionInput();
+        //Interact
+        controls.PlayerMovement.Interact.performed += ctx =>
+        {
+            if (UIManager.Instance != null && UIManager.Instance.IsAnyUIOpen) return; // UI 열려있으면 무시!
+            stateMachine.CurrentState.OnInteractInput();
+        };
+
+        // Attack (좌클릭)
+        controls.PlayerMovement.Attack.performed += ctx =>
+        {
+            if (UIManager.Instance != null && UIManager.Instance.IsAnyUIOpen) return;
+            stateMachine.CurrentState.OnAttackInput();
+        };
+
+        // Dodge (Space)
+        controls.PlayerMovement.Dodge.performed += ctx =>
+        {
+            if (UIManager.Instance != null && UIManager.Instance.IsAnyUIOpen) return;
+            stateMachine.CurrentState.OnDashInput();
+        };
+        //Lock On
+        controls.PlayerMovement.LockOn.performed += ctx =>
+        {
+            // 락온 역시 UI가 켜져있을 때는 안 먹히게 막아줍니다.
+            if (UIManager.Instance != null && UIManager.Instance.IsAnyUIOpen) return;
+            ToggleLockOn(); // 락온 켜기/끄기 함수 실행!
+        };
+
+        // Potion
+        controls.PlayerMovement.Potion.performed += ctx =>
+        {
+            if (UIManager.Instance != null && UIManager.Instance.IsAnyUIOpen) return;
+            stateMachine.CurrentState.OnPotionInput();
+        };
         controls.PlayerMovement.Interact.performed += ctx => stateMachine.CurrentState.OnInteractInput();
+        controls.PlayerMovement.Cancel.performed += ctx => UIManager.Instance.CloseTopPanel();
 
         // 런타임에 애니메이션 클립을 동적으로 갈아끼우기 위한 오버라이드 컨트롤러 세팅
         overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
@@ -138,6 +169,24 @@ public class PlayerController : MonoBehaviour
 
         isSprintButtonHeld = controls.PlayerMovement.Sprint.IsPressed();
         isWalkButtonHeld = controls.PlayerMovement.Walk.IsPressed();
+
+        if (UIManager.Instance != null && UIManager.Instance.IsAnyUIOpen)
+        {
+            // UI가 켜져 있다면, 모든 입력을 강제로 0(또는 false)으로 만듭니다.
+            moveInput = Vector2.zero;
+            mouseMoveInput = Vector2.zero; // <- 시야 회전을 막는 일등 공신!
+            isSprintButtonHeld = false;
+            isWalkButtonHeld = false;
+        }
+        else
+        {
+            // UI가 꺼져있을 때만(평소 필드 상태) 정상적으로 입력을 받습니다.
+            moveInput = controls.PlayerMovement.Move.ReadValue<Vector2>();
+            mouseMoveInput = controls.PlayerMovement.Look.ReadValue<Vector2>();
+            isSprintButtonHeld = controls.PlayerMovement.Sprint.IsPressed();
+            isWalkButtonHeld = controls.PlayerMovement.Walk.IsPressed();
+        }
+
 
         if (isLockedOn && currentTarget != null)
         {

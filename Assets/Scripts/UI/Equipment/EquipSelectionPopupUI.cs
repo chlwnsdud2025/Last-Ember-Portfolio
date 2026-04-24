@@ -22,8 +22,7 @@ public class EquipSelectionPopupUI : MonoBehaviour
     public void OpenPopup(ItemType mainType, ArmorType subType, int slotIndex)
     {
         currentTargetSlotIndex = slotIndex;
-        popupPanel.SetActive(true);
-
+        UIManager.Instance.OpenPanel(popupPanel);
         foreach (Transform child in scrollContent)
         {
             Destroy(child.gameObject);
@@ -58,7 +57,7 @@ public class EquipSelectionPopupUI : MonoBehaviour
 
     public void ClosePopup()
     {
-        popupPanel.SetActive(false);
+        UIManager.Instance.ClosePanel(popupPanel);
     }
 
     private void OnDestroy()

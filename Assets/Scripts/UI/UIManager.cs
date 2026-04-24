@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 public class UIManager : MonoBehaviour
@@ -14,11 +15,22 @@ public class UIManager : MonoBehaviour
 
 
     [Header("Size Settings")]
-    [Tooltip("ü�� 1�� UI ���� �ȼ� ���� (��: 2�� �����ϸ� �ִ�ü�� 100�� �� ���� 200)")]
     [SerializeField] private float hpWidthMultiplier = 0.5f;
-    [Tooltip("���׹̳� 1�� UI ���� �ȼ� ����")]
     [SerializeField] private float staminaWidthMultiplier = 0.3f;
 
+
+    private List<GameObject> activePanels = new List<GameObject>();//UI List
+
+    public bool IsAnyUIOpen 
+    {
+        get
+        {
+            
+            bool isTabMenuOpen = MenuUIManager.Instance != null && MenuUIManager.Instance.menuPanel.activeSelf;
+            bool isBonfireOpen = BonfireUIManager.Instance != null && BonfireUIManager.Instance.restingMenuCanvas.activeSelf;
+            return activePanels.Count > 0 || isTabMenuOpen || isBonfireOpen;
+        }
+    }
 
     void Awake()
     {
@@ -48,6 +60,7 @@ public class UIManager : MonoBehaviour
             playerStats.OnStaminaChanged -= UpdateStaminaUI;
         }
     }
+
 
     private void UpdateHpUI(float current, float max)
     {
@@ -81,6 +94,61 @@ public class UIManager : MonoBehaviour
     {
         gameOver.SetActive(false);
 
+    }
+
+    public void OpenPanel(GameObject panel)
+    {
+        if (panel == null) return;
+
+        panel.SetActive(true);
+        if (!activePanels.Contains(panel))
+        {
+            activePanels.Add(panel);
+        }
+        UpdateCursorState();
+    }
+
+    
+    public void ClosePanel(GameObject panel)
+    {
+        if (panel == null) return;
+
+        panel.SetActive(false);
+        activePanels.Remove(panel);
+        UpdateCursorState();
+    }
+
+    // ESC
+    public void CloseTopPanel()
+    {
+        // 1. 열려있는 세부 패널(레벨업 창 등)이 있다면 그것부터 닫음
+        if (activePanels.Count > 0)
+        {
+            GameObject topPanel = activePanels[activePanels.Count - 1];
+            ClosePanel(topPanel);
+        }
+        // 2. 세부 패널이 하나도 없는데 화톳불 메뉴가 켜져있다면 화톳불 종료
+        else if (BonfireUIManager.Instance != null && BonfireUIManager.Instance.restingMenuCanvas.activeSelf)
+        {
+            BonfireUIManager.Instance.OnClickLeave();
+
+        }
+
+        UpdateCursorState();
+    }
+
+    public void UpdateCursorState()
+    {
+        if (IsAnyUIOpen)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
 }

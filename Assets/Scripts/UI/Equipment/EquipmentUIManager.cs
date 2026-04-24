@@ -67,8 +67,7 @@ public class EquipmentUIManager : MonoBehaviour
     {
         if (equipmentWindow != null)
         {
-            equipmentWindow.SetActive(true);
-            RefreshUI(); // 열 때 최신 데이터 반영
+            UIManager.Instance.OpenPanel(equipmentWindow); RefreshUI(); // 열 때 최신 데이터 반영
         }
     }
 
@@ -76,7 +75,7 @@ public class EquipmentUIManager : MonoBehaviour
     {
         if (equipmentWindow != null)
         {
-            equipmentWindow.SetActive(false);
+            UIManager.Instance.ClosePanel(equipmentWindow);
             HideItemTooltip();
         }
     }

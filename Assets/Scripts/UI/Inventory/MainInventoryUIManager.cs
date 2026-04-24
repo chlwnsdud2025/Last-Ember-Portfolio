@@ -34,14 +34,13 @@ public class MainInventoryUIManager : MonoBehaviour
     // ==========================================
     public void OpenWindow()
     {
-        inventoryWindow.SetActive(true);
-        // 창을 열 때는 기본적으로 '전체 보기' 탭을 띄웁니다.
+        UIManager.Instance.OpenPanel(inventoryWindow);
         ShowItemsByCategory(null);
     }
 
     public void CloseWindow()
     {
-        inventoryWindow.SetActive(false);
+        UIManager.Instance.ClosePanel(inventoryWindow);
     }
 
     // ==========================================

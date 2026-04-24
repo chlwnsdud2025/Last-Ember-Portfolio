@@ -21,8 +21,12 @@ public class BonfireUIManager : MonoBehaviour
         // 메뉴를 닫을 때는 열려있던 모든 세부 패널(레벨업 등)도 닫아줌
         if (!isShowing)
         {
-            LevelUpUIManager.Instance.CloseLevelUpPanel();
-            // 나중에 여기에 StorageUIManager.Instance.ClosePanel(); 등을 추가
+            LevelUpUIManager.Instance.CloseLevelUpPanel();            
+        }
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateCursorState();
         }
     }
 
