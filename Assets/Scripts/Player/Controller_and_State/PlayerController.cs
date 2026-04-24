@@ -69,7 +69,8 @@ public class PlayerController : MonoBehaviour
 
     public bool isDead = false;
 
-
+    [HideInInspector] public FieldItem currentTargetItem;
+    [HideInInspector] public FieldItem focusedItem;
 
     public PlayerStats stats { get; private set; }
 
@@ -85,7 +86,8 @@ public class PlayerController : MonoBehaviour
 
     public DeadState deadState { get; private set; }
     public DrinkState drinkState { get; private set; }
-
+    public RestState restState { get; private set; }
+    public PickUpState pickupState { get; private set; }
     private void Awake()
     {
         controls = new InputSystem_Actions();
@@ -100,12 +102,15 @@ public class PlayerController : MonoBehaviour
         hitState = new HitState(this, stateMachine);
         deadState = new DeadState(this, stateMachine);
         drinkState = new DrinkState(this, stateMachine);
+        restState = new RestState(this, stateMachine);
+        pickupState = new PickUpState(this, stateMachine);
 
         // 단발성 액션 이벤트
         controls.PlayerMovement.Attack.performed += ctx => stateMachine.CurrentState.OnAttackInput();
         controls.PlayerMovement.Dodge.performed += ctx => stateMachine.CurrentState.OnDashInput();
         controls.PlayerMovement.LockOn.performed += ctx => ToggleLockOn();
         controls.PlayerMovement.Potion.performed += ctx => stateMachine.CurrentState.OnPotionInput();
+        controls.PlayerMovement.Interact.performed += ctx => stateMachine.CurrentState.OnInteractInput();
 
         // 런타임에 애니메이션 클립을 동적으로 갈아끼우기 위한 오버라이드 컨트롤러 세팅
         overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);

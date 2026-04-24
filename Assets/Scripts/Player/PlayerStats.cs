@@ -37,6 +37,10 @@ public class PlayerStats : MonoBehaviour
     [Header("Currency")]
     public int currentMoney = 0;
 
+    [Header("Level Up Settings")]
+    public int baseLevelUpCost = 100; // 기본 비용
+    public float costMultiplier = 1.2f; // 증가 배율
+
     void Awake()
     {
         UpdateDerivedStats();
@@ -147,5 +151,54 @@ public class PlayerStats : MonoBehaviour
         // 생명력 10이면 체력 500, 지구력 10이면 스태미나 100이 됩니다. (수치는 입맛대로 수정하세요!)
         maxHp = 40 + (vigor * 10f);
         maxStamina = 30 + (endurance * 10f);
+    }
+
+    //세이브 포인트?(다크소울 화톳불 시스템)
+    public void RestAtBonfire()
+    {
+        // 1. 최대치로 회복
+        currentHp = maxHp;
+        currentStamina = maxStamina;
+
+        // ==========================================
+        // 메인 화면의 체력바/스태미나바 갱신!
+        // ==========================================
+        RefreshUI();
+
+        // 3. UI 매니저에게 화면 갱신을 요청 (장비창 스탯 텍스트 등)
+        if (EquipmentUIManager.Instance != null)
+        {
+            EquipmentUIManager.Instance.UpdatePlayerStatusUI();
+        }
+
+        Debug.Log("화톳불에서 휴식했습니다. 체력과 스태미나가 모두 회복되었습니다.");
+    }
+    public int GetCostForLevel(int targetLevel)
+    {
+        return Mathf.RoundToInt(baseLevelUpCost + (targetLevel * 50f * Mathf.Pow(costMultiplier, targetLevel * 0.1f)));
+    }
+
+    // UI에서 [Accept] 버튼을 눌렀을 때 최종적으로 스탯을 적용하는 함수
+    public void ApplyLevelUp(int addVigor, int addEndurance, int addStr, int addDex, int totalCost)
+    {
+        if (currentMoney >= totalCost)
+        {
+            currentMoney -= totalCost; // 돈 차감
+
+            // 스탯 상승
+            vigor += addVigor;
+            endurance += addEndurance;
+            strength += addStr;
+            dexterity += addDex;
+
+            // 총 레벨 상승
+            level += (addVigor + addEndurance + addStr + addDex);
+
+            UpdateDerivedStats(); // 최대 체력/스태미나 재계산
+            RefreshUI();          // 좌측 상단 HUD 갱신
+            OnMoneyChanged?.Invoke(currentMoney);
+
+            Debug.Log($"레벨업 확정! 현재 레벨: {level}");
+        }
     }
 }

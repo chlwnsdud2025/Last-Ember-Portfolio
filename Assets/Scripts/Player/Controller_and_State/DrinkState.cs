@@ -73,7 +73,7 @@ public class DrinkState : PlayerBaseState
             hasHealed = true;
             if (currentPotionData != null)
             {
-                player.stats.Heal(currentPotionData.healAmount); // ★ 수정된 Heal 함수 호출
+                player.stats.Heal(currentPotionData.healAmount); //힐
             }
         }
 

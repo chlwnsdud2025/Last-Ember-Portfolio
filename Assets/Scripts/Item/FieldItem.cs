@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-// ★ 핵심: 아이템 데이터와 수량을 하나로 묶어주는 구조체
+// 아이템 데이터와 수량을 하나로 묶어주는 구조체
 [System.Serializable]
 public struct LootItem
 {
@@ -24,6 +24,8 @@ public class FieldItem : MonoBehaviour
     private bool isPlayerNearby = false;
     private Transform cameraTransform;
 
+    private PlayerController playerController;
+
     private void Start()
     {
         if (interactionPrompt != null)
@@ -40,11 +42,10 @@ public class FieldItem : MonoBehaviour
     }
 
     // 아이템 개수에 따라 UI 텍스트를 똑똑하게 바꿔주는 함수
-    
+
 
     private void Update()
     {
-        // 1. 플레이어가 근처에 있고, 내용물이 1개라도 있어야 함
         if (!isPlayerNearby || cameraTransform == null || lootItems.Count == 0) return;
 
         Vector3 dirToItem = (transform.position - cameraTransform.position).normalized;
@@ -55,21 +56,27 @@ public class FieldItem : MonoBehaviour
             if (interactionPrompt != null && !interactionPrompt.activeSelf)
                 interactionPrompt.SetActive(true);
 
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                PickUpAllItems();
-            }
+            // 현재 플레이어가 보고 있는 아이템으로 등록
+            if (playerController != null) playerController.focusedItem = this;
         }
         else
         {
             if (interactionPrompt != null && interactionPrompt.activeSelf)
                 interactionPrompt.SetActive(false);
+
+            // 시야에서 벗어나면 등록 해제
+            if (playerController != null && playerController.focusedItem == this)
+                playerController.focusedItem = null;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) isPlayerNearby = true;
+        if (other.CompareTag("Player"))
+        {
+            isPlayerNearby = true;
+            playerController = other.GetComponent<PlayerController>();
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -77,32 +84,25 @@ public class FieldItem : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerNearby = false;
+            if (playerController != null && playerController.focusedItem == this)
+                playerController.focusedItem = null;
+            playerController = null;
+
             if (interactionPrompt != null) interactionPrompt.SetActive(false);
         }
     }
 
-    private void PickUpAllItems()
+    public void ExecutePickUp()
     {
-        // ★ 핵심: 리스트를 순회하며 인벤토리에 전부 때려 넣습니다!
         foreach (LootItem loot in lootItems)
         {
             if (loot.itemData != null && loot.amount > 0)
             {
-                // 1. 인벤토리에 넣기
                 InventoryManager.Instance.AddItem(loot.itemData, loot.amount);
-                Debug.Log($"{loot.itemData.itemName}을(를) {loot.amount}개 획득!");
-
-                // ==================================================
-                // ★ 누락되었던 핵심 코드: 매니저에게 알림창 생성을 요청합니다!
-                // ==================================================
                 if (AcquisitionLogManager.Instance != null)
-                {
                     AcquisitionLogManager.Instance.ShowLog(loot.itemData, loot.amount);
-                }
             }
         }
-
-        // 다 먹었으면 필드에서 파괴
         Destroy(gameObject);
     }
 }

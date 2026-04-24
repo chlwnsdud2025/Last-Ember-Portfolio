@@ -38,6 +38,15 @@ public abstract class PlayerBaseState
         stateMachine.ChangeState(player.drinkState);
     }
 
+    public virtual void OnInteractInput()
+    {
+        if (player.focusedItem != null && stateMachine.CurrentState != player.pickupState)
+        {
+            player.currentTargetItem = player.focusedItem; // 줍기 타겟 설정
+            stateMachine.ChangeState(player.pickupState); // 줍기 상태로 전환
+        }
+    }
+
     // 기본 이동 회전 (Root 기준)
     protected virtual void HandleRotation()
     {

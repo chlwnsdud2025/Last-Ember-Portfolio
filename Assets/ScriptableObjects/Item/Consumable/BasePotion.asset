@@ -22,4 +22,4 @@ MonoBehaviour:
   basePrice: 200
   healAmount: 40
   buffDuration: 0
-  useEffectPrefab: {fileID: 0}
+  useEffectPrefab: {fileID: 2015227166078130037, guid: 8612b29c6b4e23c4a9a6f4053f9a155b, type: 3}
