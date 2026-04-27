@@ -3,32 +3,53 @@ using UnityEngine;
 public class BossActiveTrigger : MonoBehaviour
 {
     [Header("연결할 보스")]
-    // 이 방의 주인인 보스를 연결해 줍니다.
     public Skeleton_Guard_Controller bossController;
 
     [Header("보스방 입구 막기 (옵션)")]
-    // 보스방에 들어오면 도망 못 가게 안개벽을 칠 수 있습니다.
     public GameObject fogWall;
+
+    private void Start()
+    {
+        // 화톳불 리셋 이벤트를 구독하여 트리거와 안개벽을 초기화합니다.
+        Bonfire.OnBonfireRest += ResetTrigger;
+    }
+
+    private void OnDestroy()
+    {
+        // 오브젝트 파괴 시 에러 방지를 위해 구독 해제
+        Bonfire.OnBonfireRest -= ResetTrigger;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        // 밟은 게 플레이어라면?
         if (other.CompareTag("Player"))
         {
             if (bossController != null)
             {
-                // 1. 보스를 깨웁니다!
                 bossController.WakeUpBoss();
             }
 
             if (fogWall != null)
             {
-                // 2. 도망 못 가게 입구를 막아버립니다!
                 fogWall.SetActive(true);
             }
 
-            // 3. 트리거는 할 일을 다 했으니 자신을 지워버립니다. (중복 발동 방지)
-            Destroy(gameObject);
+            //  Destroy 대신 콜라이더(판정)만 꺼서 재사용할 수 있게 만듭니다.
+            GetComponent<Collider>().enabled = false;
         }
+    }
+
+    // 화톳불에서 쉬거나 부활할 때 실행될 함수
+    private void ResetTrigger()
+    {
+        // 1. 트리거 판정 다시 켜기
+        GetComponent<Collider>().enabled = true;
+
+        // 2. 안개벽 끄기
+        if (fogWall != null)
+        {
+            fogWall.SetActive(false);
+        }
+        Debug.Log("보스방 트리거 & 안개벽 리셋 완료!");
     }
 }

@@ -1,5 +1,22 @@
 using UnityEngine;
 
+public enum AttackMethod
+{
+    Melee,       // 내 몸의 콜라이더를 켜는 타격
+    SpawnPrefab  // 투사체, 충격파, 장판 소환
+}
+
+public enum HitboxType
+{
+    None,
+    RightHandWeapon,
+    LeftHandWeapon,
+    RightFoot,
+    LeftFoot,
+    Body,
+    Tail
+}
+
 public enum RotationTrackingType
 {
     None,               // 아예 안 쳐다봄 (광역기 등)
@@ -53,7 +70,7 @@ public class BossAttack_SO_Data : ScriptableObject
     [Range(0f, 1f)] public float stopTrackingTime = 0.3f;
 
     [Space(10)]
-    [Header(" 4. 전투 스탯 & 히트박스 타이밍 (Combat & Hitbox)")]
+    [Header(" 4. 전투 스탯 & 공격 실행 방식 (Combat & Execution)")]
     public float damage = 20f;
 
     [Tooltip("소울류의 핵심: 플레이어의 강인도(Poise)를 깎는 수치")]
@@ -62,9 +79,25 @@ public class BossAttack_SO_Data : ScriptableObject
     [Tooltip("이 공격을 하는 동안 보스가 경직에 면역이 되는가? (슈퍼아머)")]
     public bool hasHyperArmor = true;
 
-    [Tooltip("히트박스(데미지 판정)가 켜지는 시점 (0~1)")]
+    [Tooltip("이 공격의 종류 (직접 때리기 vs 프리팹 소환하기)")]
+    public AttackMethod attackMethod = AttackMethod.Melee;
+
+    [Header("   ↳ Melee 전용 세팅")]
+    [Tooltip("Melee 방식일 때 켤 히트박스 부위")]
+    public HitboxType targetHitbox;
+
+    [Header("   ↳ SpawnPrefab 전용 세팅")]
+    [Tooltip("SpawnPrefab 방식일 때 소환할 투사체/장판 프리팹")]
+    public GameObject attackPrefab;
+    [Tooltip("보스를 기준으로 어느 위치에 소환할 것인가 (예: 0, 0, 1 은 보스 앞 1m)")]
+    public Vector3 spawnOffset = new Vector3(0, 0, 1f);
+    [Tooltip("체크하면 플레이어 발 밑에 바로 소환됩니다.")]
+    public bool spawnOnTarget = false;
+
+    [Space(5)]
+    [Tooltip("히트박스가 켜지거나 프리팹이 소환되는 시작 시점 (0~1)")]
     [Range(0f, 1f)] public float hitboxStartTime = 0.3f;
-    [Tooltip("히트박스가 꺼지는 시점 (0~1)")]
+    [Tooltip("히트박스가 꺼지는 시점 (0~1) (SpawnPrefab일 경우 무시됨)")]
     [Range(0f, 1f)] public float hitboxEndTime = 0.45f;
 
     [Space(10)]

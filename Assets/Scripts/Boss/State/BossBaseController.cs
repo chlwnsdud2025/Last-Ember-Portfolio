@@ -17,13 +17,19 @@ public abstract class BossBaseController : MonoBehaviour
     private EnemyStats myStats; // 내 몸뚱이 스탯
     public float phase2Threshold = 0.5f;
 
+    [Header("Hitbox System")]
+    public BossHitboxManager hitboxManager;
+
     [Header("UI 연결")]
     public BossUIManager bossUI;
     public AnimatorOverrideController overrideController { get; protected set; }
 
     public BossStateMachine stateMachine { get; protected set; }
 
-    
+    [Header("Reset System")]
+    protected Vector3 initialPosition;
+    protected Quaternion initialRotation;
+
     public BossBaseState decisionState { get; protected set; }
     public List<BossActionOption> availableActions = new List<BossActionOption>();
 
@@ -59,6 +65,13 @@ public abstract class BossBaseController : MonoBehaviour
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) target = playerObj.transform;
+
+        // 1. 처음 배치된 위치와 바라보는 방향을 기억해 둡니다.
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
+
+        // 2. 화톳불 리셋 이벤트 구독
+        Bonfire.OnBonfireRest += ResetBoss;
     }
 
     protected virtual void Update()
@@ -123,6 +136,8 @@ public abstract class BossBaseController : MonoBehaviour
             myStats.OnTakeDamage -= HandleDamageTaken;
             myStats.OnZeroHealth -= HandleDeath;
         }
+
+        Bonfire.OnBonfireRest -= ResetBoss;
     }
 
     public void WakeUpBoss()
@@ -138,6 +153,45 @@ public abstract class BossBaseController : MonoBehaviour
             }
             // 수면 상태를 끝내고, 뇌(Decision)를 가동시킵니다.
             stateMachine.ChangeState(decisionState);
+        }
+    }
+
+    public virtual void ResetBoss()
+    {
+        Debug.Log("화톳불 리셋: 보스 초기화 진행!");
+
+        // 1. 위치 원상복구 (CharacterController 강제 이동을 위해 잠시 끄기)
+        CharacterController cc = GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false;
+        transform.position = initialPosition;
+        transform.rotation = initialRotation;
+        if (cc != null) cc.enabled = true; // 죽으면서 꺼진 컨트롤러도 복구됨
+
+        // 2. 죽으면서 꺼진 콜라이더 및 락온 포인트 복구
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = true;
+        if (lockOnPoint != null) lockOnPoint.gameObject.SetActive(true);
+
+        // 3. 체력 풀회복 및 페이즈 초기화
+        if (myStats != null)
+        {
+            myStats.currentHealth = myStats.maxHealth;
+        }
+        currentPhase = 1;
+
+        // 4. 보스 UI 끄기 (다시 트리거를 밟을 때 켜집니다)
+        if (bossUI != null && bossUI.bossUIContainer != null)
+        {
+            bossUI.bossUIContainer.SetActive(false);
+        }
+
+        // 5. 애니메이션 강제 정지 및 상태 머신을 '수면 상태'로 되돌림
+        animator.Play("Idle", 0, 0f);
+        animator.applyRootMotion = false; // 죽을 때 꺼진 루트모션 플래그 원상복구
+
+        if (sleepState != null)
+        {
+            stateMachine.ChangeState(sleepState);
         }
     }
 }

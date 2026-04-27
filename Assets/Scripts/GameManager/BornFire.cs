@@ -16,6 +16,9 @@ public class Bonfire : MonoBehaviour
     private Transform cameraTransform;
     private PlayerStats playerStats;
 
+    [Header("Respawn Settings")]
+    public Transform fixedSpawnPoint;
+
     private void Start()
     {
         if (interactionPrompt != null) interactionPrompt.SetActive(false);
@@ -71,21 +74,27 @@ public class Bonfire : MonoBehaviour
     {
         if (playerStats != null)
         {
-            // 1. 플레이어의 컨트롤러(상태 머신)를 가져옵니다.
             PlayerController playerController = playerStats.GetComponent<PlayerController>();
 
-            // 플레이어가 이미 휴식 상태가 아닐 때만 실행
             if (playerController != null && playerController.stateMachine.CurrentState != playerController.restState)
             {
-                // \상태 머신을 RestState로 전환
+                //  이 화톳불의 '고정 부활 위치'를 플레이어에게 덮어씌웁니다.
+                if (fixedSpawnPoint != null)
+                {
+                    playerController.lastRespawnPoint = fixedSpawnPoint;
+                }
+
+                // 이하 기존 코드 유지
                 playerController.stateMachine.ChangeState(playerController.restState);
-
-                // 2. 플레이어 회복 (체력, 스태미나 100%)
                 playerStats.RestAtBonfire();
-
-                // 3. 월드 리셋 이벤트 발생 (스포너 작동)
                 OnBonfireRest?.Invoke();
             }
         }
+    }
+
+    public static void TriggerWorldReset()
+    {
+        OnBonfireRest?.Invoke();
+        Debug.Log("월드 리셋: 모든 적이 재생성되었습니다.");
     }
 }

@@ -72,6 +72,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public FieldItem currentTargetItem;
     [HideInInspector] public FieldItem focusedItem;
 
+    [Header("Respawn System")]
+    public Transform lastRespawnPoint;
     public PlayerStats stats { get; private set; }
 
     // 상태 머신 (FSM)
@@ -157,6 +159,15 @@ public class PlayerController : MonoBehaviour
         if (currentWeapon != null) EquipWeapon(currentWeapon);
 
         stateMachine.Initialize(idleState);
+
+        if (lastRespawnPoint == null) // 에디터에서 미리 할당해둔 곳이 없다면
+        {
+            GameObject defaultRespawn = new GameObject("Default_Respawn_Point");
+            defaultRespawn.transform.position = transform.position;
+            defaultRespawn.transform.rotation = transform.rotation;
+
+            lastRespawnPoint = defaultRespawn.transform;
+        }
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -543,6 +554,38 @@ public class PlayerController : MonoBehaviour
             stateMachine.ChangeState(hitState);
         }
     }
+
+    public void RespawnPlayer()
+    {
+        if (lastRespawnPoint != null)
+        {
+            characterController.enabled = false;
+            transform.position = lastRespawnPoint.position;
+            transform.rotation = lastRespawnPoint.rotation;
+            characterController.enabled = true;
+        }
+
+        isDead = false;
+
+        animator.applyRootMotion = false;
+        verticalVelocity = 0f;
+
+        // 1. 휴식 상태 UI를 띄워줍니다. (부활했을 때 메뉴가 떠 있어야 함)
+        if (BonfireUIManager.Instance != null)
+        {
+            BonfireUIManager.Instance.ToggleRestingHUD(true);
+        }
+
+        // 2. 상태 머신을 휴식 상태로 전환
+        stateMachine.ChangeState(restState);
+
+        // 3. 스탯 회복
+        stats.RestAtBonfire();
+
+        // 4. 월드 리셋 (몹 재생성)
+        Bonfire.TriggerWorldReset();
+    }
+
     private void OnEnable() { controls.Enable(); }
     private void OnDisable() { controls.Disable(); }
 }

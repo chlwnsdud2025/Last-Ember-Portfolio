@@ -6,12 +6,16 @@ public class Humanoid_Boss_Attack_State : BossBaseState
 
     private bool isHitboxActive = false;
     private bool hasTransitioned = false;
+    private bool hasSpawned = false;
 
     public Humanoid_Boss_Attack_State(BossBaseController boss, BossStateMachine stateMachine) : base(boss, stateMachine) { }
 
     public override void Enter()
     {
-        Debug.Log($"Attack 진입: {currentAttackData?.attackName}"); // 디버그를 더 명확하게!
+
+        if (boss.hitboxManager == null)
+        {
+        }
 
         if (currentAttackData == null || currentAttackData.attackClip == null)
         {
@@ -21,14 +25,12 @@ public class Humanoid_Boss_Attack_State : BossBaseState
 
         isHitboxActive = false;
         hasTransitioned = false;
+        hasSpawned = false;
 
-        //  변경 1: 루트 모션과 배속을 SO 데이터에 맞게 세팅!
         boss.animator.applyRootMotion = currentAttackData.useRootMotion;
         boss.animator.speed = currentAttackData.animationSpeedMultiplier;
 
         boss.overrideController["Dummy_Attack"] = currentAttackData.attackClip;
-
-        //  변경 2: 하드코딩된 0.2f 대신 SO에 있는 transitionDuration 사용
         boss.animator.CrossFadeInFixedTime("Attack", currentAttackData.transitionDuration);
     }
 
@@ -36,53 +38,77 @@ public class Humanoid_Boss_Attack_State : BossBaseState
     {
         AnimatorStateInfo stateInfo = boss.animator.GetCurrentAnimatorStateInfo(0);
 
-        if (!stateInfo.IsName("Attack") || boss.animator.IsInTransition(0))
+        if (!stateInfo.IsName("Attack"))
         {
             return;
         }
 
+        if (boss.animator.IsInTransition(0)) return;
+
         float progress = stateInfo.normalizedTime;
 
-        //  단순 boolean(trackTarget) 대신, Enum을 이용한 세밀한 추적 로직!
+
+        // 타겟 추적(회전) 로직
         if (currentAttackData.trackingType == RotationTrackingType.Continuous)
         {
-            // 끝날 때까지 쳐다봄 (SO에 설정한 turnSpeed 속도 적용!)
             boss.RotateTowardsTarget(currentAttackData.turnSpeed);
         }
         else if (currentAttackData.trackingType == RotationTrackingType.OnlyStartup && progress <= currentAttackData.stopTrackingTime)
         {
-            // 선딜(지정된 시간)까지만 쳐다봄 (SO에 설정한 turnSpeed 속도 적용!)
             boss.RotateTowardsTarget(currentAttackData.turnSpeed);
         }
 
-        HandleHitboxTiming(progress);
+        HandleAttackAction(progress);
         HandleStateTransition(progress);
     }
 
-    private void HandleHitboxTiming(float progress)
+    private void HandleAttackAction(float progress)
     {
-        if (progress >= currentAttackData.hitboxStartTime && progress <= currentAttackData.hitboxEndTime)
+        if (currentAttackData.attackMethod == AttackMethod.Melee)
         {
-            if (!isHitboxActive)
+            if (progress >= currentAttackData.hitboxStartTime && progress <= currentAttackData.hitboxEndTime)
             {
-                isHitboxActive = true;
-                Debug.Log($"{currentAttackData.attackName} 판정 켜짐!");
+                if (!isHitboxActive)
+                {
+                    isHitboxActive = true;
+
+                    if (boss.hitboxManager != null)
+                    {
+                        boss.hitboxManager.currentDamage = currentAttackData.damage;
+                        boss.hitboxManager.EnableHitbox(currentAttackData.targetHitbox);
+                    }
+                }
+            }
+            else
+            {
+                if (isHitboxActive)
+                {
+                    isHitboxActive = false;
+
+                    if (boss.hitboxManager != null) boss.hitboxManager.DisableAllHitboxes();
+                }
             }
         }
-        else
+        else if (currentAttackData.attackMethod == AttackMethod.SpawnPrefab)
         {
-            if (isHitboxActive)
+            if (progress >= currentAttackData.hitboxStartTime && !hasSpawned)
             {
-                isHitboxActive = false;
-                Debug.Log($"{currentAttackData.attackName} 판정 꺼짐.");
+                hasSpawned = true;
+                SpawnAttackPrefab();
             }
         }
+    }
+
+    private void SpawnAttackPrefab()
+    {
+        if (currentAttackData.attackPrefab == null) return;
+        Vector3 spawnPos = currentAttackData.spawnOnTarget && boss.target != null ? boss.target.position : boss.transform.position + boss.transform.TransformDirection(currentAttackData.spawnOffset);
+        Object.Instantiate(currentAttackData.attackPrefab, spawnPos, boss.transform.rotation);
     }
 
     private void HandleStateTransition(float progress)
     {
         if (hasTransitioned) return;
-
         if (currentAttackData.nextCombo != null && progress >= currentAttackData.comboEnableTime)
         {
             hasTransitioned = true;
@@ -100,8 +126,7 @@ public class Humanoid_Boss_Attack_State : BossBaseState
     {
         boss.animator.applyRootMotion = false;
         isHitboxActive = false;
-
-        // 다음 상태(Walk, Idle 등)가 고장 나지 않도록 배속 원상복구!
         boss.animator.speed = 1.0f;
+        if (boss.hitboxManager != null) boss.hitboxManager.DisableAllHitboxes();
     }
 }

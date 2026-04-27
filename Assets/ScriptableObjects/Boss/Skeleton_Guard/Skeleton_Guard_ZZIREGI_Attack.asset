@@ -30,8 +30,13 @@ MonoBehaviour:
   damage: 20
   poiseDamage: 10
   hasHyperArmor: 1
-  hitboxStartTime: 0.313
-  hitboxEndTime: 0.52
+  attackMethod: 0
+  targetHitbox: 1
+  attackPrefab: {fileID: 0}
+  spawnOffset: {x: 0, y: 0, z: 1}
+  spawnOnTarget: 0
+  hitboxStartTime: 0.178
+  hitboxEndTime: 0.686
   comboEnableTime: 0.747
   attackEndTime: 0.864
   nextCombo: {fileID: 0}
