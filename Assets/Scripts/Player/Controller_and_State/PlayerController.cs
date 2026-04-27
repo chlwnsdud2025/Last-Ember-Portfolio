@@ -235,6 +235,7 @@ public class PlayerController : MonoBehaviour
 
         stateMachine.Update();
     }
+   
 
 
     // 카메라 회전 및 움직임 ( 락온 부분 이해 필요! )
@@ -307,6 +308,8 @@ public class PlayerController : MonoBehaviour
         {
             overrideController["Roll"] = currentDodgeData.clip;
         }
+
+
     }
 
 
