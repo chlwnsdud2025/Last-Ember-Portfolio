@@ -20,7 +20,7 @@ MonoBehaviour:
   cooldown: 10
   weight: 10
   requiredPhase: 2
-  attackClip: {fileID: 7400000, guid: 71a1bd985c273104a96bba777d788c77, type: 2}
+  attackClip: {fileID: 7400000, guid: 8f6e3532d3c894082aba244b0d9165eb, type: 2}
   transitionDuration: 0.2
   animationSpeedMultiplier: 1
   useRootMotion: 1

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e1dde6025c3c0b4bb3465e1e6fd1872, type: 3}
+  m_Name: Skeleton_Guard_Body_Attack
+  m_EditorClassIdentifier: Assembly-CSharp::BossAttack_SO_Data
+  attackName: bodyattack
+  minDistance: 0
+  maxDistance: 20
+  validMinAngle: -45
+  validMaxAngle: 45
+  cooldown: 0
+  weight: 20
+  requiredPhase: 1
+  attackClip: {fileID: 7400000, guid: f3dbdeaed09c2476593617e7f368b6f1, type: 2}
+  transitionDuration: 0.1
+  animationSpeedMultiplier: 1
+  useRootMotion: 1
+  trackingType: 1
+  turnSpeed: 5
+  stopTrackingTime: 0.3
+  damage: 20
+  poiseDamage: 10
+  hasHyperArmor: 1
+  hitboxStartTime: 0.313
+  hitboxEndTime: 0.52
+  comboEnableTime: 0.747
+  attackEndTime: 0.864
+  nextCombo: {fileID: 0}
+  lastUsedTime: -999

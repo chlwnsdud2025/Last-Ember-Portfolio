@@ -20,7 +20,7 @@ MonoBehaviour:
   cooldown: 0
   weight: 10
   requiredPhase: 2
-  attackClip: {fileID: 7400000, guid: 9a7e27c8ffba8ae44a431b199e9b5581, type: 2}
+  attackClip: {fileID: 7400000, guid: e36afcd2fcce64eea9ae1e83c4415c74, type: 2}
   transitionDuration: 0
   animationSpeedMultiplier: 1
   useRootMotion: 1
@@ -34,5 +34,5 @@ MonoBehaviour:
   hitboxEndTime: 0.5
   comboEnableTime: 0.5
   attackEndTime: 0.9
-  nextCombo: {fileID: 11400000, guid: 24e95181fd73a83449455f1980a64fcc, type: 2}
+  nextCombo: {fileID: 0}
   lastUsedTime: -999

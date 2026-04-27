@@ -19,7 +19,7 @@ MonoBehaviour:
   validMaxAngle: 45
   cooldown: 0
   weight: 20
-  requiredPhase: 2
+  requiredPhase: 1
   attackClip: {fileID: 7400000, guid: aa679c350f5a5094faaaeb9815c09818, type: 2}
   transitionDuration: 0.1
   animationSpeedMultiplier: 1
