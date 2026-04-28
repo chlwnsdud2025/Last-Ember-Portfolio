@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
@@ -18,6 +19,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float hpWidthMultiplier = 0.5f;
     [SerializeField] private float staminaWidthMultiplier = 0.3f;
 
+
+    public GameObject gameClearPanel;
 
     private List<GameObject> activePanels = new List<GameObject>();//UI List
 
@@ -151,4 +154,23 @@ public class UIManager : MonoBehaviour
         }
     }
 
+
+    public void GameClear()
+    {
+        gameClearPanel.SetActive(true);
+    }
+
+    public void GameRestart()
+    {
+        SceneManager.LoadScene(1);
+    }
+    public void GameQuit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        // 2. 실제 빌드된 파일(.exe, .apk 등)에서 게임을 종료하는 코드
+        Application.Quit();
+#endif
+    }
 }

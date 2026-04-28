@@ -46,10 +46,9 @@ public class Humanoid_Boss_Dead_State : BossBaseState
             hasTriggeredVictory = true;
 
             Debug.Log(" YOU DEFEATED 연출 시작!");
-            // 여기에 게임 클리어 UI를 띄우거나, 경험치/아이템 드랍 코드를 넣으면 완벽합니다.
 
-            // (선택) 보스 시체 비활성화
-            // boss.gameObject.SetActive(false); 
+
+            UIManager.Instance.GameClear();
         }
     }
 
