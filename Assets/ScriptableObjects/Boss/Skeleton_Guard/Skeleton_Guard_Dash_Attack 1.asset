@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossAttack_SO_Data
   attackName: "\uB300\uC26C \uACF5\uACA92"
   minDistance: 0
-  maxDistance: 15
+  maxDistance: 10
   validMinAngle: -100
   validMaxAngle: -99
   cooldown: 0

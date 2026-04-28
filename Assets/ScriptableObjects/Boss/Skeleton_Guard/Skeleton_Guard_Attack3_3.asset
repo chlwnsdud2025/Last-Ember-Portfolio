@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e1dde6025c3c0b4bb3465e1e6fd1872, type: 3}
-  m_Name: Skeleton_Guard_Attack2_4
+  m_Name: Skeleton_Guard_Attack3_3
   m_EditorClassIdentifier: Assembly-CSharp::BossAttack_SO_Data
-  attackName: "\uC5F0\uC18D\uACF5\uACA94"
+  attackName: attack3_3
   minDistance: 0
-  maxDistance: 30
-  validMinAngle: -180
-  validMaxAngle: 180
+  maxDistance: 10
+  validMinAngle: -45
+  validMaxAngle: 45
   cooldown: 0
-  weight: 10
+  weight: 20
   requiredPhase: 2
-  attackClip: {fileID: 7400000, guid: 074dcd4ffca06c74ab727ca38525714b, type: 2}
-  transitionDuration: 0
+  attackClip: {fileID: 7400000, guid: 134ef42a61b854dfebe513b44fb0289a, type: 2}
+  transitionDuration: 0.1
   animationSpeedMultiplier: 1
   useRootMotion: 1
-  trackingType: 2
-  turnSpeed: 20
+  trackingType: 1
+  turnSpeed: 5
   stopTrackingTime: 0.3
   damage: 20
   poiseDamage: 10
@@ -35,9 +35,9 @@ MonoBehaviour:
   attackPrefab: {fileID: 0}
   spawnOffset: {x: 0, y: 0, z: 1}
   spawnOnTarget: 0
-  hitboxStartTime: 0.167
-  hitboxEndTime: 0.5
-  comboEnableTime: 0.5
-  attackEndTime: 0.9
+  hitboxStartTime: 0.3
+  hitboxEndTime: 0.729
+  comboEnableTime: 0.747
+  attackEndTime: 0.864
   nextCombo: {fileID: 0}
   lastUsedTime: -999

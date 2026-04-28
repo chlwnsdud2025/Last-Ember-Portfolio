@@ -22,7 +22,7 @@ MonoBehaviour:
   requiredPhase: 1
   attackClip: {fileID: 7400000, guid: 5d0d5af42ae611e4fa8e990b72546b84, type: 2}
   transitionDuration: 0.2
-  animationSpeedMultiplier: 0.7
+  animationSpeedMultiplier: 0.6
   useRootMotion: 1
   trackingType: 2
   turnSpeed: 20
@@ -35,9 +35,9 @@ MonoBehaviour:
   attackPrefab: {fileID: 0}
   spawnOffset: {x: 0, y: 0, z: 1}
   spawnOnTarget: 0
-  hitboxStartTime: 0.1
-  hitboxEndTime: 0.7
-  comboEnableTime: 0.7
-  attackEndTime: 0.9
+  hitboxStartTime: 0.06
+  hitboxEndTime: 0.43
+  comboEnableTime: 0.45
+  attackEndTime: 0.7
   nextCombo: {fileID: 11400000, guid: 98d56e63a117ab94faec3226d4ddc160, type: 2}
   lastUsedTime: -999

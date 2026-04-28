@@ -18,8 +18,8 @@ MonoBehaviour:
   rarity: 0
   icon: {fileID: 21300000, guid: b53a511f89d4dac469dc2cdddbbda01a, type: 3}
   description: Basic potion
-  maxStackAmount: 12
+  maxStackAmount: 99
   basePrice: 200
-  healAmount: 40
+  healAmount: 200
   buffDuration: 0
   useEffectPrefab: {fileID: 2015227166078130037, guid: 8612b29c6b4e23c4a9a6f4053f9a155b, type: 3}

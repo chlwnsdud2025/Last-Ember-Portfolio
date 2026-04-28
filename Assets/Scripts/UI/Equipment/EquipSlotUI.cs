@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using TMPro;
 
-public class EquipSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+// ★ 수정: IPointerClickHandler 인터페이스 추가
+public class EquipSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [Header("Slot Settings")]
     public ItemType targetSlotType;       // 대분류 (Weapon, Armor 등)
@@ -18,14 +18,14 @@ public class EquipSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void Awake()
     {
-        slotButton.onClick.AddListener(OnSlotClicked);
+        // ★ 수정: 기존의 버튼 onClick 리스너는 삭제합니다. (OnPointerClick에서 모두 처리할 예정)
+        // slotButton.onClick.AddListener(OnSlotClicked); 
     }
 
     public void UpdateSlotUI(ItemInstance item)
     {
         currentEquippedItem = item;
 
-        // 안전장치: Image 컴포넌트 연결 누락 방지
         if (iconImage == null)
         {
             Debug.LogError($"[UI 버그] {gameObject.name}의 EquipSlotUI에 'Icon Image'가 연결되지 않았습니다!", gameObject);
@@ -43,10 +43,26 @@ public class EquipSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
 
-    private void OnSlotClicked()
+    // ★ 추가: 마우스 클릭 이벤트를 감지하여 좌/우클릭을 구분합니다.
+    public void OnPointerClick(PointerEventData eventData)
     {
-        // ★ 에러 해결: 대분류, 소분류, 슬롯번호 3가지를 정확하게 매니저에게 전달합니다!
-        EquipmentUIManager.Instance.OpenInventoryPopupForSlot(targetSlotType, targetArmorType, slotIndex);
+        // 1. 좌클릭: 장비 교체 팝업 열기
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            EquipmentUIManager.Instance.OpenInventoryPopupForSlot(targetSlotType, targetArmorType, slotIndex);
+        }
+        // 2. 우클릭: 장비 해제
+        else if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (currentEquippedItem != null)
+            {
+                // EquipmentManager의 Unequip 함수 호출
+                EquipmentManager.Instance.Unequip(targetSlotType, slotIndex, targetArmorType);
+
+                // 장비가 해제되었으니 툴팁도 즉시 숨겨줍니다.
+                EquipmentUIManager.Instance.HideItemTooltip();
+            }
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -59,5 +75,7 @@ public class EquipSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        // (필요 시) 마우스가 슬롯 밖으로 나갈 때 툴팁을 끄는 로직을 여기에 넣어도 좋습니다.
+        // EquipmentUIManager.Instance.HideItemTooltip();
     }
 }

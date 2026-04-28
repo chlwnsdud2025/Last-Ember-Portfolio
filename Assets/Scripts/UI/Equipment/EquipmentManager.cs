@@ -188,6 +188,14 @@ public class EquipmentManager : MonoBehaviour
         {
             if (spawnedWeaponModel != null) Destroy(spawnedWeaponModel);
             currentWeapons[slotIndex] = null;
+
+            if (slotIndex == activeWeaponIndex)
+            {
+                // 무기를 파괴해도 맨손 컨트롤러를 다시 연결해줌
+                playerController.EquipWeapon(null);
+            }
+
+            
         }
         else if (type == ItemType.Armor && armorType.HasValue)
         {

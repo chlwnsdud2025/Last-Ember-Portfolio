@@ -90,22 +90,32 @@ public class AttackState : PlayerBaseState
         {
             bool shouldHitboxBeActive = (progress >= currentAttackData.hitboxStartTime && progress <= currentAttackData.hitboxEndTime);
 
-            if (shouldHitboxBeActive)
+            // 무기 스크립트가 존재할 때(맨손이 아닐 때)만 실행합니다!
+            if (player.currentWeaponScript != null)
             {
-                // 현재 내 스탯으로 계산된 기본 데미지를 먼저 가져옵니다.
-                float baseDmg = EquipmentManager.Instance.currentWeapons[EquipmentManager.Instance.activeWeaponIndex]
-                    .GetCalculatedDamage(player.stats.strength, player.stats.dexterity);
+                if (shouldHitboxBeActive)
+                {
+                    float baseDmg = player.unarmedBaseDamage; // 기본값은 맨손 데미지
 
-                // (기본 데미지 * 현재 모션의 데미지 배율)을 덮어씌웁니다!
-                player.currentWeaponScript.currentDamage = baseDmg * currentAttackData.damageMultiplier;
+                    ItemInstance equippedWeapon = EquipmentManager.Instance.currentWeapons[EquipmentManager.Instance.activeWeaponIndex];
 
-                // 콜라이더 켜기
-                player.currentWeaponScript.EnableHitbox();
-            }
-            else
-            {
-                // 콜라이더 끄기
-                player.currentWeaponScript.DisableHitbox();
+                    // 장착된 무기 아이템이 있다면 그 무기의 스탯 보정 데미지를 가져옴
+                    if (equippedWeapon != null && equippedWeapon.itemData != null)
+                    {
+                        baseDmg = equippedWeapon.GetCalculatedDamage(player.stats.strength, player.stats.dexterity);
+                    }
+
+                    if (player.currentWeaponScript != null)
+                    {
+                        player.currentWeaponScript.currentDamage = baseDmg * currentAttackData.damageMultiplier;
+                        player.currentWeaponScript.EnableHitbox();
+                    }
+                }
+                else
+                {
+                    // 콜라이더 끄기
+                    player.currentWeaponScript.DisableHitbox();
+                }
             }
         }
 
@@ -175,7 +185,10 @@ public class AttackState : PlayerBaseState
     {
         if (!isContinuingCombo)
         {
-            player.currentWeaponScript.DisableHitbox();
+            if (player.currentWeaponScript != null)
+            {
+                player.currentWeaponScript.DisableHitbox();
+            }
 
             comboIndex = 0;
             player.animator.applyRootMotion = false;

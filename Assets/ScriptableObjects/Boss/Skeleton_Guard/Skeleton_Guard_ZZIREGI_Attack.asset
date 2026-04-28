@@ -35,8 +35,8 @@ MonoBehaviour:
   attackPrefab: {fileID: 0}
   spawnOffset: {x: 0, y: 0, z: 1}
   spawnOnTarget: 0
-  hitboxStartTime: 0.178
-  hitboxEndTime: 0.686
+  hitboxStartTime: 0.3
+  hitboxEndTime: 0.7
   comboEnableTime: 0.747
   attackEndTime: 0.864
   nextCombo: {fileID: 0}

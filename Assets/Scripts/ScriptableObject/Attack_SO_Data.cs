@@ -34,7 +34,11 @@ public class Attack_SO_Data : ScriptableObject
 {
     public string weaponName;
 
-    
+    [Header("Movement Animations")]
+    public AnimationClip idleClip;
+    public AnimationClip walkClip;
+    public AnimationClip runClip;
+    public AnimationClip sprintClip;
 
     [Header("Combo Attacks")]
     // 위에서 만든 AttackData 클래스를 배열로 가집니다.

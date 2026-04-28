@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossAttack_SO_Data
   attackName: "\uB300\uC26C \uACF5\uACA9"
   minDistance: 0
-  maxDistance: 15
+  maxDistance: 10
   validMinAngle: -100
   validMaxAngle: -99
   cooldown: 0
@@ -35,7 +35,7 @@ MonoBehaviour:
   attackPrefab: {fileID: 0}
   spawnOffset: {x: 0, y: 0, z: 1}
   spawnOnTarget: 0
-  hitboxStartTime: 0.11
+  hitboxStartTime: 0.2
   hitboxEndTime: 0.839
   comboEnableTime: 0.7
   attackEndTime: 0.8

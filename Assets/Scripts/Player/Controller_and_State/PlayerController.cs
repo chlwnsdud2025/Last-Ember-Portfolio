@@ -1,9 +1,7 @@
 using System.Xml;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static Attack_SO_Data;
-using static UnityEditorInternal.VersionControl.ListControl;
 
 public class PlayerController : MonoBehaviour
 {
@@ -49,6 +47,12 @@ public class PlayerController : MonoBehaviour
     public WeaponController currentWeaponScript;
     public Attack_SO_Data currentWeapon;
     public Roll_SO_Data currentDodgeData;
+
+    [Header("Unarmed Settings")]
+    public WeaponController unarmedController;
+    public float unarmedBaseDamage = 10f;
+    public Attack_SO_Data defaultUnarmedData; // 기본 맨손 데이터
+
 
     [HideInInspector] public bool canCombo;      // 현재 클릭 시 연속 공격 예약 가능 여부
     [HideInInspector] public bool canNextAttack; // 실제 다음 애니메이션으로 전환 가능한 시점
@@ -156,7 +160,10 @@ public class PlayerController : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
 
-        if (currentWeapon != null) EquipWeapon(currentWeapon);
+        if (currentWeapon != null)
+            EquipWeapon(currentWeapon);
+        else
+            EquipWeapon(null);
 
         stateMachine.Initialize(idleState);
 
@@ -296,20 +303,33 @@ public class PlayerController : MonoBehaviour
     //공격 및 구르기의 모션 데이터 덮어쓰기
     public void EquipWeapon(Attack_SO_Data newData)
     {
-        currentWeapon = newData;
+        // 넘어온 무기 데이터가 없으면 맨손 데이터(defaultUnarmedData)를 할당
+        Attack_SO_Data targetData = newData != null ? newData : defaultUnarmedData;
 
-        
-        for (int i = 0; i < newData.comboAttacks.Length; i++)
+        currentWeapon = targetData;
+
+        // 만약 맨손 데이터조차 없다면 에러 방지
+        if (targetData != null)
         {
-            overrideController[$"Attack{i + 1}"] = newData.comboAttacks[i].clip;
-        }
+            for (int i = 0; i < targetData.comboAttacks.Length; i++)
+            {
+                overrideController[$"Attack{i + 1}"] = targetData.comboAttacks[i].clip;
+            }
 
+            if (targetData.idleClip != null) overrideController["Idle"] = targetData.idleClip;
+            if (targetData.walkClip != null) overrideController["Walk"] = targetData.walkClip;
+            if (targetData.runClip != null) overrideController["Run"] = targetData.runClip;
+            if (targetData.sprintClip != null) overrideController["Sprint"] = targetData.sprintClip;
+        }
+        if (newData == null)
+        {
+            currentWeaponScript = unarmedController;
+        }
+        // 구르기 데이터 갱신 (기존 코드 유지)
         if (currentDodgeData != null)
         {
             overrideController["Roll"] = currentDodgeData.clip;
         }
-
-
     }
 
 
