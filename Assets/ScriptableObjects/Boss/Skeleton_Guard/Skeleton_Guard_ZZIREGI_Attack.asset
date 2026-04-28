@@ -17,7 +17,7 @@ MonoBehaviour:
   maxDistance: 10
   validMinAngle: -45
   validMaxAngle: 45
-  cooldown: 0
+  cooldown: 15
   weight: 20
   requiredPhase: 1
   attackClip: {fileID: 7400000, guid: 7c64c612d848e432c806a7cd0071eee2, type: 2}
