@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Basic_spear
   m_EditorClassIdentifier: Assembly-CSharp::weapon_1_ob
   weaponName: basic_Spear
+  idleClip: {fileID: 7400000, guid: 14ce6714a2b09bb4391ff59e0e792453, type: 3}
+  walkClip: {fileID: 7400000, guid: e98f8c96b80f85c4eaf7c1f00f522f18, type: 3}
+  runClip: {fileID: 7400000, guid: cba520a1ef191a943b7b217277a958e6, type: 3}
+  sprintClip: {fileID: 0}
   comboAttacks:
   - clip: {fileID: 7400000, guid: 3a9c5e817625eb54e99c1192d1222232, type: 3}
     comboWindowStart: 0.1
@@ -50,4 +54,3 @@ MonoBehaviour:
     hitboxEndTime: 0.6
     damageMultiplier: 1
     steminareduce: 1
-  baseDamage: 2
