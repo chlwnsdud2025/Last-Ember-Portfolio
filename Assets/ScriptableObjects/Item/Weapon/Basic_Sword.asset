@@ -25,5 +25,5 @@ MonoBehaviour:
   baseStaminaCost: 10
   attackData: {fileID: 11400000, guid: 58a625f376515e64caca8cc6ce1eacc2, type: 2}
   weaponPrefab: {fileID: 8015839784862284574, guid: 781910bb852fdbf458aeb0a27e9f2975, type: 3}
-  strScaling: 1
-  dexScaling: 1
+  strScaling: 1.3
+  dexScaling: 0.5

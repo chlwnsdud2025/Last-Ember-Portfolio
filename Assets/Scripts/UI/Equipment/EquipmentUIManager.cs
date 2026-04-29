@@ -89,7 +89,7 @@ public class EquipmentUIManager : MonoBehaviour
             weaponSlots[i].UpdateSlotUI(EquipmentManager.Instance.currentWeapons[i]);
         }
 
-        // ★ 추가: 장신구 슬롯 4개 업데이트
+        // 장신구 슬롯 4개 업데이트
         for (int i = 0; i < artifactSlots.Length; i++)
         {
             artifactSlots[i].UpdateSlotUI(EquipmentManager.Instance.currentAccessories[i]);
@@ -97,7 +97,7 @@ public class EquipmentUIManager : MonoBehaviour
 
         for (int i = 0; i < consumableSlots.Length; i++)
         {
-            // (안전장치) 배열 길이를 넘어서지 않게 체크
+            // 배열 길이를 넘어서지 않게 체크
             if (i < EquipmentManager.Instance.currentConsumables.Length)
             {
                 consumableSlots[i].UpdateSlotUI(EquipmentManager.Instance.currentConsumables[i]);

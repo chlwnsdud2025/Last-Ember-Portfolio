@@ -16,7 +16,7 @@ MonoBehaviour:
   itemName: Heal_Potion
   itemType: 3
   rarity: 0
-  icon: {fileID: 21300000, guid: ba83741fd3fa8344591c255cadf02e55, type: 3}
+  icon: {fileID: 21300000, guid: 51737e5d04da0754abcb49c1eda5e510, type: 3}
   description: Basic potion
   maxStackAmount: 99
   basePrice: 200

@@ -19,15 +19,30 @@ public class LevelUpUIManager : MonoBehaviour
     public TextMeshProUGUI[] currentStatTexts;
     public TextMeshProUGUI[] afterStatTexts;
 
+    
+    // 우측 패널 (상세 데이터) 텍스트 연결 변수들
+    
+    [Header("Right Panel: Derived Stats (Current)")]
+    public TextMeshProUGUI hpCurrentText;
+    public TextMeshProUGUI staminaCurrentText;
+    public TextMeshProUGUI staminaRegenCurrentText;
+    public TextMeshProUGUI[] weaponCurrentTexts; // 무기 1~4 현재 데미지
+
+    [Header("Right Panel: Derived Stats (After)")]
+    public TextMeshProUGUI hpAfterText;
+    public TextMeshProUGUI staminaAfterText;
+    public TextMeshProUGUI staminaRegenAfterText;
+    public TextMeshProUGUI[] weaponAfterTexts;   // 무기 1~4 변경될 데미지
+
     [Header("Selection Panel (Highlight)")]
-    public RectTransform selectionPanel; // 움직일 하이라이트 패널
-    public RectTransform[] rowPositions; // 패널이 이동할 4개의 위치 (각 스탯 줄)
+    public RectTransform selectionPanel;
+    public RectTransform[] rowPositions;
 
     private PlayerStats playerStats;
 
     // 장바구니 배열 (0:체력, 1:지구력, 2:근력, 3:기량)
     private int[] pendingStats = new int[4];
-    private int selectedIndex = 0; // 현재 선택된 스탯 줄 번호
+    private int selectedIndex = 0;
 
     private void Awake()
     {
@@ -42,30 +57,25 @@ public class LevelUpUIManager : MonoBehaviour
 
     private void Update()
     {
-        // 레벨업 창이 꺼져있으면 키보드 입력을 무시합니다.
         if (!levelUpPanel.activeSelf) return;
 
-        // 1. 위로 이동 (W 또는 위쪽 방향키)
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             int newIndex = selectedIndex - 1;
-            if (newIndex < 0) newIndex = 3; // 맨 위에서 한 번 더 올리면 맨 아래(기량)로 이동
+            if (newIndex < 0) newIndex = 3;
             SelectStatRow(newIndex);
         }
-        // 2. 아래로 이동 (S 또는 아래쪽 방향키)
         else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             int newIndex = selectedIndex + 1;
-            if (newIndex > 3) newIndex = 0; // 맨 아래에서 한 번 더 내리면 맨 위(체력)로 이동
+            if (newIndex > 3) newIndex = 0;
             SelectStatRow(newIndex);
         }
 
-        // 3. 스탯 감소 (A 또는 왼쪽 방향키)
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             OnClickDecreaseSelected();
         }
-        // 4. 스탯 증가 (D 또는 오른쪽 방향키)
         else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             OnClickIncreaseSelected();
@@ -74,11 +84,10 @@ public class LevelUpUIManager : MonoBehaviour
 
     public void OpenLevelUpPanel()
     {
-        // 장바구니 초기화
         for (int i = 0; i < pendingStats.Length; i++) pendingStats[i] = 0;
 
         UIManager.Instance.OpenPanel(levelUpPanel);
-        UpdateUI(); SelectStatRow(0); // 처음 열면 무조건 맨 윗줄(체력) 선택
+        SelectStatRow(0);
         UpdateUI();
     }
 
@@ -87,27 +96,20 @@ public class LevelUpUIManager : MonoBehaviour
         UIManager.Instance.ClosePanel(levelUpPanel);
     }
 
-    // 선택 패널 이동 로직
     public void SelectStatRow(int index)
     {
         selectedIndex = index;
-
-        // 하이라이트 패널을 선택한 줄의 위치로 부드럽게(또는 즉시) 이동
         if (selectionPanel != null && rowPositions.Length > index)
         {
             selectionPanel.position = rowPositions[index].position;
         }
     }
 
-    // ==========================================
-    // ★ 선택 패널에 달린 + / - 버튼 작동 로직
-    // ==========================================
     public void OnClickIncreaseSelected()
     {
         int totalPending = GetTotalPendingLevels();
         int nextCost = playerStats.GetCostForLevel(playerStats.level + totalPending);
 
-        // 돈이 충분할 때만 증가
         if (playerStats.currentMoney - CalculateTotalPendingCost() >= nextCost)
         {
             pendingStats[selectedIndex]++;
@@ -117,7 +119,6 @@ public class LevelUpUIManager : MonoBehaviour
 
     public void OnClickDecreaseSelected()
     {
-        // 0보다 작아질 수는 없음 (기본 스탯 밑으로 깎기 불가)
         if (pendingStats[selectedIndex] > 0)
         {
             pendingStats[selectedIndex]--;
@@ -144,10 +145,13 @@ public class LevelUpUIManager : MonoBehaviour
     }
 
     // ==========================================
-    // ★ 화면 갱신 (파란색 색상 적용 등)
+    //  우측 패널 상세 스탯 계산 및 렌더링 로직 추가
     // ==========================================
     public void UpdateUI()
     {
+        string blueColor = "<color=#5B9BD5>";
+        string endColor = "</color>";
+
         int totalPending = GetTotalPendingLevels();
         int totalCost = CalculateTotalPendingCost();
 
@@ -155,35 +159,84 @@ public class LevelUpUIManager : MonoBehaviour
         int projectedMoney = playerStats.currentMoney - totalCost;
         int nextLevelCost = playerStats.GetCostForLevel(projectedLevel);
 
-        // 상단 정보 (Current)
+        // 1. 좌측 상단 정보
         levelCurrentText.text = playerStats.level.ToString();
         moneyCurrentText.text = playerStats.currentMoney.ToString();
         costText.text = nextLevelCost.ToString();
 
-        // 상단 정보 (After - 변화가 있으면 파란색, 돈은 깎이니 빨간색 느낌도 좋지만 통일성을 위해 파란색)
-        string blueColor = "<color=#5B9BD5>"; // 엘든링 느낌의 파란색
-        string endColor = "</color>";
-
         levelAfterText.text = totalPending > 0 ? $"{blueColor}{projectedLevel}{endColor}" : projectedLevel.ToString();
         moneyAfterText.text = totalPending > 0 ? $"{blueColor}{projectedMoney}{endColor}" : projectedMoney.ToString();
 
-        // 베이스 스탯 배열
+        // 2. 좌측 하단 메인 스탯
         int[] baseStats = { playerStats.vigor, playerStats.endurance, playerStats.strength, playerStats.dexterity };
-
         for (int i = 0; i < 4; i++)
         {
             currentStatTexts[i].text = baseStats[i].ToString();
-
             int afterStat = baseStats[i] + pendingStats[i];
 
-            // 펜딩 수치가 1 이상이면 파란색으로 AFTER 표시!
-            if (pendingStats[i] > 0)
+            afterStatTexts[i].text = pendingStats[i] > 0 ? $"{blueColor}{afterStat}{endColor}" : afterStat.ToString();
+        }
+
+        // ------------------------------------------
+        // 3. 우측 패널 상세 데이터 업데이트 (HP, 스태미나)
+        // ------------------------------------------
+        // PlayerStats.cs의 공식에 따라 예상 HP/Stamina를 계산[cite: 10]
+        float currentMaxHp = playerStats.maxHp;
+        float projectedMaxHp = 40f + ((playerStats.vigor + pendingStats[0]) * 10f); // 체력 스탯 연동
+
+        float currentMaxStamina = playerStats.maxStamina;
+        float projectedMaxStamina = 30f + ((playerStats.endurance + pendingStats[1]) * 10f); // 지구력 스탯 연동
+
+        if (hpCurrentText != null) hpCurrentText.text = Mathf.RoundToInt(currentMaxHp).ToString();
+        if (hpAfterText != null) hpAfterText.text = pendingStats[0] > 0 ? $"{blueColor}{Mathf.RoundToInt(projectedMaxHp)}{endColor}" : Mathf.RoundToInt(projectedMaxHp).ToString();
+
+        if (staminaCurrentText != null) staminaCurrentText.text = Mathf.RoundToInt(currentMaxStamina).ToString();
+        if (staminaAfterText != null) staminaAfterText.text = pendingStats[1] > 0 ? $"{blueColor}{Mathf.RoundToInt(projectedMaxStamina)}{endColor}" : Mathf.RoundToInt(projectedMaxStamina).ToString();
+
+        // 스태미나 재생량은 고정값이므로 동일하게 표기 (나중에 공식을 넣으면 여기도 연동 가능)[cite: 10]
+        if (staminaRegenCurrentText != null) staminaRegenCurrentText.text = playerStats.staminaRegenRate.ToString();
+        if (staminaRegenAfterText != null) staminaRegenAfterText.text = playerStats.staminaRegenRate.ToString();
+
+
+        
+        // 4. 우측 패널 장착 무기 데미지 업데이트
+        int projectedStr = playerStats.strength + pendingStats[2];
+        int projectedDex = playerStats.dexterity + pendingStats[3];
+
+        if (EquipmentManager.Instance != null && weaponCurrentTexts != null && weaponAfterTexts != null)
+        {
+            for (int i = 0; i < 4; i++)
             {
-                afterStatTexts[i].text = $"{blueColor}{afterStat}{endColor}";
-            }
-            else
-            {
-                afterStatTexts[i].text = afterStat.ToString();
+                // UI 텍스트 배열 길이를 초과하지 않도록 안전장치
+                if (i >= weaponCurrentTexts.Length || i >= weaponAfterTexts.Length) break;
+
+                // 해당 슬롯에 무기가 장착되어 있는지 확인
+                if (EquipmentManager.Instance.currentWeapons.Length > i && EquipmentManager.Instance.currentWeapons[i] != null)
+                {
+                    ItemInstance weapon = EquipmentManager.Instance.currentWeapons[i];
+
+                    // 현재 데미지와 예상 데미지 계산
+                    float currentDmg = weapon.GetCalculatedDamage(playerStats.strength, playerStats.dexterity);
+                    float projectedDmg = weapon.GetCalculatedDamage(projectedStr, projectedDex);
+
+                    weaponCurrentTexts[i].text = Mathf.RoundToInt(currentDmg).ToString();
+
+                    // 근력(pendingStats[2])이나 기량(pendingStats[3])이 올라서 데미지가 증가했다면 파란색!
+                    if (projectedDmg > currentDmg)
+                    {
+                        weaponAfterTexts[i].text = $"{blueColor}{Mathf.RoundToInt(projectedDmg)}{endColor}";
+                    }
+                    else
+                    {
+                        weaponAfterTexts[i].text = Mathf.RoundToInt(projectedDmg).ToString();
+                    }
+                }
+                else
+                {
+                    // 무기가 안 껴져 있으면 "-" 로 표기
+                    weaponCurrentTexts[i].text = "-";
+                    weaponAfterTexts[i].text = "-";
+                }
             }
         }
     }
@@ -193,6 +246,7 @@ public class LevelUpUIManager : MonoBehaviour
         int totalPending = GetTotalPendingLevels();
         if (totalPending <= 0) return;
 
+        // ★[cite: 10] 제거됨
         playerStats.ApplyLevelUp(pendingStats[0], pendingStats[1], pendingStats[2], pendingStats[3], CalculateTotalPendingCost());
 
         // 초기화 및 갱신

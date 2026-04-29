@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI; 
+using UnityEngine.UI;
 
 public class MainInventoryUIManager : MonoBehaviour
 {
@@ -13,10 +13,12 @@ public class MainInventoryUIManager : MonoBehaviour
     public GameObject inventorySlotPrefab;
 
     [Header("Item Details")]
-    public Image detailIconImage; //  추가: 툴팁에 띄울 아이콘 이미지
+    public Image detailIconImage;
     public TextMeshProUGUI detailNameText;
     public TextMeshProUGUI detailDescText;
     public TextMeshProUGUI detailStatsText;
+    // ★ 추가: 장비창처럼 S, A, B 등급을 표시할 텍스트
+    public TextMeshProUGUI detailScalingText;
 
     private void Awake()
     {
@@ -29,9 +31,7 @@ public class MainInventoryUIManager : MonoBehaviour
         ClearItemDetails();
     }
 
-    // ==========================================
     // 1. 창 열기 / 닫기
-    // ==========================================
     public void OpenWindow()
     {
         UIManager.Instance.OpenPanel(inventoryWindow);
@@ -43,36 +43,27 @@ public class MainInventoryUIManager : MonoBehaviour
         UIManager.Instance.ClosePanel(inventoryWindow);
     }
 
-    // ==========================================
-    // 2. 탭(Tab) 버튼 기능: 카테고리별 아이템 띄우기
-    // ==========================================
-    // 유니티 버튼의 OnClick()에 연결할 함수들입니다.
+    // 2. 탭(Tab) 버튼 기능
     public void OnClickAllTab() { ShowItemsByCategory(null); }
     public void OnClickWeaponTab() { ShowItemsByCategory(ItemType.Weapon); }
     public void OnClickArmorTab() { ShowItemsByCategory(ItemType.Armor); }
     public void OnClickArtifactTab() { ShowItemsByCategory(ItemType.Artifact); }
-
     public void OnClickConsumableTab() { ShowItemsByCategory(ItemType.Consumable); }
 
-    // 실제 화면에 아이템을 그리는 핵심 로직
     private void ShowItemsByCategory(ItemType? categoryFilter)
     {
-        // 1. 기존 슬롯 싹 다 지우기
         foreach (Transform child in scrollContent)
         {
             Destroy(child.gameObject);
         }
 
-        // 2. 데이터 가져오기
         List<ItemInstance> itemsToShow = InventoryManager.Instance.allItems;
 
-        // 필터가 null이 아니면 해당 카테고리만 걸러냅니다.
         if (categoryFilter.HasValue)
         {
             itemsToShow = InventoryManager.Instance.GetItemsByType(categoryFilter.Value);
         }
 
-        // 3. 슬롯 생성
         foreach (ItemInstance item in itemsToShow)
         {
             GameObject slotObj = Instantiate(inventorySlotPrefab, scrollContent);
@@ -80,34 +71,84 @@ public class MainInventoryUIManager : MonoBehaviour
 
             if (slotUI != null)
             {
-                // 메인 인벤토리에서는 아이템을 클릭하면 '상세 정보'를 띄우도록 Action을 넘겨줍니다!
                 slotUI.InitSlot(item, ShowItemDetails);
             }
         }
     }
 
     // ==========================================
-    // 3. 아이템 클릭 시 상세 정보 띄우기
+    // ★ 수정: 장비창(EquipmentUIManager)과 완벽하게 동일한 로직 적용!
     // ==========================================
     private void ShowItemDetails(ItemInstance item)
     {
-        if (detailIconImage != null && item.itemData.icon != null)
+        if (item == null || item.itemData == null) return;
+
+        // 아이콘 표시
+        if (detailIconImage != null)
         {
-            detailIconImage.sprite = item.itemData.icon;
-            detailIconImage.enabled = true; // 아이콘 보이게 켜기
+            if (item.itemData.icon != null)
+            {
+                detailIconImage.sprite = item.itemData.icon;
+                detailIconImage.enabled = true;
+            }
+            else
+            {
+                detailIconImage.enabled = false;
+            }
         }
 
         detailNameText.text = item.itemData.itemName;
         detailDescText.text = item.itemData.description;
 
+        // 무기일 경우 데미지 계산 및 스케일링 등급 표시
         if (item.itemData is WeaponData weapon)
         {
-            detailStatsText.text = $"STR: {weapon.baseDamage} (Count: {item.amount})";
+            PlayerStats stats = FindFirstObjectByType<PlayerStats>();
+
+            string strGrade = GetScalingGrade(weapon.strScaling);
+            string dexGrade = GetScalingGrade(weapon.dexScaling);
+
+            if (stats != null)
+            {
+                float totalDamage = item.GetCalculatedDamage(stats.strength, stats.dexterity);
+                float bonusDamage = totalDamage - weapon.baseDamage;
+
+                // 인벤토리이므로 보유 개수(Count)도 추가로 보여줍니다.
+                detailStatsText.text =
+                    $"Damage: {weapon.baseDamage} + {bonusDamage:F0} (Total: {totalDamage:F0})\n\n" +
+                    $"Stamina cost: {weapon.baseStaminaCost}\n\n" +
+                    $"Count: {item.amount}";
+
+                if (detailScalingText != null)
+                    detailScalingText.text = $"STR:  {strGrade}                   DEX:  {dexGrade}\n";
+            }
         }
+        // 소모품일 경우
+        else if (item.itemData is ConsumableData potion)
+        {
+            detailStatsText.text = $"Heal: {potion.healAmount}\n\nCount: {item.amount}";
+            if (detailScalingText != null)
+                detailScalingText.text = $"STR:  -                   DEX:  -\n";
+        }
+        // 그 외 아이템 (방어구, 장신구 등)
         else
         {
             detailStatsText.text = $"Count: {item.amount}";
+            if (detailScalingText != null)
+                detailScalingText.text = "";
         }
+    }
+
+    //등급 계산 함수
+    private string GetScalingGrade(float scalingValue)
+    {
+        if (scalingValue >= 15f) return "S"; // 황금색
+        if (scalingValue >= 12f) return "A";
+        if (scalingValue >= 9f) return "B";
+        if (scalingValue >= 6f) return "C";
+        if (scalingValue >= 3f) return "D";
+        if (scalingValue > 0f) return "E";
+        return "-"; // 보정 없음
     }
 
     private void ClearItemDetails()
@@ -115,5 +156,7 @@ public class MainInventoryUIManager : MonoBehaviour
         detailNameText.text = "";
         detailDescText.text = "Select Item.";
         detailStatsText.text = "";
+        if (detailScalingText != null) detailScalingText.text = "";
+        if (detailIconImage != null) detailIconImage.enabled = false;
     }
 }
