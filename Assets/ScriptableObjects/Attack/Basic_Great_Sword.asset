@@ -23,7 +23,7 @@ MonoBehaviour:
     comboWindowEnd: 0.49
     comboTransitionPoint: 0.5
     cancelWindowStart: 0.5
-    hitboxStartTime: 0.1
+    hitboxStartTime: 0.26
     hitboxEndTime: 0.49
     damageMultiplier: 1
     steminareduce: 15
