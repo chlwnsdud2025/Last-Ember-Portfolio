@@ -113,6 +113,26 @@ namespace SOTimeline.EditorTools
                 from.floatValue = na;
         }
 
+        /// <summary>0에서 한 지점까지 채우는 레인. 끝점만 끌 수 있다.</summary>
+        public static void HeadLane(Rect row, string label, Color color, SerializedProperty to)
+        {
+            var track = LaneBase(row, label, color);
+
+            var b = Mathf.Clamp01(to.floatValue);
+            DrawBand(track, 0f, b, color);
+
+            var nb = DragHandle(track, b, label + "-head");
+            if (!Mathf.Approximately(nb, b))
+                to.floatValue = nb;
+        }
+
+        /// <summary>끌 수 없는 표시 전용 레인.</summary>
+        public static void ReadonlyLane(Rect row, string label, Color color, float from, float to)
+        {
+            var track = LaneBase(row, label, color);
+            DrawBand(track, Mathf.Min(from, to), Mathf.Max(from, to), color);
+        }
+
         /// <summary>단일 시점 마커 레인.</summary>
         public static void MarkerLane(Rect row, string label, Color color, SerializedProperty at)
         {
