@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51da54e293698b64b85722d2a1a9e8ed, type: 3}
+  m_Name: Basic_Great_Sword
+  m_EditorClassIdentifier: Assembly-CSharp::Attack_SO_Data
+  weaponName: Basic_Great_Sword
+  idleClip: {fileID: 5584317090860947421, guid: fb7e55b9f9f66f94e8a0f4aef8b5b3f5, type: 3}
+  walkClip: {fileID: 7400000, guid: 5ce26a69a38f54b00b74a5fdbfd57999, type: 2}
+  runClip: {fileID: 7400000, guid: 395e4d8029fb5426e891e6e7a1651f0b, type: 2}
+  sprintClip: {fileID: 7400000, guid: 85786fbb42c2a42c7b4e6f839c95b452, type: 2}
+  comboAttacks:
+  - clip: {fileID: -1783056136269259732, guid: 2ee2d704699fea54b9027eaf814a1dcf, type: 3}
+    comboWindowStart: 0.1
+    comboWindowEnd: 0.49
+    comboTransitionPoint: 0.5
+    cancelWindowStart: 0.5
+    hitboxStartTime: 0.1
+    hitboxEndTime: 0.49
+    damageMultiplier: 1
+    steminareduce: 15
+  - clip: {fileID: 1911910933415801622, guid: 4c1fe4765723531458269d8b430af767, type: 3}
+    comboWindowStart: 0.1
+    comboWindowEnd: 0.45
+    comboTransitionPoint: 0.5
+    cancelWindowStart: 0.5
+    hitboxStartTime: 0.1
+    hitboxEndTime: 0.45
+    damageMultiplier: 1
+    steminareduce: 15
+  - clip: {fileID: -1405839070793029625, guid: 6b78885e84611da4980eb399214df271, type: 3}
+    comboWindowStart: 0.1
+    comboWindowEnd: 0.45
+    comboTransitionPoint: 0.5
+    cancelWindowStart: 0.5
+    hitboxStartTime: 0.1
+    hitboxEndTime: 0.45
+    damageMultiplier: 1
+    steminareduce: 15
+  - clip: {fileID: -4780241539966653157, guid: 927c8691e34add54db85229c90e965e2, type: 3}
+    comboWindowStart: 0.1
+    comboWindowEnd: 0.45
+    comboTransitionPoint: 0.5
+    cancelWindowStart: 0.5
+    hitboxStartTime: 0.1
+    hitboxEndTime: 0.45
+    damageMultiplier: 1
+    steminareduce: 15

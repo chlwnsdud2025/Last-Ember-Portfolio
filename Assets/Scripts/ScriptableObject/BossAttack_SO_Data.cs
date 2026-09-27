@@ -27,7 +27,6 @@ public enum RotationTrackingType
 [CreateAssetMenu(fileName = "New Boss Attack", menuName = "Boss/AAA Attack Data")]
 public class BossAttack_SO_Data : ScriptableObject
 {
-    [Header(" 1. 발동 조건 (Decision 체계)")]
     [Tooltip("디버그용 공격 이름")]
     public string attackName = "기본 베기";
 
@@ -46,8 +45,6 @@ public class BossAttack_SO_Data : ScriptableObject
     [Tooltip("이 공격이 해금되는 보스의 페이즈 (1페이즈엔 안 쓰는 패턴 등)")]
     public int requiredPhase = 1;
 
-    [Space(10)]
-    [Header(" 2. 애니메이션 제어 (Animation Control)")]
     public AnimationClip attackClip;
 
     [Tooltip("애니메이션 전환(CrossFade)에 걸리는 부드러운 시간 (보통 0.1 ~ 0.2)")]
@@ -59,8 +56,6 @@ public class BossAttack_SO_Data : ScriptableObject
     [Tooltip("이 공격을 할 때 루트 모션(애니메이션 자체 이동)을 사용할 것인가?")]
     public bool useRootMotion = true;
 
-    [Space(10)]
-    [Header(" 3. 회전 및 유도 (Rotation & Tracking)")]
     public RotationTrackingType trackingType = RotationTrackingType.OnlyStartup;
 
     [Tooltip("보스가 플레이어를 바라보는 회전 속도 (높을수록 휙휙 돌아감)")]
@@ -69,8 +64,6 @@ public class BossAttack_SO_Data : ScriptableObject
     [Tooltip("OnlyStartup 모드일 때, 애니메이션 진행도의 몇 % 시점에서 회전을 멈출 것인가? (예: 0.3이면 무기 내리찍기 직전)")]
     [Range(0f, 1f)] public float stopTrackingTime = 0.3f;
 
-    [Space(10)]
-    [Header(" 4. 전투 스탯 & 공격 실행 방식 (Combat & Execution)")]
     public float damage = 20f;
 
     [Tooltip("소울류의 핵심: 플레이어의 강인도(Poise)를 깎는 수치")]
@@ -82,11 +75,9 @@ public class BossAttack_SO_Data : ScriptableObject
     [Tooltip("이 공격의 종류 (직접 때리기 vs 프리팹 소환하기)")]
     public AttackMethod attackMethod = AttackMethod.Melee;
 
-    [Header("   ↳ Melee 전용 세팅")]
     [Tooltip("Melee 방식일 때 켤 히트박스 부위")]
     public HitboxType targetHitbox;
 
-    [Header("   ↳ SpawnPrefab 전용 세팅")]
     [Tooltip("SpawnPrefab 방식일 때 소환할 투사체/장판 프리팹")]
     public GameObject attackPrefab;
     [Tooltip("보스를 기준으로 어느 위치에 소환할 것인가 (예: 0, 0, 1 은 보스 앞 1m)")]
@@ -94,14 +85,11 @@ public class BossAttack_SO_Data : ScriptableObject
     [Tooltip("체크하면 플레이어 발 밑에 바로 소환됩니다.")]
     public bool spawnOnTarget = false;
 
-    [Space(5)]
     [Tooltip("히트박스가 켜지거나 프리팹이 소환되는 시작 시점 (0~1)")]
     [Range(0f, 1f)] public float hitboxStartTime = 0.3f;
     [Tooltip("히트박스가 꺼지는 시점 (0~1) (SpawnPrefab일 경우 무시됨)")]
     [Range(0f, 1f)] public float hitboxEndTime = 0.45f;
 
-    [Space(10)]
-    [Header(" 5. 콤보 및 상태 종료 (Combo & Exit)")]
     [Tooltip("선입력 혹은 자동 연계가 활성화되는 시점 (예: 0.6이면 후딜 구간부터 연계 가능)")]
     [Range(0f, 1f)] public float comboEnableTime = 0.6f;
 

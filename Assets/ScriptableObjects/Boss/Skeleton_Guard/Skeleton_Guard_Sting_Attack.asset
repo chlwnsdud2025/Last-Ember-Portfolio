@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e1dde6025c3c0b4bb3465e1e6fd1872, type: 3}
-  m_Name: Skeleton_Guard_ZZIREGI_Attack
+  m_Name: Skeleton_Guard_Sting_Attack
   m_EditorClassIdentifier: Assembly-CSharp::BossAttack_SO_Data
   attackName: "\uCC0C\uB974\uAE30"
   minDistance: 0
